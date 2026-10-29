@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>퇴근 5분 전 – 금요일 퇴근 시각 테스트</title>
+<meta name="description" content="금요일 퇴근 5분 전, 하필 그때 터지는 10가지 상황. 당신은 몇 시에 퇴근할까요?">
+<meta property="og:type" content="website">
+<meta property="og:title" content="퇴근 5분 전 – 너는 금요일 몇 시에 퇴근해?">
+<meta property="og:description" content="17:55부터 18:00까지, 선택에 따라 퇴근 시각이 달라지는 직장인 테스트">
+<meta name="theme-color" content="#2350B5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9EDF2; --surface:#FFFFFF; --ink:#1D2430; --muted:#5F6B7A; --line:#CBD3DD;
+  --corp:#2350B5; --corp-ink:#FFFFFF; --stamp:#C8302B; --option:#F6F8FB; --option-hover:#E3EAF5; --warn:#B26A00;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161B22; --surface:#212833; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+    --corp:#5B86E8; --corp-ink:#0F1622; --stamp:#F0605A; --option:#283140; --option-hover:#334055; --warn:#F0B44C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161B22; --surface:#212833; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+  --corp:#5B86E8; --corp-ink:#0F1622; --stamp:#F0605A; --option:#283140; --option-hover:#334055; --warn:#F0B44C;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:24px 20px 56px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--corp);outline-offset:3px}
+.hidden{display:none!important}
+
+.start{padding-top:6vh}
+.day{font-size:16px;font-weight:600;color:var(--stamp);margin:0 0 4px}
+.clock-big{font-size:clamp(72px,24vw,128px);font-weight:600;line-height:1;letter-spacing:-.02em;margin:0}
+.clock-big .colon{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.start h1{font-size:30px;line-height:1.3;margin:26px 0 8px;font-weight:700}
+.start p.lead{color:var(--muted);margin:0 0 26px}
+.friend{background:var(--surface);border:1.5px dashed var(--stamp);border-radius:12px;padding:14px 16px;margin:0 0 22px;font-weight:500}
+.friend b{color:var(--stamp)}
+.primary{display:block;width:100%;border:0;border-radius:10px;padding:17px 20px;background:var(--corp);color:var(--corp-ink);font-weight:700;font-size:18px}
+.primary:hover{filter:brightness(1.08)}
+.secondary{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;padding:14px 20px;background:transparent;font-weight:500}
+.secondary:hover{background:var(--option)}
+.fine{font-size:14px;color:var(--muted);margin-top:16px}
+
+/* 질문 화면: 두 개의 시계 */
+.clocks{display:grid;grid-template-columns:1fr auto;align-items:end;gap:12px;margin-bottom:10px}
+.clocks .lbl{display:block;font-size:13px;color:var(--muted);line-height:1.3}
+.now{font-size:40px;font-weight:600;line-height:1.1}
+.eta{text-align:right}
+.eta .v{font-size:22px;font-weight:600;line-height:1.3;color:var(--stamp);display:inline-block}
+.eta .v.bump{animation:bump .5s ease}
+@keyframes bump{30%{transform:scale(1.25)}}
+.track{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:4px 0 28px}
+.track i{display:block;height:100%;background:var(--muted);transition:width .35s ease}
+.scene{color:var(--muted);margin:0 0 10px}
+.line{font-size:23px;font-weight:700;line-height:1.4;margin:0 0 24px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:1.5px solid transparent;border-radius:10px;padding:15px 18px;background:var(--option);line-height:1.5}
+.opt:hover{background:var(--option-hover)}
+.opt:active{border-color:var(--corp)}
+.react{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;animation:rise .25s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+.react .picked{font-size:14px;color:var(--muted);margin:0 0 8px}
+.react .rtext{font-size:19px;font-weight:700;line-height:1.5;margin:0 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{font-size:14px;font-weight:600;border-radius:999px;padding:4px 12px;background:var(--option)}
+.chip.late{color:var(--stamp)}
+.chip.mon{color:var(--warn)}
+
+/* 결과 */
+.chime{text-align:center;margin:4px 0 18px;color:var(--muted);font-size:15px}
+.chime b{color:var(--ink)}
+.hero{text-align:center;margin-bottom:22px}
+.hero .lbl{font-size:15px;color:var(--muted);margin:0}
+.hero .time{font-size:clamp(76px,25vw,124px);font-weight:600;line-height:1.05;letter-spacing:-.03em;margin:2px 0 6px;color:var(--stamp)}
+.hero .time small{font-size:.38em;letter-spacing:0}
+.hero h2{font-size:24px;margin:0 0 6px}
+.hero .edesc{margin:0 auto;max-width:28em;color:var(--ink)}
+.rare{display:inline-block;font-size:13px;font-weight:700;color:var(--stamp);border:1.5px solid var(--stamp);border-radius:999px;padding:1px 10px;margin-bottom:8px}
+.monday{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:12px 14px;margin:0 0 22px}
+.monday p{margin:0}
+.monday .lbl{font-size:13px;color:var(--muted)}
+.badge{position:relative;background:var(--surface);border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-bottom:22px}
+.badge-top{background:var(--corp);color:var(--corp-ink);padding:22px 22px 18px}
+.badge-top .slot{width:56px;height:10px;border-radius:5px;background:var(--paper);margin:0 auto 16px}
+.badge-top .co{font-weight:700;font-size:15px}
+.badge-top .co span{font-weight:400;opacity:.8;margin-left:6px}
+.badge-body{padding:22px}
+.idrow{display:flex;gap:18px;align-items:center;margin-bottom:16px}
+.photo{flex:none;width:92px;height:112px;border-radius:8px;background:var(--option);display:grid;place-items:center;font-size:52px;border:1px solid var(--line)}
+.idrow .label{font-size:13px;color:var(--muted);margin:0}
+.idrow h3{font-size:25px;line-height:1.25;margin:2px 0 4px;padding-right:70px}
+.sub{font-size:14px;color:var(--muted);margin:0}
+.quote{font-size:19px;font-weight:700;line-height:1.45;margin:0 0 14px}
+.desc{margin:0 0 18px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.split div{background:var(--option);border-radius:8px;padding:12px}
+.split p{margin:0;font-size:13px;color:var(--muted)}
+.split b{display:block;font-size:15px;margin-top:2px}
+.caution{font-size:15px;margin:18px 0 0;padding-top:16px;border-top:1px dashed var(--line)}
+.stamp{position:absolute;right:14px;top:62px;width:96px;height:96px;border-radius:50%;
+  border:4px solid var(--stamp);color:var(--stamp);display:grid;place-content:center;
+  font-weight:700;font-size:19px;line-height:1.15;text-align:center;transform:rotate(-14deg);
+  opacity:.92;pointer-events:none;background:color-mix(in srgb,var(--surface) 60%,transparent);
+  animation:stampIn .45s cubic-bezier(.2,1.6,.4,1) 1.3s both}
+@keyframes stampIn{from{transform:rotate(-14deg) scale(2.4);opacity:0}to{transform:rotate(-14deg) scale(1);opacity:.92}}
+.sendto{font-weight:500;margin:0 0 12px;text-align:center}
+.actions{display:grid;gap:10px;margin-bottom:8px}
+.toast{font-size:14px;color:var(--muted);text-align:center;min-height:1.6em;margin:4px 0 18px}
+.shot{margin:0 0 26px;text-align:center}
+.shot img{width:100%;max-width:400px;border-radius:12px;border:1px solid var(--line)}
+.shot p{font-size:14px;color:var(--muted);margin:8px 0 0}
+.collect{margin-bottom:26px}
+.collect h4,.more h4{font-size:17px;margin:0 0 4px}
+.note{font-size:14px;color:var(--muted);margin:0 0 12px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.slotc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:15px}
+.slotc b{display:block}
+.slotc span{font-size:13px;color:var(--muted)}
+.slotc.locked{background:transparent;border-style:dashed;color:var(--muted)}
+details{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+summary{cursor:pointer;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--muted);font-weight:400}
+details[open] summary::after{content:"−"}
+.more{margin-top:16px}
+.dist{display:grid;gap:8px;margin-bottom:22px}
+.dist-row{display:grid;grid-template-columns:132px 1fr 44px;gap:10px;align-items:center;font-size:14px}
+.dist-row .bar{height:8px;border-radius:4px;background:var(--option);overflow:hidden}
+.dist-row .bar i{display:block;height:100%;background:var(--muted)}
+.dist-row.me .bar i{background:var(--stamp)}
+.dist-row.me{font-weight:700}
+.dist-row .pct{text-align:right}
+.types{display:grid;gap:8px}
+.type-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--line)}
+.type-item .e{font-size:26px;line-height:1.2}
+.type-item b{display:block}
+.type-item span{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <section id="start" class="start">
+    <p class="day">금요일</p>
+    <p class="clock-big mono" aria-label="금요일 오후 5시 55분">17<span class="colon">:</span>55</p>
+    <h1>퇴근 5분 전,<br>당신은 몇 시에 퇴근할까</h1>
+    <div class="friend hidden" id="friend"></div>
+    <p class="lead">금요일 6시까지 남은 5분, 하필 그때 터지는 10가지 상황. 무엇을 고르느냐에 따라 오늘의 퇴근 시각이 달라져요.</p>
+    <button class="primary" id="startBtn">테스트 시작</button>
+    <p class="fine"><a href="./" style="color:var(--corp);font-weight:600">🕕 매일 새 상황이 열리는 퇴근 5분 전 DAILY 하러 가기 →</a></p>
+    <p class="fine">게임 속 시계는 30초씩 흐르지만, 실제로 기다릴 필요는 없어요. 2분이면 끝나요.</p>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="clocks">
+      <div><span class="lbl">지금</span><span class="now mono" id="qClock">17:55:00</span></div>
+      <div class="eta"><span class="lbl">예상 퇴근</span><span class="v mono" id="qEta">18:00</span></div>
+    </div>
+    <div class="track"><i id="qTrack" style="width:0%"></i></div>
+    <div id="qBody" aria-live="polite">
+      <p class="scene" id="qScene"></p>
+      <p class="line" id="qLine"></p>
+      <div class="opts" id="qOpts"></div>
+    </div>
+  </section>
+
+  <section id="result" class="hidden">
+    <p class="chime"><b class="mono">18:00:00</b> 띵동. 근무 시간은 끝났습니다. 당신은요?</p>
+
+    <div class="hero">
+      <p class="lbl">당신의 금요일 퇴근 시각</p>
+      <p class="time mono" id="rTime">18:00</p>
+      <div id="rRare"></div>
+      <h2 id="rEnding"></h2>
+      <p class="edesc" id="rEDesc"></p>
+    </div>
+
+    <div class="monday">
+      <p class="lbl">그리고 월요일 아침, 팀장님은</p>
+      <p id="rBoss"></p>
+    </div>
+
+    <article class="badge">
+      <div class="badge-top">
+        <div class="slot"></div>
+        <div class="co">퇴근5분전(주)<span>사원증</span></div>
+      </div>
+      <div class="stamp" id="stamp"></div>
+      <div class="badge-body">
+        <div class="idrow">
+          <div class="photo" id="rEmoji"></div>
+          <div>
+            <p class="label">본캐</p>
+            <h3 id="rName"></h3>
+            <p class="sub" id="rSub"></p>
+          </div>
+        </div>
+        <p class="quote" id="rQuote"></p>
+        <p class="desc" id="rDesc"></p>
+        <div class="split">
+          <div><p>같은 팀이면 편한 유형</p><b id="rBest"></b></div>
+          <div><p>같은 팀이면 피곤한 유형</p><b id="rWorst"></b></div>
+        </div>
+        <p class="caution" id="rCaution"></p>
+      </div>
+    </article>
+
+    <p class="sendto" id="sendTo"></p>
+    <div class="actions">
+      <button class="primary" id="copyBtn">공유 링크 복사하기</button>
+      <button class="secondary" id="imgBtn">결과 이미지 만들기</button>
+      <button class="secondary" id="againBtn">다른 선택으로 다시 하기</button>
+      <a class="secondary" href="./" style="text-align:center;text-decoration:none;color:var(--ink)">🕕 오늘의 DAILY 하러 가기</a>
+    </div>
+    <p class="toast" id="toast" role="status"></p>
+    <div class="shot hidden" id="shot">
+      <img id="shotImg" alt="내 금요일 퇴근 시각 결과 카드">
+      <p>모바일은 이미지를 길게 눌러, PC는 오른쪽 클릭해서 저장하세요.</p>
+    </div>
+
+    <div class="collect">
+      <h4>내가 본 엔딩</h4>
+      <p class="note" id="collectNote"></p>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <details>
+      <summary>자세한 결과 보기</summary>
+      <div class="more">
+        <h4>유형별 싱크로율</h4>
+        <p class="note">각 유형이 될 수 있는 최대 점수 중 내가 얻은 비율이에요.</p>
+        <div class="dist" id="dist"></div>
+        <h4>모든 유형</h4>
+        <div class="types" id="types"></div>
+      </div>
+    </details>
+  </section>
+
+</main>
+
+<script>
+const SHARE_BASE = location.origin + location.pathname;
+
+const TYPES = {
+  E:{tok:"evap",name:"18시 증발형",emoji:"🫥",quote:"“출근한 건 봤는데, 퇴근하는 건 아무도 못 봤다.”",
+     desc:"18시 정각에 자리에서 사라지는 사람. 낮에는 누구보다 빠르게 일하고, 저녁은 철저히 내 것입니다. 퇴근 동선은 오후 4시에 이미 시뮬레이션을 마쳤어요.",
+     caution:"주의할 점: 17시 59분에 온 메시지 때문에 ‘읽씹’ 의혹을 자주 받아요.",best:"M",worst:"J",send:"우리 팀에서 가장 먼저 증발하는 그 사람에게 보내 보세요."},
+  J:{tok:"ghost",name:"사무실 지박령형",emoji:"👻",quote:"“경비 아저씨가 내 퇴근 시간을 더 잘 안다.”",
+     desc:"사람들이 빠져나가야 비로소 집중력이 켜지는 타입. 사무실 불을 끄는 건 늘 당신이고, 보안 시스템 경고음과도 꽤 친해졌습니다. 마감 직전에 가장 믿음직한 사람이에요.",
+     caution:"주의할 점: 남의 일까지 밤에 조용히 떠안고 있어요. 그것도 아무도 모르게.",best:"N",worst:"E",send:"사무실 불 끄고 나가는 그 사람에게 보내 보세요."},
+  R:{tok:"radar",name:"팀장 레이더형",emoji:"📡",quote:"“팀장님 의자 끄는 소리에 심박수가 올라간다.”",
+     desc:"사무실의 모든 신호를 수신합니다. 팀장님 메신저 상태, 한숨의 길이, 참조에 들어간 이름까지. 분위기가 나빠지기 전에 먼저 알아채는 능력은 이미 만렙이에요.",
+     caution:"주의할 점: 남의 퇴근 타이밍을 읽다가 내 퇴근 타이밍을 놓쳐요.",best:"Y",worst:"N",send:"팀장님 기침 소리에 고개 드는 그 사람에게 보내 보세요."},
+  M:{tok:"magic",name:"내일 오전 마법사형",emoji:"🪄",quote:"“거절한 적은 없는데, 모든 일이 내일로 간다.”",
+     desc:"절대 ‘안 돼요’라고 하지 않습니다. 시점을 바꿀 뿐. ‘월요일 오전에 드릴게요’ 한마디로 오늘 저녁을 지켜내는 균형의 마법사입니다.",
+     caution:"주의할 점: 마법으로 보낸 일들이 월요일 9시에 한꺼번에 돌아와요.",best:"E",worst:"Y",send:"모든 일을 ‘내일 오전’으로 보내는 그 사람에게 보내 보세요."},
+  Y:{tok:"yesbot",name:"네네 자동응답기형",emoji:"🤖",quote:"“입은 ‘네’라고 했고, 손은 사직서 양식을 검색했다.”",
+     desc:"부탁을 받으면 머리보다 입이 먼저 대답합니다. 팀이 굴러가게 만드는 숨은 윤활유이자 모두가 같이 일하고 싶어 하는 동료. 문제는 그 ‘모두’에 당신의 저녁은 없다는 것.",
+     caution:"주의할 점: 당신의 ‘금방이요’는 보통 3시간이에요.",best:"R",worst:"M",send:"‘네’밖에 모르는 그 사람에게 보내 보세요."},
+  N:{tok:"ninja",name:"업무 닌자형",emoji:"🥷",quote:"“아무도 모르게 일을 끝냈다. 그래서 다음 일도 내 거다.”",
+     desc:"불평도 티도 없이 처리하고 조용히 사라집니다. 문제가 생기면 다들 일단 당신 자리부터 쳐다봐요. 위기에 강하고 마무리가 깔끔한 사람.",
+     caution:"주의할 점: 티를 안 내니 당신이 한 일을 아무도 몰라요. 연말 평가 때도요.",best:"J",worst:"R",send:"말없이 다 해 놓는 그 사람에게 보내 보세요."}
+};
+const ORDER=["E","J","R","M","Y","N"];
+
+// 엔딩: 예상 퇴근 시각(18:00 기준 지연 분)과 월요일로 넘긴 일의 양으로 결정
+const ENDINGS = {
+  clean:{key:"clean",emoji:"🎉",name:"완벽한 칼퇴 엔딩",rare:true,stamp:["퇴근","완료"],
+     desc:"금요일 저녁이 온전히 당신 것이 되었습니다. 회사는 당신 없이도 잘 돌아갔고, 당신도 회사 없이 잘 돌아갔습니다."},
+  bomb:{key:"bomb",emoji:"💣",name:"월요일 폭탄 엔딩",stamp:["조건부","퇴근"],
+     desc:"칼퇴에는 성공했습니다. 다만 금요일에 미룬 일들이 월요일 오전 9시에 한꺼번에 터질 예정입니다. 월요일의 나, 미안해."},
+  late:{key:"late",emoji:"🍗",name:"저녁 약속 지각 엔딩",stamp:["퇴근","지연"],
+     desc:"퇴근은 했습니다. 다만 친구들은 먼저 시켜 먹었고, 당신 몫의 치킨은 이미 식어 있었습니다."},
+  lost:{key:"lost",emoji:"🌙",name:"금요일 실종 엔딩",stamp:["야근","확정"],
+     desc:"사무실 불을 끄고 나오니 금요일이 거의 끝나 있었습니다. 경비 아저씨가 “주말 잘 보내세요”라고 했지만, 주말은 이미 시작됐습니다."}
+};
+const END_ORDER=["clean","bomb","late","lost"];
+function pickEnding(d,m){ if(m>=6 && d<=75) return "bomb"; if(d<=30) return "clean"; if(d<=150) return "late"; return "lost"; }
+function bossLine(b){
+  if(b>=6) return "“금요일에 고생 많았어요.” 웃으며 커피를 사 주셨다.";
+  if(b<=-3) return "“금요일에 일찍 가셨더라고요?” 웃고 있는데 눈이 안 웃는다.";
+  return "“좋은 아침~” 금요일에 아무 일도 없었던 것처럼.";
+}
+
+// p: 유형 점수, d: 퇴근 지연(분), b: 팀장 호감도, m: 월요일로 넘긴 일, r: 리액션
+const QUESTIONS=[
+ {t:"17:55:00",scene:"팀장님이 웃으며 다가온다. 손에 서류가 들려 있다.",line:"“퇴근 전에 이것만 잠깐 봐줄 수 있죠?”",opts:[
+  {x:"네! (그 순간 오늘 저녁 약속이 머릿속에서 취소된다)",p:{Y:2},d:52,b:2,m:0,r:"팀장님이 흐뭇하게 웃는다. ‘잠깐’은 52분짜리였다."},
+  {x:"월요일 오전 첫 번째로 봐 드려도 될까요?",p:{M:2},d:0,b:-1,m:2,r:"팀장님이 “음… 그래요”라고 했다. 그 ‘음’이 월요일까지 따라온다."},
+  {x:"‘이것’이 몇 장짜리인지부터 곁눈질로 잰다",p:{R:2},d:15,b:0,m:1,r:"두께 3cm, 스테이플러 두 방. 판정은 위험. 결국 앞부분만 보기로 했다."},
+  {x:"(이미 가방을 메고 의자를 밀어 넣었다)",p:{E:2},d:0,b:-2,m:1,r:"팀장님이 입을 여는 순간, 당신의 의자는 이미 책상 속에 들어가 있었다."}]},
+ {t:"17:55:30",scene:"거래처 담당자에게서 카톡이 왔다.",line:"“급한 건 아닌데, 월요일 아침에 바로 쓸 수 있게 부탁드려요~”",opts:[
+  {x:"월요일 아침에 쓴다는 건… 주말에 하라는 뜻이구나",p:{J:1,Y:1},d:35,b:0,m:-1,r:"주말을 지키기 위해 금요일 저녁을 바치기로 했다. 합리적인 거래 같았다."},
+  {x:"“네~ 월요일 오전 중 공유드리겠습니다 :)” 웃는 이모티콘으로 날을 세운다",p:{M:2},d:0,b:0,m:2,r:"이모티콘 하나로 금요일을 지켰다. 대신 월요일 오전이 꽉 찼다."},
+  {x:"알림 미리보기로만 읽는다. ‘읽음’은 월요일에 뜰 예정",p:{E:1,R:1},d:0,b:0,m:1,r:"상대방 화면에는 아직 ‘1’이 떠 있다. 그 숫자 하나가 당신의 금요일을 지킨다."},
+  {x:"말없이 지금 바로 만들어 보낸다. 상대가 더 놀란다",p:{N:2},d:18,b:1,m:-1,r:"“헉 벌써요?” 답장이 왔다. 그리고 부탁이 하나 더 왔다."}]},
+ {t:"17:56:00",scene:"옆자리 동료가 노트북을 슬쩍 돌린다.",line:"“이거 나보다 네가 훨씬 잘하잖아?”",opts:[
+  {x:"“에이 아니야~” 하면서 손은 이미 파일을 받고 있다",p:{Y:2},d:40,b:0,m:0,r:"동료는 해맑게 퇴근했다. 받은 파일 이름은 ‘최종_진짜최종_v7’."},
+  {x:"“그치. 그래서 내가 검토는 해 줄게.”",p:{M:2},d:10,b:0,m:2,r:"검토만 하기로 했는데, 열어 보니 검토할 게 없다. 아무것도 안 돼 있다."},
+  {x:"잘하는 걸 들키면 일이 는다. 처음 보는 척한다",p:{E:1,R:1},d:3,b:0,m:0,r:"연기가 너무 자연스러웠다. 동료가 당신에게 엑셀 기초를 설명하기 시작했다."},
+  {x:"말없이 받아서 15분 만에 끝낸다. 그리고 또 받는다",p:{N:1,J:1},d:28,b:1,m:0,r:"“역시!” 동료가 두 번째 파일을 보낸다. 당신은 이 패턴을 알고 있었다."}]},
+ {t:"17:56:30",scene:"팀장님이 일어나 손뼉을 친다.",line:"“다들 퇴근 전에 딱 5분만 이야기합시다.”",opts:[
+  {x:"팀장님의 5분은 40분이다. 조용히 저녁 약속을 8시로 미룬다",p:{J:1,Y:1},d:43,b:1,m:0,r:"회의는 정확히 43분 걸렸다. 친구는 “또?”라고만 답했다."},
+  {x:"회의실에서 문과 가장 가까운 자리를 선점한다",p:{E:2},d:4,b:-1,m:0,r:"자리 선점 성공. 그런데 팀장님이 오늘따라 문 앞에 서서 회의를 했다."},
+  {x:"팀장님 표정으로 안건 길이를 예측한다. 오늘은 길다",p:{R:2},d:26,b:0,m:0,r:"예측 적중. 끝나갈 무렵 팀장님이 “그리고 하나 더”를 꺼냈다."},
+  {x:"“안건만 알려 주시면 메일로 정리해 드릴게요!”",p:{M:2},d:3,b:1,m:2,r:"회의가 2분 만에 끝났다. 그 대가로 당신은 영구 회의록 담당이 되었다."}]},
+ {t:"17:57:00",scene:"모니터에 창이 하나 뜬다. 저장 안 한 보고서가 열려 있다.",line:"“업데이트를 위해 10분 후 자동으로 다시 시작됩니다.”",opts:[
+  {x:"저장을 누르고 전원을 누른다. 순서는 크게 중요하지 않다",p:{E:2},d:0,b:0,m:2,r:"저장이 됐는지는 월요일의 당신이 알게 될 것이다."},
+  {x:"업데이트 끝나면 마저 쓰고 간다. 어차피 집에 가도 생각난다",p:{J:2},d:41,b:0,m:-1,r:"업데이트가 38단계 중 37단계에서 멈췄다. 당신도 같이 멈췄다."},
+  {x:"‘나중에 알림’을 누르고 9분 만에 보고서를 끝낸다",p:{N:2},d:9,b:1,m:-1,r:"저장 버튼을 누른 그 순간 재시작됐다. 아무도 이 기적을 모른다."},
+  {x:"“이거 원래 이렇게 오래 걸려요?” 옆자리와 같이 기다린다",p:{Y:1,R:1},d:22,b:0,m:0,r:"옆자리 컴퓨터는 이미 켜졌다. 당신 화면만 아직 0%다."}]},
+ {t:"17:57:30",scene:"오후 내내 기다린 결재에 알림이 떴다.",line:"“반려되었습니다. 사유: 내용 확인 부탁”",opts:[
+  {x:"무엇을 확인하라는 건지 확인하는 데만 30분이 걸린다. 각오한다",p:{J:2},d:47,b:1,m:-1,r:"확인할 내용은 쉼표 하나였다. 그걸 찾는 데 47분이 걸렸다."},
+  {x:"“월요일 오전에 직접 찾아뵙고 설명드리겠습니다.”",p:{M:2},d:0,b:0,m:2,r:"월요일 일정표에 ‘해명’이라는 새 항목이 생겼다."},
+  {x:"반려 사유를 다섯 번 읽으며 결재권자의 오늘 기분을 추리한다",p:{R:2},d:14,b:0,m:1,r:"결론: 결재권자는 점심을 늦게 드셨다. 근거는 없지만 확신한다."},
+  {x:"뭘 원하는지 이미 안다. 3분 만에 고쳐서 재상신한다",p:{N:2},d:4,b:1,m:0,r:"3분 만에 재상신, 3분 만에 승인. 결재권자도 사실 퇴근하고 싶었다."}]},
+ {t:"17:58:00",scene:"메일이 한 통 도착했다. 발송 시각 17시 57분.",line:"“[긴급] 오늘 중으로 회신 부탁드립니다.”",opts:[
+  {x:"오늘 중이면 23시 59분까지다. 집에서 보낸다",p:{J:2},d:12,b:1,m:-1,r:"퇴근은 했다. 다만 노트북도 같이 퇴근했다."},
+  {x:"2분 만에 회신하고 1분 남기고 일어난다",p:{N:1,E:1},d:2,b:1,m:0,r:"회신 완료. 상대방은 이미 퇴근해서 월요일에야 읽을 것이다."},
+  {x:"‘확인 후 월요일 오전 회신드리겠습니다’를 예약 발송한다",p:{M:2},d:0,b:0,m:2,r:"월요일 9시 정각 발송 예약. 미래의 내가 보낸 메일을 미래의 내가 수습한다."},
+  {x:"본문보다 참조에 누가 들어가 있는지부터 본다",p:{R:2},d:31,b:1,m:0,r:"참조에 본부장님이 있다. ‘긴급’이 진짜 긴급이 되었다."}]},
+ {t:"17:58:30",scene:"팀장님이 사무실을 둘러보며 묻는다.",line:"“이번 주말에 등산 갈 사람~?”",opts:[
+  {x:"“아… 그날 사촌 결혼식이…” (사촌이 없다)",p:{E:1,M:1},d:0,b:-1,m:0,r:"팀장님이 “축하해요” 하며 덕담을 건넸다. 이제 사촌을 만들어야 한다."},
+  {x:"“네! 김밥은 제가 사 갈게요!”",p:{Y:2},d:6,b:2,m:0,r:"토요일 아침 6시 집합이 확정됐다. 김밥은 12줄이 필요하다."},
+  {x:"팀장님 시선이 누구에게 멈추는지 먼저 본다",p:{R:2},d:3,b:0,m:0,r:"시선이 당신에게서 멈췄다. 눈이 마주쳤다."},
+  {x:"코스를 검색해 가장 빨리 내려오는 길을 찾아 둔다",p:{N:2},d:7,b:1,m:0,r:"최단 코스를 공유했다. 감동한 팀장님이 “그럼 정상까지 가 봅시다”라고 했다."}]},
+ {t:"17:59:00",scene:"화장실 다녀오는 길, 닫히는 엘리베이터에 상무님이 뛰어든다.",line:"“잠깐만요!”",opts:[
+  {x:"열림 버튼을 누른다. 몇 층 안 되는 거리를 날씨 얘기로 버틴다",p:{Y:1,R:1},d:4,b:1,m:0,r:"목적지까지 23초. 날씨 이야기는 11초 만에 바닥났다."},
+  {x:"휴대폰에 집중하는 척한다. 문은 원래 닫히는 것이다",p:{E:2},d:0,b:-2,m:0,r:"문이 닫히기 직전 상무님과 눈이 마주쳤다. 월요일에 뵙겠습니다."},
+  {x:"“상무님, 그 건 이번 주에 마무리됐습니다.” 엘리베이터 보고",p:{M:1,N:1},d:20,b:2,m:1,r:"보고는 대성공. 덕분에 “그럼 그거 하나만 더”를 받았다."},
+  {x:"애초에 계단으로 다니는 중이었다",p:{N:1,E:1},d:2,b:0,m:0,r:"아무도 마주치지 않았다. 다리만 조금 늦게 사무실에 도착했다."}]},
+ {t:"17:59:48",scene:"자리에 돌아오자 내선전화가 울린다. 팀장님은 이미 가방을 들었다.",line:"18시까지 남은 시간, 12초.",opts:[
+  {x:"12초만 버티면 월요일의 내가 받는다",p:{E:2},d:0,b:-1,m:1,r:"18:00:00. 전화벨이 멈췄다. 동시에 당신도 사라졌다."},
+  {x:"받는다. “네, ○○팀입니다.”",p:{J:1,Y:1},d:40,b:1,m:0,r:"“잠깐 하나만 여쭤볼게요”로 시작한 통화가 40분째다."},
+  {x:"팀장님 쪽을 본다. 받으라는 눈빛인지 해석한다",p:{R:2},d:11,b:0,m:0,r:"눈빛 해석 결과: ‘받아.’ 당신의 해석은 틀린 적이 없다."},
+  {x:"받아서 “담당자가 월요일 오전에 회신드릴게요” 하고 끊는다",p:{N:1,M:1},d:2,b:0,m:1,r:"상대가 담당자가 누구냐고 묻는다. 담당자는 당신이다."}]}
+];
+
+
+const MAX={}; ORDER.forEach(k=>MAX[k]=0);
+QUESTIONS.forEach(q=>ORDER.forEach(k=>{MAX[k]+=Math.max(...q.opts.map(o=>o.p[k]||0));}));
+
+const $=id=>document.getElementById(id);
+let idx=0, score={}, delay=0, boss=0, monday=0, current=null, sub=null, ratio={}, endKey=null;
+
+function fmt(d){const t=18*60+d;const h=Math.floor(t/60),m=t%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");}
+function show(id){["start","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0);}
+function begin(){idx=0;delay=0;boss=0;monday=0;score={};ORDER.forEach(k=>score[k]=0);$("qEta").textContent="18:00";show("quiz");renderQ();}
+
+function renderQ(){
+  const q=QUESTIONS[idx];
+  $("qClock").textContent=q.t;
+  $("qTrack").style.width=(idx/QUESTIONS.length*100)+"%";
+  const body=$("qBody"); body.innerHTML="";
+  const sc=document.createElement("p"); sc.className="scene"; sc.textContent=q.scene;
+  const ln=document.createElement("p"); ln.className="line"; ln.textContent=q.line;
+  const box=document.createElement("div"); box.className="opts";
+  q.opts.forEach(o=>{
+    const b=document.createElement("button"); b.className="opt"; b.textContent=o.x;
+    b.onclick=()=>choose(o); box.appendChild(b);
+  });
+  body.append(sc,ln,box);
+}
+function choose(o){
+  Object.entries(o.p).forEach(([k,v])=>score[k]+=v);
+  delay+=o.d; boss+=o.b; monday+=o.m;
+  const eta=$("qEta"); eta.textContent=fmt(delay);
+  if(o.d>0){eta.classList.remove("bump");void eta.offsetWidth;eta.classList.add("bump");}
+  const body=$("qBody"); body.innerHTML="";
+  const card=document.createElement("div"); card.className="react";
+  const pk=document.createElement("p"); pk.className="picked"; pk.textContent="선택: "+o.x;
+  const rt=document.createElement("p"); rt.className="rtext"; rt.textContent=o.r;
+  const chips=document.createElement("div"); chips.className="chips";
+  const c1=document.createElement("span"); c1.className="chip mono"+(o.d>0?" late":"");
+  c1.textContent=o.d>0?"퇴근 +"+o.d+"분":"퇴근 지연 없음"; chips.appendChild(c1);
+  if(o.m>=2){const c2=document.createElement("span");c2.className="chip mon";c2.textContent="📅 월요일의 나에게 넘김";chips.appendChild(c2);}
+  const last=idx===QUESTIONS.length-1;
+  const nb=document.createElement("button"); nb.className="primary"; nb.textContent=last?"18시, 결과 보기":"다음 상황";
+  nb.onclick=()=>{idx++; last?finish():renderQ();};
+  card.append(pk,rt,chips,nb); body.appendChild(card);
+  nb.focus({preventScroll:true});
+}
+
+function loadSeen(){try{return JSON.parse(localStorage.getItem("t5-endings")||"[]");}catch(e){return [];}}
+function saveSeen(a){try{localStorage.setItem("t5-endings",JSON.stringify(a));}catch(e){}}
+
+function animateTime(target){
+  const el=$("rTime");
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finalText=()=>{ if(target===0){el.innerHTML='18:00<small>:03</small>';} else el.textContent=fmt(target); };
+  if(reduce||target===0){finalText();return;}
+  const start=performance.now(),dur=Math.min(1200,300+target*4);
+  (function tick(now){const p=Math.min(1,(now-start)/dur);const e=1-Math.pow(1-p,3);
+    el.textContent=fmt(Math.round(target*e)); if(p<1) requestAnimationFrame(tick); else finalText();})(start);
+}
+
+function finish(){
+  ORDER.forEach(k=>ratio[k]=MAX[k]?score[k]/MAX[k]:0);
+  const ranked=[...ORDER].sort((a,b)=>ratio[b]-ratio[a]||score[b]-score[a]);
+  current=ranked[0]; sub=ranked[1];
+  endKey=pickEnding(delay,monday);
+  const T=TYPES[current], EN=ENDINGS[endKey];
+  show("result");
+  animateTime(delay);
+  $("rRare").innerHTML=""; if(EN.rare){const s=document.createElement("span");s.className="rare";s.textContent="희귀 엔딩";$("rRare").appendChild(s);}
+  $("rEnding").textContent=EN.emoji+" "+EN.name;
+  $("rEDesc").textContent=EN.desc;
+  $("rBoss").textContent=bossLine(boss);
+  $("rEmoji").textContent=T.emoji;
+  $("rName").textContent=T.name;
+  $("rSub").textContent="부캐: "+TYPES[sub].emoji+" "+TYPES[sub].name;
+  $("rQuote").textContent=T.quote;
+  $("rDesc").textContent=T.desc;
+  $("rCaution").textContent=T.caution;
+  $("rBest").textContent=TYPES[T.best].emoji+" "+TYPES[T.best].name;
+  $("rWorst").textContent=TYPES[T.worst].emoji+" "+TYPES[T.worst].name;
+  $("sendTo").textContent=T.send;
+  const st=$("stamp"); st.innerHTML=""; EN.stamp.forEach(s=>{const d=document.createElement("div");d.textContent=s;st.appendChild(d);});
+  st.style.animation="none"; void st.offsetWidth; st.style.animation="";
+  $("shot").classList.add("hidden"); $("toast").textContent="";
+
+  // 엔딩 수집
+  const seen=loadSeen(); if(!seen.includes(endKey)){seen.push(endKey);saveSeen(seen);}
+  $("collectNote").textContent="4개 중 "+seen.length+"개를 봤어요."+(seen.length<4?" 다른 선택을 하면 다른 엔딩이 나와요.":" 모든 엔딩을 다 봤어요!");
+  const slots=$("slots"); slots.innerHTML="";
+  END_ORDER.forEach(k=>{const E2=ENDINGS[k];const d=document.createElement("div");const got=seen.includes(k);
+    d.className="slotc"+(got?"":" locked");const b=document.createElement("b");const s=document.createElement("span");
+    b.textContent=got?E2.emoji+" "+E2.name:"🔒 ???";s.textContent=got?(k===endKey?"방금 본 엔딩":"본 적 있음"):"아직 못 본 엔딩";
+    d.append(b,s);slots.appendChild(d);});
+
+  const dist=$("dist"); dist.innerHTML="";
+  ranked.forEach(k=>{
+    const pct=Math.round(ratio[k]*100);
+    const row=document.createElement("div"); row.className="dist-row"+(k===current?" me":"");
+    row.innerHTML='<span></span><span class="bar"><i></i></span><span class="pct mono"></span>';
+    row.children[0].textContent=TYPES[k].emoji+" "+TYPES[k].name;
+    row.querySelector("i").style.width=pct+"%"; row.children[2].textContent=pct+"%";
+    dist.appendChild(row);
+  });
+}
+function renderTypes(){
+  const box=$("types");
+  ORDER.forEach(k=>{const T=TYPES[k];const d=document.createElement("div");d.className="type-item";
+    d.innerHTML='<span class="e"></span><div><b></b><span></span></div>';
+    d.querySelector(".e").textContent=T.emoji;d.querySelector("b").textContent=T.name;d.querySelector("div span").textContent=T.quote;
+    box.appendChild(d);});
+}
+function timeText(){return delay===0?"18:00:03":fmt(delay);}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);return true;}catch(e){}
+  try{const ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();return ok;}catch(e){return false;}
+}
+async function copyResult(){
+  const T=TYPES[current],EN=ENDINGS[endKey];
+  const hhmm=fmt(delay).replace(":","");
+  const text="[퇴근 5분 전]\n나의 금요일 퇴근 시각: "+timeText()+"\n"+EN.emoji+" "+EN.name+"\n본캐 "+T.emoji+" "+T.name+"\n\n너는 몇 시에 퇴근해? 👉 "+SHARE_BASE+"#"+T.tok+"-"+hhmm+"-"+EN.key;
+  const ok=await copyText(text);
+  $("toast").textContent= ok ? "복사했어요. 친구가 링크를 열면 내 퇴근 시각을 보고 바로 시작할 수 있어요." : "복사하지 못했어요. 결과 이미지를 만들어 공유해 주세요.";
+}
+
+/* 결과 이미지 (4:5) */
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrap(ctx,text,maxW){const words=text.split(" "),lines=[];let line="";
+  words.forEach(w=>{const t=line?line+" "+w:w;if(ctx.measureText(t).width<=maxW){line=t;}else{if(line)lines.push(line);line=w;}});
+  if(line)lines.push(line);return lines;}
+async function makeImage(){
+  $("toast").textContent="이미지를 만드는 중이에요.";
+  const T=TYPES[current],S=TYPES[sub],EN=ENDINGS[endKey];
+  const F='"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif',MF='"IBM Plex Mono",ui-monospace,monospace';
+  try{await Promise.all([document.fonts.load('700 60px "IBM Plex Sans KR"'),document.fonts.load('500 36px "IBM Plex Sans KR"'),document.fonts.load('600 200px "IBM Plex Mono"')]);}catch(e){}
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  x.fillStyle="#E9EDF2";x.fillRect(0,0,W,H);
+  // 상단: 퇴근 시각
+  x.textAlign="center";x.fillStyle="#5F6B7A";x.font="500 36px "+F;x.fillText("나의 금요일 퇴근 시각",W/2,120);
+  x.fillStyle="#C8302B";x.font="600 210px "+MF;x.fillText(timeText().slice(0,5),W/2,320);
+  if(delay===0){x.font="600 70px "+MF;x.textAlign="left";x.fillText(":03",W/2+322,320);x.textAlign="center";}
+  x.fillStyle="#1D2430";x.font="700 50px "+F;x.fillText(EN.emoji+" "+EN.name,W/2,410);
+  // 사원증
+  const cx=110,cy=470,cw=860,ch=700;
+  x.fillStyle="#FFFFFF";rr(x,cx,cy,cw,ch,32);x.fill();
+  x.save();rr(x,cx,cy,cw,ch,32);x.clip();x.fillStyle="#2350B5";x.fillRect(cx,cy,cw,140);x.restore();
+  x.fillStyle="#E9EDF2";rr(x,W/2-45,cy+26,90,16,8);x.fill();
+  x.textAlign="left";x.fillStyle="#FFFFFF";x.font="700 36px "+F;x.fillText("퇴근5분전(주)",cx+44,cy+108);
+  const w1=x.measureText("퇴근5분전(주)").width;x.globalAlpha=.8;x.font="400 30px "+F;x.fillText("사원증",cx+44+w1+14,cy+108);x.globalAlpha=1;
+  x.fillStyle="#F6F8FB";rr(x,cx+44,cy+180,180,210,16);x.fill();x.strokeStyle="#CBD3DD";x.lineWidth=2;x.stroke();
+  x.font='110px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textAlign="center";x.textBaseline="middle";x.fillText(T.emoji,cx+134,cy+290);
+  x.textBaseline="alphabetic";
+  x.save();x.translate(cx+cw-150,cy+270);x.rotate(-14*Math.PI/180);x.strokeStyle="#C8302B";x.lineWidth=9;x.beginPath();x.arc(0,0,92,0,Math.PI*2);x.stroke();
+  x.fillStyle="#C8302B";x.textBaseline="middle";x.font="700 "+(EN.stamp[0].length>2?36:42)+"px "+F;x.fillText(EN.stamp[0],0,-22);x.font="700 42px "+F;x.fillText(EN.stamp[1],0,26);x.restore();
+  x.textAlign="left";x.textBaseline="alphabetic";
+  x.fillStyle="#5F6B7A";x.font="500 30px "+F;x.fillText("본캐",cx+260,cy+220);
+  x.fillStyle="#1D2430";x.font="700 54px "+F;
+  const nameLines=wrap(x,T.name,cw-260-210);nameLines.slice(0,2).forEach((l,i)=>x.fillText(l,cx+260,cy+286+i*62));
+  x.fillStyle="#5F6B7A";x.font="500 30px "+F;x.fillText("부캐: "+S.name,cx+260,cy+286+Math.min(2,nameLines.length)*62+4);
+  x.fillStyle="#1D2430";x.font="700 40px "+F;
+  wrap(x,T.quote,cw-88).slice(0,3).forEach((l,i)=>x.fillText(l,cx+44,cy+490+i*56));
+  x.textAlign="center";x.fillStyle="#1D2430";x.font="700 38px "+F;x.fillText("너는 몇 시에 퇴근해?",W/2,H-80);
+  x.fillStyle="#5F6B7A";x.font="500 28px "+F;x.fillText("퇴근 5분 전 테스트",W/2,H-36);
+  const url=c.toDataURL("image/png");
+  $("shotImg").src=url;$("shot").classList.remove("hidden");
+  let shared=false;
+  try{const blob=await (await fetch(url)).blob();const file=new File([blob],"퇴근시각_"+timeText().replace(/:/g,"")+".png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:"나의 금요일 퇴근 시각 "+timeText()});shared=true;}}catch(e){}
+  $("toast").textContent= shared ? "공유 창을 열었어요." : "이미지를 만들었어요. 아래 이미지를 저장해서 공유하세요.";
+  $("shot").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+/* 친구 링크로 들어온 경우: #유형-시각-엔딩 */
+(function(){
+  const parts=(location.hash||"").replace("#","").split("-");
+  const k=ORDER.find(k=>TYPES[k].tok===parts[0]); if(!k) return;
+  const f=$("friend"); f.classList.remove("hidden"); f.innerHTML="";
+  const tm=/^\d{4}$/.test(parts[1]||"")?parts[1].slice(0,2)+":"+parts[1].slice(2):null;
+  const en=ENDINGS[parts[2]];
+  if(tm){const b=document.createElement("b");b.textContent=tm;
+    f.append(document.createTextNode("친구는 금요일 "),b,document.createTextNode("에 퇴근했대요"+(en?" ("+en.name+")":"")+". 당신은 몇 시일까요?"));}
+  else{const b=document.createElement("b");b.textContent=TYPES[k].emoji+" "+TYPES[k].name;
+    f.append(document.createTextNode("친구의 본캐는 "),b,document.createTextNode("이래요. 당신은요?"));}
+  $("startBtn").textContent="나도 해보기";
+})();
+
+$("startBtn").onclick=begin;
+$("againBtn").onclick=begin;
+$("copyBtn").onclick=copyResult;
+$("imgBtn").onclick=makeImage;
+renderTypes();
+</script>
+</body>
+</html>
