@@ -270,7 +270,8 @@ function brandHtml(ds){
 }
 function testLinkHtml(){
   if(!TEST_LINK) return "";
-  return '<a class="testlink" href="'+TEST_LINK+'" target="'+(/^https?:/.test(TEST_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🪪</span><div><b>나의 직장인 유형 알아보기</b><span>10문항으로 보는 본캐·부캐 사원증 테스트</span></div></a>';
+  return '<a class="testlink" href="'+TEST_LINK+'" target="'+(/^https?:/.test(TEST_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🪪</span><div><b>나의 직장인 유형 알아보기</b><span>10문항으로 보는 본캐·부캐 사원증 테스트</span></div></a>'+
+    '<a class="testlink" href="case.html"><span class="e">🗂️</span><div><b>퇴근 5분 전: 사건 파일</b><span>매주 월요일 열리는 사내 미스터리 추리</span></div></a>';
 }
 function showStart(){
   ctx.screen="start"; const app=$("app"); const t=ctx.today;

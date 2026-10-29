@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>퇴근 5분 전: 사건 파일</title>
+<meta name="description" content="매주 월요일 열리는 사내 미스터리. 업무 시스템 속 기록을 대조해 범인을 찾아보세요.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="퇴근 5분 전: 사건 파일 – 이번 주 사내 미스터리">
+<meta property="og:description" content="메신저, 메일, 출입 기록을 대조해 사내 소동의 진실을 밝혀내는 추리 게임">
+<meta name="theme-color" content="#2350B5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --panel:#F7F9FB; --ink:#1D2430; --muted:#5F6B7A; --line:#D5DCE4;
+  --corp:#2350B5; --corp-soft:#E6EDFA; --corp-ink:#FFFFFF; --red:#C8302B; --warn:#B26A00; --ok:#1E8A50;
+  --sheet:#FFFFFF; --sheet-head:#F1F3F5; --sheet-grid:#E1E5EA; --sheet-bar:#1F6E43;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181E; --surface:#1E242D; --panel:#232A34; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+    --corp:#6A93EE; --corp-soft:#24324A; --corp-ink:#0F1622; --red:#F0605A; --warn:#F0B44C; --ok:#4CC383;
+    --sheet:#1E242D; --sheet-head:#262D37; --sheet-grid:#323B47; --sheet-bar:#2E7D54; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181E; --surface:#1E242D; --panel:#232A34; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+  --corp:#6A93EE; --corp-soft:#24324A; --corp-ink:#0F1622; --red:#F0605A; --warn:#F0B44C; --ok:#4CC383;
+  --sheet:#1E242D; --sheet-head:#262D37; --sheet-grid:#323B47; --sheet-bar:#2E7D54; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--corp)}
+button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--corp);outline-offset:2px}
+.hidden{display:none!important}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-size:14px;font-weight:500;white-space:nowrap}
+.btn:hover{background:var(--panel)}
+.btn.primary{background:var(--corp);color:var(--corp-ink);border-color:var(--corp);font-weight:700}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* 로비 */
+.lobby{max-width:720px;margin:0 auto;padding:26px 20px 60px}
+.lobby .brand{font-size:14px;font-weight:700;color:var(--corp);margin:0}
+.lobby h1{font-size:30px;line-height:1.25;margin:4px 0 6px}
+.lobby .sub{color:var(--muted);margin:0 0 22px}
+.casecard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px}
+.casecard .no{font-size:13px;font-weight:700;color:var(--red)}
+.casecard h2{font-size:22px;margin:2px 0 6px}
+.casecard p{margin:0 0 12px;color:var(--muted)}
+.state{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;margin-left:6px;border:1.5px solid var(--line)}
+.state.solved{color:var(--ok);border-color:var(--ok)} .state.failed{color:var(--red);border-color:var(--red)} .state.going{color:var(--warn);border-color:var(--warn)}
+.archive h3{font-size:16px;margin:26px 0 10px}
+.arow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.lobby .fine{font-size:13px;color:var(--muted);margin-top:22px}
+.crosslink{display:flex;gap:12px;align-items:center;margin-top:18px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink)}
+.crosslink .e{font-size:26px} .crosslink b{display:block} .crosslink span{font-size:14px;color:var(--muted)}
+.devbox{margin-top:22px;padding:12px;border:1.5px dashed var(--line);border-radius:10px;font-size:14px}
+/* 포털 */
+.portal{display:grid;grid-template-rows:auto 1fr;height:100vh;height:100dvh}
+.top{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top .logo{font-weight:700;font-size:15px;margin-right:auto;display:flex;align-items:center;gap:8px;min-width:0}
+.top .logo small{font-weight:500;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .tools{display:flex;gap:6px;flex-wrap:wrap}
+.chances{font-size:13px;color:var(--muted);white-space:nowrap}
+.body{display:grid;grid-template-columns:270px minmax(0,1fr) 340px;min-height:0}
+.side{background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:10px 8px}
+.side h4{font-size:12px;letter-spacing:.04em;color:var(--muted);margin:14px 8px 4px}
+.doclink{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;border:0;background:transparent;border-radius:8px;padding:8px;font-size:14px;line-height:1.4}
+.doclink:hover{background:var(--corp-soft)}
+.doclink.on{background:var(--corp-soft);font-weight:700}
+.doclink .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);min-width:26px;padding-top:1px}
+.doclink .t{flex:1}
+.doclink .m{font-size:12px;color:var(--muted);display:block;font-weight:400}
+.doclink .dot{width:8px;height:8px;border-radius:50%;background:var(--corp);margin-top:6px;flex:none}
+.doclink .star{color:var(--warn);font-size:13px}
+.main{overflow:auto;padding:18px 22px 40px;min-width:0}
+.right{border-left:1px solid var(--line);background:var(--panel);display:grid;grid-template-rows:auto 1fr;min-height:0}
+.rtabs{display:flex;border-bottom:1px solid var(--line)}
+.rtabs button{flex:1;border:0;background:transparent;padding:10px;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent}
+.rtabs button.on{color:var(--ink);border-bottom-color:var(--corp)}
+.rpane{overflow:auto;padding:12px}
+.mtabs{display:none}
+/* 문서 */
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;max-width:760px}
+.dochead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap}
+.dochead .app{font-size:12px;font-weight:700;color:var(--corp)}
+.dochead h2{font-size:20px;line-height:1.35;margin:2px 0}
+.dochead .meta{font-size:13px;color:var(--muted)}
+.docacts{display:flex;gap:6px;flex-wrap:wrap}
+.doc h5{font-size:15px;margin:16px 0 6px}
+.doc p{margin:0 0 10px}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0 0 12px;font-size:15px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.tbl{overflow-x:auto;margin:0 0 12px}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
+.tbl th{background:var(--panel);font-weight:600}
+.tbl td:first-child{font-family:"IBM Plex Mono",monospace}
+.note{font-size:14px;color:var(--muted);background:var(--panel);border-left:3px solid var(--line);padding:8px 12px;border-radius:6px;margin:0 0 12px}
+.doc ul{margin:0 0 12px;padding-left:20px}
+.chat{display:grid;gap:8px;margin:0 0 12px}
+.msg{display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.msg .av{width:30px;height:30px;border-radius:50%;background:var(--corp-soft);color:var(--corp);display:grid;place-items:center;font-size:13px;font-weight:700;grid-row:span 2}
+.msg .who{font-size:13px;font-weight:700} .msg .who span{font-weight:400;color:var(--muted);margin-left:6px;font-family:"IBM Plex Mono",monospace}
+.msg .tx{background:var(--panel);border-radius:4px 12px 12px 12px;padding:6px 10px;width:fit-content;max-width:100%}
+.photo{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 12px}
+.photo .ph{background:#2B3542;display:block;width:100%;height:auto}
+.photo .pb{padding:10px 12px}
+.photo .pf{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.photo .orig{margin-top:8px;font-size:14px;background:var(--panel);border-radius:8px;padding:8px 10px}
+.photo .orig b{color:var(--red)}
+.mapbox{overflow-x:auto;margin:0 0 12px}
+.empty{color:var(--muted);text-align:center;padding:40px 10px}
+/* 오른쪽 패널 */
+.pin{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.pin .ph2{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;background:var(--corp-soft);font-size:13px;font-weight:700}
+.pin .pbody{max-height:52vh;overflow:auto;padding:10px;font-size:14px}
+.pin .pbody .doc{border:0;padding:0}
+.pin .pbody .dochead{display:none}
+.guide{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.guide b{font-size:14px} .guide label{display:block;font-size:13px;color:var(--muted);margin:8px 0 2px}
+.guide input{width:100%;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+textarea.memo{width:100%;min-height:180px;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;font-size:14px;background:var(--surface);color:var(--ink);resize:vertical}
+.bm{font-size:14px;margin:10px 0 0}
+.bm button{border:0;background:transparent;color:var(--corp);padding:2px 0;text-align:left}
+/* 모달 */
+.modal{position:fixed;inset:0;background:rgba(10,14,20,.55);display:grid;place-items:center;padding:16px;z-index:50}
+.sheet{background:var(--surface);border-radius:14px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:20px}
+.sheet h3{margin:0 0 6px;font-size:20px}
+.sheet .sub{color:var(--muted);margin:0 0 14px;font-size:14px}
+.sus{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px}
+.sus label{display:block;border:1.5px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;font-size:14px}
+.sus input{margin-right:6px}
+.sus label:has(input:checked){border-color:var(--corp);background:var(--corp-soft)}
+.sus small{display:block;color:var(--muted);margin-top:2px}
+.evl{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;margin-bottom:14px}
+.evl label{font-size:14px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}
+.evl label:has(input:checked){border-color:var(--corp);background:var(--corp-soft)}
+.row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
+.sheet select{font:inherit;padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.facts{margin:0 0 12px;padding-left:20px;font-size:15px}
+.hintc{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.hintc.locked{color:var(--muted);border-style:dashed}
+.fb{font-size:15px;font-weight:600;margin:10px 0 0}
+.fb.bad{color:var(--red)}
+/* 결과 */
+.result{max-width:720px;margin:0 auto;padding:24px 20px 60px}
+.verdict{font-size:14px;font-weight:700;color:var(--ok)} .verdict.bad{color:var(--red)}
+.result h1{font-size:28px;margin:4px 0 14px}
+.statsg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 18px}
+.statsg div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.statsg b{display:block;font-size:20px} .statsg span{font-size:12px;color:var(--muted)}
+.epi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.sys{font-size:13px;font-weight:600;color:var(--warn);background:var(--panel);border-radius:8px;padding:6px 10px}
+.final{font-size:20px;font-weight:700;text-align:center;margin:20px 0}
+.steps{padding-left:20px}
+.toast{font-size:14px;color:var(--muted);min-height:1.6em;text-align:center;margin:8px 0}
+/* 팀장님 지나갈 때 */
+.boss{position:fixed;inset:0;z-index:100;background:var(--sheet);display:grid;grid-template-rows:auto auto auto 1fr auto;font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:13px}
+.boss .bar{background:var(--sheet-bar);color:#fff;padding:6px 12px;display:flex;justify-content:space-between;align-items:center}
+.boss .bar button{border:0;background:transparent;color:#fff;font-size:12px;opacity:.85}
+.boss .menu{display:flex;gap:16px;padding:6px 12px;border-bottom:1px solid var(--sheet-grid);color:var(--ink)}
+.boss .fx{display:flex;gap:8px;padding:4px 12px;border-bottom:1px solid var(--sheet-grid);color:var(--ink)}
+.boss .fx span{border:1px solid var(--sheet-grid);padding:1px 8px;min-width:60px}
+.boss .grid{overflow:auto}
+.boss table{border-collapse:collapse;color:var(--ink)}
+.boss th,.boss td{border:1px solid var(--sheet-grid);padding:2px 8px;min-width:86px;height:22px;text-align:right;white-space:nowrap}
+.boss th{background:var(--sheet-head);font-weight:400;text-align:center;min-width:40px}
+.boss td.l{text-align:left}
+.boss .tabs{display:flex;gap:2px;padding:4px 12px;border-top:1px solid var(--sheet-grid);background:var(--sheet-head);color:var(--ink)}
+.boss .tabs span{padding:2px 12px;background:var(--sheet)}
+/* 모바일 */
+@media (max-width:900px){
+  .body{grid-template-columns:1fr}
+  .side,.main,.right{display:none}
+  .portal[data-m="list"] .side,.portal[data-m="doc"] .main,.portal[data-m="right"] .right{display:block}
+  .portal[data-m="right"] .right{display:grid}
+  .portal{grid-template-rows:auto 1fr auto}
+  .mtabs{display:flex;border-top:1px solid var(--line);background:var(--surface)}
+  .mtabs button{flex:1;border:0;background:transparent;padding:10px 4px calc(10px + env(safe-area-inset-bottom,0px));font-size:13px;font-weight:600;color:var(--muted)}
+  .mtabs button.on{color:var(--corp)}
+  :root{padding-bottom:0}
+  .main{padding:14px 12px 30px}
+  .doc{padding:14px}
+  .top .tools .btn{padding:6px 9px;font-size:13px}
+  .pin .pbody{max-height:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="cases.js"></script>
+<script>
+const DAILY_LINK = "./";
+const SHARE_URL = () => location.origin + location.pathname;
+const DEV_DEFAULT = false;
+const KEY="t5case-v1";
+const DATA=window.CASEFILE, ST=DATA.staff;
+const $=id=>document.getElementById(id);
+const APPS={mail:["📧","메일함"],chat:["💬","사내 메신저"],photo:["🖼️","공유 사진첩"],access:["🚪","출입 관리"],booking:["📅","회의실 예약"],folder:["📁","공유 폴더"],card:["💳","법인카드 · 구매"],system:["🖥️","시스템 기록"],facility:["🗺️","시설 안내"]};
+
+/* ---------- 공통 ---------- */
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function h53(str,seed=0){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);}
+function kstToday(){try{const s=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;}catch(e){}return new Date(Date.now()+9*3600e3).toISOString().slice(0,10);}
+function koDate(ds){const [y,m,d]=ds.split("-").map(Number);const w=new Date(Date.UTC(y,m-1,d)).getUTCDay();return m+"월 "+d+"일("+"일월화수목금토"[w]+")";}
+function devOn(){return DEV_DEFAULT||new URLSearchParams(location.search).get("dev")==="1"||(location.hash||"")==="#dev";}
+function fmtMin(ms){return Math.floor(ms/60000)+"분";}
+function mmss(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function sname(id){const s=ST[id];return s?s.name:id;}
+
+/* ---------- 저장 ---------- */
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.v===1&&s.cases)return s;}catch(e){}return {v:1,cases:{},last:null};}
+let store=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+function cs(id){if(!store.cases[id])store.cases[id]={opened:{},stars:{},memo:"",guide:{},pins:[],activeMs:0,hintsShown:0,attempts:0,solved:false,failed:false,result:null};return store.cases[id];}
+
+/* ---------- 사건 목록 ---------- */
+function openCases(){const t=kstToday();return DATA.cases.filter(c=>devOn()||c.opensAt<=t).sort((a,b)=>b.opensAt.localeCompare(a.opensAt));}
+function stateBadge(id){const s=store.cases[id];if(!s)return "";if(s.solved)return '<span class="state solved">해결</span>';if(s.failed)return '<span class="state failed">미해결</span>';if(Object.keys(s.opened).length)return '<span class="state going">조사 중</span>';return "";}
+
+let timer=null, cur=null, view={doc:null,rtab:"compare",m:"list"}, boss=false;
+
+function lobby(){
+  clearInterval(timer);cur=null;store.last=null;save();
+  const list=openCases(), t=kstToday();
+  const upcoming=DATA.cases.filter(c=>c.opensAt>t).sort((a,b)=>a.opensAt.localeCompare(b.opensAt))[0];
+  let html='<div class="lobby"><p class="brand">퇴근 5분 전</p><h1>사건 파일</h1><p class="sub">매주 월요일 0시, '+esc(DATA.company.name)+' '+esc(DATA.company.floor)+'에서 새로운 소동이 벌어집니다. 사내 기록을 대조해 진실을 밝혀 주세요.</p>';
+  if(devOn()) html+='<p class="note">🧪 개발자 미리보기: 공개 전 사건도 모두 열려 있습니다.</p>';
+  if(list.length){
+    const c=list[0],s=store.cases[c.id];
+    html+='<div class="casecard"><span class="no">'+(c.opensAt<=t?"이번 주 사건":"공개 전 미리보기")+' · #'+c.id+'</span>'+stateBadge(c.id)+
+      '<h2>'+esc(c.title)+'</h2><p>'+esc(c.briefing[0])+' '+(c.tutorial?"첫 사건은 튜토리얼처럼 조사 요령을 함께 안내해 드려요.":"")+'</p>'+
+      '<button class="btn primary" data-open="'+c.id+'">'+(s&&(s.solved||s.failed)?"결과 보기":(s&&Object.keys(s.opened).length?"조사 이어서 하기":"조사 시작"))+'</button></div>';
+    if(list.length>1){html+='<div class="archive"><h3>사건 보관함</h3>';list.slice(1).forEach(c=>{html+='<div class="arow"><div><b>#'+c.id+' '+esc(c.title)+'</b>'+stateBadge(c.id)+'</div><button class="btn" data-open="'+c.id+'">열기</button></div>';});html+='</div>';}
+  } else {
+    html+='<div class="casecard"><span class="no">공개 예정</span><h2>'+(upcoming?esc(upcoming.title):"새 사건 준비 중")+'</h2><p>'+(upcoming?koDate(upcoming.opensAt)+" 0시(한국시간)에 공개됩니다.":"다음 사건을 준비하고 있어요.")+'</p></div>';
+  }
+  if(upcoming&&list.length&&!devOn()) html+='<p class="fine">다음 사건: '+koDate(upcoming.opensAt)+' 0시 공개</p>';
+  if(DAILY_LINK) html+='<a class="crosslink" href="'+DAILY_LINK+'" target="'+(/^https?:/.test(DAILY_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🕕</span><div><b>퇴근 5분 전 DAILY</b><span>매일 1분, 오늘의 퇴근 시각 알아보기</span></div></a>';
+  html+='<p class="fine">조사 기록은 이 브라우저에만 저장돼요. 브라우저 데이터를 지우거나 기기를 바꾸면 사라질 수 있어요.</p>';
+  if(devOn()) html+='<div class="devbox"><b>개발자 도구</b><div class="row" style="justify-content:flex-start"><button class="btn" id="devReset">사건 파일 기록 초기화</button></div></div>';
+  html+='</div>';
+  $("app").innerHTML=html;
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openCase(b.getAttribute("data-open")));
+  const r=$("devReset");if(r)r.onclick=()=>{if(confirm("사건 파일 기록을 모두 지울까요? (DAILY 기록은 그대로입니다)")){store={v:1,cases:{},last:null};save();lobby();}};
+  window.scrollTo(0,0);
+}
+
+/* ---------- 사건 열기 ---------- */
+function openCase(id){
+  const c=DATA.cases.find(x=>x.id===id);if(!c)return lobby();
+  cur=c;const s=cs(id);store.last=id;save();
+  if(s.solved||s.failed) return showResult();
+  view={doc:null,rtab:"compare",m:"list"};
+  renderPortal();
+  if(!Object.keys(s.opened).length&&!s.seenBrief) showBriefing(true);
+  startTimer();
+}
+function portalTop(){
+  const s=cs(cur.id);
+  return '<div class="top"><div class="logo">☁️ 구름서랍 업무포털 <small>#'+cur.id+' '+esc(cur.title)+'</small></div>'+
+    '<span class="chances">고발 기회 <b>'+(3-s.attempts)+'</b>/3</span>'+
+    '<div class="tools"><button class="btn" id="tBrief">📋 사건 개요</button><button class="btn" id="tHint">💡 힌트</button><button class="btn primary" id="tAccuse">⚖️ 고발하기</button><button class="btn" id="tBoss" title="Esc 키로도 전환돼요">🙈 팀장님 지나갈 때</button><button class="btn" id="tOut">나가기</button></div></div>';
+}
+function renderPortal(){
+  const s=cs(cur.id);
+  $("app").innerHTML='<div class="portal" id="portal" data-m="'+view.m+'">'+portalTop()+
+    '<div class="body"><nav class="side" id="side" aria-label="문서 목록"></nav><section class="main" id="main"></section>'+
+    '<aside class="right"><div class="rtabs"><button id="rtCompare">📌 비교</button><button id="rtNote">📝 조사 노트</button></div><div class="rpane" id="rpane"></div></aside></div>'+
+    '<div class="mtabs"><button data-m="list">문서함</button><button data-m="doc">문서</button><button data-m="right" data-r="compare">비교</button><button data-m="right" data-r="note">노트</button></div></div>';
+  $("tBrief").onclick=()=>showBriefing(false);
+  $("tHint").onclick=showHints;
+  $("tAccuse").onclick=showAccuse;
+  $("tBoss").onclick=toggleBoss;
+  $("tOut").onclick=lobby;
+  $("rtCompare").onclick=()=>{view.rtab="compare";renderRight();};
+  $("rtNote").onclick=()=>{view.rtab="note";renderRight();};
+  document.querySelectorAll(".mtabs button").forEach(b=>b.onclick=()=>{view.m=b.getAttribute("data-m");const r=b.getAttribute("data-r");if(r)view.rtab=r;$("portal").setAttribute("data-m",view.m);markMtabs();renderRight();});
+  renderSide();renderMain();renderRight();markMtabs();
+}
+function markMtabs(){document.querySelectorAll(".mtabs button").forEach(b=>{const on=b.getAttribute("data-m")===view.m&&(!b.getAttribute("data-r")||b.getAttribute("data-r")===view.rtab);b.classList.toggle("on",on);});}
+function renderSide(){
+  const s=cs(cur.id);let html="";
+  const groups={};cur.docs.forEach(d=>{(groups[d.app]=groups[d.app]||[]).push(d);});
+  Object.keys(APPS).forEach(app=>{if(!groups[app])return;html+='<h4>'+APPS[app][0]+' '+APPS[app][1]+'</h4>';
+    groups[app].forEach(d=>{html+='<button class="doclink'+(view.doc===d.id?" on":"")+'" data-doc="'+d.id+'"><span class="n">#'+d.id+'</span><span class="t">'+esc(d.title)+'<span class="m">'+esc(d.author)+' · '+esc(d.time)+'</span></span>'+(s.stars[d.id]?'<span class="star">★</span>':"")+(s.opened[d.id]?"":'<span class="dot" title="안 읽음"></span>')+'</button>';});});
+  html+='<h4>👥 직원 조회</h4><button class="doclink'+(view.doc==="staff"?" on":"")+'" data-doc="staff"><span class="n">👥</span><span class="t">7층 직원 명부</span></button>';
+  $("side").innerHTML=html;
+  document.querySelectorAll("[data-doc]").forEach(b=>b.onclick=()=>openDoc(b.getAttribute("data-doc")));
+}
+function openDoc(id){
+  view.doc=id;const s=cs(cur.id);if(id!=="staff"&&!s.opened[id]){s.opened[id]=true;save();}
+  view.m="doc";$("portal").setAttribute("data-m","doc");markMtabs();
+  renderSide();renderMain();$("main").scrollTop=0;
+}
+function docById(id){return cur.docs.find(d=>d.id===id);}
+function renderMain(){
+  const m=$("main");
+  if(!view.doc){m.innerHTML='<div class="doc"><div class="dochead"><div><div class="app">사건 정리 담당자 안내</div><h2>'+esc(cur.question)+'</h2></div></div>'+
+    '<p>왼쪽 문서함에서 사내 기록을 하나씩 열어 보세요. 의심 가는 문서는 <b>📌 비교에 고정</b>해서 다른 문서와 나란히 대조할 수 있어요.</p>'+
+    (cur.tutorial?'<p class="note">튜토리얼 팁: 추리 게임에서는 “누가 그럴 것 같은가”보다 “언제 무엇이 확인되었는가”가 중요합니다. 시각이 적힌 기록들을 서로 맞춰 보세요.</p>':"")+
+    '<p>준비가 되면 상단의 <b>⚖️ 고발하기</b>에서 범인, 시각, 결정적 증거 두 개를 고르세요. 기회는 세 번입니다.</p></div>';return;}
+  if(view.doc==="staff"){m.innerHTML=staffHtml();return;}
+  const d=docById(view.doc),s=cs(cur.id);
+  m.innerHTML='<article class="doc">'+docHead(d,s)+docBody(d)+'</article>';
+  bindDocActs(d);bindPhotos(m);
+}
+function docHead(d,s){
+  const pinned=s.pins.includes(d.id);
+  return '<div class="dochead"><div><div class="app">'+APPS[d.app][0]+' '+APPS[d.app][1]+' · 문서 #'+d.id+'</div><h2>'+esc(d.title)+'</h2><div class="meta">'+esc(d.author)+' · '+esc(d.time)+'</div></div>'+
+    '<div class="docacts"><button class="btn" id="dPin">'+(pinned?"📌 고정 해제":"📌 비교에 고정")+'</button><button class="btn" id="dStar">'+(s.stars[d.id]?"★ 표시 해제":"☆ 단서 표시")+'</button></div></div>';
+}
+function bindDocActs(d){
+  const s=cs(cur.id);
+  $("dPin").onclick=()=>{const i=s.pins.indexOf(d.id);if(i>=0)s.pins.splice(i,1);else{s.pins.push(d.id);if(s.pins.length>2)s.pins.shift();}save();renderMain();view.rtab="compare";renderRight();toastPin(i<0);};
+  $("dStar").onclick=()=>{if(s.stars[d.id])delete s.stars[d.id];else s.stars[d.id]=true;save();renderMain();renderSide();if(view.rtab==="note")renderRight();};
+}
+function toastPin(added){if(!added)return;if(window.matchMedia&&window.matchMedia("(max-width:900px)").matches){const b=$("dPin");if(b)b.textContent="📌 고정됨 · 비교 탭에서 확인";}}
+function docBody(d){return d.blocks.map(blockHtml).join("");}
+function blockHtml(b){
+  if(b.p) return '<p>'+esc(b.p)+'</p>';
+  if(b.h) return '<h5>'+esc(b.h)+'</h5>';
+  if(b.note) return '<p class="note">'+esc(b.note)+'</p>';
+  if(b.list) return '<ul>'+b.list.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>';
+  if(b.kv) return '<dl class="kv">'+b.kv.map(([k,v])=>'<dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd>').join("")+'</dl>';
+  if(b.table) return '<div class="tbl"><table><thead><tr>'+b.table.cols.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead><tbody>'+b.table.rows.map(r=>'<tr>'+r.map(x=>'<td>'+esc(x)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+  if(b.chat) return '<div class="chat">'+b.chat.map(([w,t,x])=>'<div class="msg"><span class="av">'+esc(w.slice(-2))+'</span><span class="who">'+esc(w)+'<span>'+esc(t)+'</span></span><span class="tx">'+esc(x)+'</span></div>').join("")+'</div>';
+  if(b.photo){const p=b.photo;return '<figure class="photo" style="margin:0 0 12px">'+photoSvg(p)+'<figcaption class="pb"><div class="pf"><span class="mono">'+esc(p.file)+'</span><span>촬영자 '+esc(p.by)+' · 업로드 <span class="mono">'+esc(p.uploaded)+'</span></span></div>'+
+    '<p style="margin:8px 0 6px">'+esc(p.desc)+'</p><p style="margin:0;color:var(--muted);font-size:14px">메모: '+esc(p.memo)+'</p>'+
+    '<button class="btn" style="margin-top:8px" data-orig>🔍 원본 정보 보기</button><div class="orig hidden">원본 촬영 시각 <b class="mono">'+esc(p.shot)+'</b> · 촬영 위치 '+esc(p.where)+' · 검증 정상</div></figcaption></figure>';}
+  if(b.map) return '<div class="mapbox">'+mapSvg()+'</div>';
+  return "";
+}
+function bindPhotos(root){root.querySelectorAll("[data-orig]").forEach(btn=>btn.onclick=()=>{const o=btn.nextElementSibling;o.classList.toggle("hidden");btn.textContent=o.classList.contains("hidden")?"🔍 원본 정보 보기":"원본 정보 접기";});}
+function photoSvg(p){
+  const glass=!p.inside;
+  let s='<svg class="ph" viewBox="0 0 480 220" role="img" aria-label="'+(p.cake?"냉장고 아래 칸에 케이크 상자가 있음":"냉장고 아래 칸이 비어 있음")+'"><rect width="480" height="220" fill="#2B3542"/>';
+  s+='<rect x="120" y="20" width="240" height="190" rx="8" fill="#DDE3EA"/><rect x="132" y="32" width="216" height="80" rx="4" fill="#F4F7FA"/><rect x="132" y="120" width="216" height="80" rx="4" fill="#F4F7FA"/>';
+  s+='<rect x="150" y="60" width="40" height="44" rx="3" fill="#9FB7D6"/><rect x="200" y="74" width="30" height="30" rx="3" fill="#E7C49A"/>';
+  if(p.cake){s+='<rect x="190" y="138" width="110" height="58" rx="4" fill="#FFFFFF" stroke="#C9CED6"/><rect x="205" y="146" width="80" height="22" rx="3" fill="#FCE7EC" stroke="#E9A6B4"/><circle cx="222" cy="157" r="4" fill="#D93A4A"/><circle cx="268" cy="157" r="4" fill="#D93A4A"/><rect x="232" y="152" width="26" height="9" rx="2" fill="#6B4226"/><rect x="194" y="178" width="30" height="12" rx="2" fill="#2350B5"/><text x="209" y="187" font-size="8" fill="#fff" text-anchor="middle" font-family="monospace">C-17</text>';}
+  else s+='<text x="240" y="172" font-size="13" fill="#9AA6B5" text-anchor="middle" font-family="sans-serif">(비어 있음)</text>';
+  if(glass) s+='<rect x="0" y="0" width="480" height="220" fill="#9EC3E6" opacity=".18"/><line x1="40" y1="0" x2="0" y2="60" stroke="#fff" opacity=".35" stroke-width="6"/><line x1="470" y1="150" x2="420" y2="220" stroke="#fff" opacity=".3" stroke-width="6"/>';
+  s+='<text x="12" y="210" font-size="11" fill="#C8D2DE" font-family="monospace">'+esc(p.file)+'</text></svg>';return s;
+}
+function mapSvg(){
+  return '<svg viewBox="0 0 640 230" style="width:100%;min-width:520px;height:auto" role="img" aria-label="7층 배치도: 왼쪽 달빛 회의실, 가운데 탕비실, 오른쪽 구름 회의실과 서랍 회의실">'+
+  '<rect x="0" y="0" width="640" height="230" rx="10" fill="var(--panel)"/>'+
+  '<rect x="20" y="130" width="600" height="56" fill="var(--surface)" stroke="var(--line)"/><text x="320" y="164" font-size="13" text-anchor="middle" fill="var(--muted)">공용 복도</text>'+
+  '<rect x="60" y="30" width="150" height="100" fill="var(--surface)" stroke="var(--ink)"/><text x="135" y="76" font-size="14" text-anchor="middle" fill="var(--ink)">달빛 회의실</text><text x="135" y="96" font-size="11" text-anchor="middle" fill="var(--muted)">수납장 있음</text>'+
+  '<rect x="250" y="30" width="150" height="100" fill="var(--surface)" stroke="var(--ink)"/><text x="325" y="72" font-size="14" text-anchor="middle" fill="var(--ink)">탕비실</text><text x="325" y="92" font-size="11" text-anchor="middle" fill="var(--muted)">냉장고</text>'+
+  '<line x1="250" y1="130" x2="400" y2="130" stroke="#5BA3E0" stroke-width="5"/><text x="365" y="124" font-size="10" text-anchor="middle" fill="#2F7BBF">유리벽</text>'+
+  '<rect x="262" y="126" width="26" height="8" fill="var(--red)"/><text x="275" y="148" font-size="10" text-anchor="middle" fill="var(--red)">출입문</text>'+
+  '<rect x="440" y="30" width="90" height="100" fill="var(--surface)" stroke="var(--ink)"/><text x="485" y="76" font-size="13" text-anchor="middle" fill="var(--ink)">구름 회의실</text><text x="485" y="96" font-size="11" text-anchor="middle" fill="var(--muted)">공용 프린터</text>'+
+  '<rect x="540" y="30" width="70" height="100" fill="var(--surface)" stroke="var(--ink)"/><text x="575" y="80" font-size="13" text-anchor="middle" fill="var(--ink)">서랍</text>'+
+  '<text x="170" y="208" font-size="11" fill="var(--muted)" text-anchor="middle">← 약 8m</text><text x="470" y="208" font-size="11" fill="var(--muted)" text-anchor="middle">구름·서랍 방향 →</text></svg>';
+}
+function staffHtml(){
+  return '<div class="doc"><div class="dochead"><div><div class="app">👥 직원 조회</div><h2>7층 직원 명부</h2><div class="meta">'+esc(DATA.company.name)+'</div></div></div>'+
+    '<div class="tbl"><table><thead><tr><th>이름</th><th>소속</th><th>직급</th><th>나이</th><th>한 줄 소개</th></tr></thead><tbody>'+
+    Object.values(ST).map(p=>'<tr><td style="font-family:inherit">'+esc(p.name)+'</td><td>'+esc(p.team)+'</td><td>'+esc(p.title)+'</td><td>'+p.age+'</td><td style="white-space:normal;min-width:240px">'+esc(p.intro)+'</td></tr>').join("")+'</tbody></table></div></div>';
+}
+function renderRight(){
+  const rp=$("rpane");if(!rp)return;const s=cs(cur.id);
+  $("rtCompare").classList.toggle("on",view.rtab==="compare");$("rtNote").classList.toggle("on",view.rtab==="note");
+  if(view.rtab==="compare"){
+    if(!s.pins.length){rp.innerHTML='<p class="empty">문서에서 <b>📌 비교에 고정</b>을 누르면<br>최대 2개까지 여기 나란히 놓고 대조할 수 있어요.</p>';return;}
+    rp.innerHTML=s.pins.map(id=>{const d=docById(id);return '<div class="pin"><div class="ph2"><span>#'+d.id+' '+esc(d.title)+'</span><button class="btn" data-unpin="'+d.id+'">해제</button></div><div class="pbody"><div class="doc">'+docBody(d)+'</div></div></div>';}).join("");
+    rp.querySelectorAll("[data-unpin]").forEach(b=>b.onclick=()=>{s.pins=s.pins.filter(x=>x!==b.getAttribute("data-unpin"));save();renderRight();if(view.doc&&view.doc!=="staff")renderMain();});
+    bindPhotos(rp);return;
+  }
+  let html="";
+  if(cur.guide&&cur.guide.length){html+='<div class="guide"><b>🧭 조사 가이드</b>'+cur.guide.map((q,i)=>'<label for="g'+i+'">'+esc(q)+'</label><input id="g'+i+'" data-g="'+i+'" value="'+esc(s.guide[i]||"")+'" autocomplete="off">').join("")+'</div>';}
+  html+='<textarea class="memo" id="memo" placeholder="자유 메모. 자동으로 저장돼요.">'+esc(s.memo)+'</textarea>';
+  const stars=Object.keys(s.stars);
+  html+='<div class="bm"><b>★ 표시한 단서</b><br>'+(stars.length?stars.sort().map(id=>'<button data-go="'+id+'">#'+id+' '+esc(docById(id).title)+'</button>').join("<br>"):'<span style="color:var(--muted)">아직 없어요.</span>')+'</div>';
+  rp.innerHTML=html;
+  rp.querySelectorAll("[data-g]").forEach(inp=>inp.oninput=()=>{s.guide[inp.getAttribute("data-g")]=inp.value;save();});
+  $("memo").oninput=e=>{s.memo=e.target.value;save();};
+  rp.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>openDoc(b.getAttribute("data-go")));
+}
+
+/* ---------- 조사 시간과 힌트 ---------- */
+function startTimer(){
+  clearInterval(timer);let last=Date.now();
+  timer=setInterval(()=>{const now=Date.now(),dt=Math.min(now-last,5000);last=now;
+    if(!cur)return;const s=cs(cur.id);if(s.solved||s.failed)return;
+    if(document.visibilityState==="visible"&&!boss){s.activeMs+=dt;if(Math.floor(s.activeMs/1000)%5===0)save();updateHintBtn();}},1000);
+  updateHintBtn();
+}
+function hintsUnlocked(s){return Math.min(cur.hints.length,Math.floor(s.activeMs/600000));}
+function updateHintBtn(){const b=$("tHint");if(!b||!cur)return;const s=cs(cur.id);const u=hintsUnlocked(s);
+  if(u>s.hintsShown)b.textContent="💡 힌트 열림";
+  else if(u<cur.hints.length)b.textContent="💡 힌트 "+mmss((u+1)*600000-s.activeMs);
+  else b.textContent="💡 힌트";}
+function modal(html){const m=document.createElement("div");m.className="modal";m.innerHTML='<div class="sheet" role="dialog" aria-modal="true">'+html+'</div>';m.onclick=e=>{if(e.target===m)m.remove();};document.body.appendChild(m);return m;}
+function showBriefing(first){
+  const s=cs(cur.id);s.seenBrief=true;save();
+  const m=modal('<h3>📋 사건 #'+cur.id+' '+esc(cur.title)+'</h3>'+cur.briefing.map(x=>'<p>'+esc(x)+'</p>').join("")+
+    '<h5 style="margin:14px 0 6px">미리 알려 드리는 조건</h5><ul class="facts">'+cur.facts.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'+
+    '<p class="sub">용의자: '+cur.suspects.map(x=>sname(x.id)).join(", ")+'</p>'+
+    (first?'<p class="note">조사 시간 10분마다 힌트가 하나씩 열립니다. 고발은 범인, 시각, 결정적 증거 두 개를 모두 맞혀야 성공이며 기회는 세 번입니다. 회사에서 하신다면 <b>🙈 팀장님 지나갈 때</b>(또는 Esc 키)를 기억해 두세요.</p>':"")+
+    '<div class="row"><button class="btn primary" id="bOk">'+(first?"조사 시작":"닫기")+'</button></div>');
+  $("bOk").onclick=()=>m.remove();
+}
+function showHints(){
+  const s=cs(cur.id),u=hintsUnlocked(s);
+  let html='<h3>💡 힌트</h3><p class="sub">실제 조사 시간 '+fmtMin(s.activeMs)+' · 10분마다 하나씩 열려요. 사용한 힌트 수는 결과에 표시됩니다.</p>';
+  cur.hints.forEach((h,i)=>{
+    if(i<s.hintsShown) html+='<div class="hintc"><b>힌트 '+(i+1)+'</b><br>'+esc(h)+'</div>';
+    else if(i<u) html+='<div class="hintc"><b>힌트 '+(i+1)+'</b> 열 수 있어요 <button class="btn" data-h="'+i+'">보기</button></div>';
+    else html+='<div class="hintc locked">힌트 '+(i+1)+' · '+mmss((i+1)*600000-s.activeMs)+' 뒤에 열려요</div>';
+  });
+  html+='<div class="row"><button class="btn" id="hClose">닫기</button></div>';
+  const m=modal(html);$("hClose").onclick=()=>m.remove();
+  m.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const i=+b.getAttribute("data-h");if(i===s.hintsShown){s.hintsShown++;save();}m.remove();updateHintBtn();showHints();});
+}
+
+/* ---------- 고발 ---------- */
+function timeOptions(){const [fh,fm]=cur.timeRange.from.split(":").map(Number),[th,tm]=cur.timeRange.to.split(":").map(Number);const out=[];for(let t=fh*60+fm;t<=th*60+tm;t++)out.push(String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"));return out;}
+function showAccuse(){
+  const s=cs(cur.id);
+  const html='<h3>⚖️ 고발하기</h3><p class="sub">범인, 시각, 결정적 증거 두 개를 모두 맞혀야 사건이 해결됩니다. 남은 기회 <b>'+(3-s.attempts)+'</b>번. 틀려도 어떤 항목이 틀렸는지는 알려 드리지 않아요.</p>'+
+    '<h5 style="margin:0 0 6px">1. 범인</h5><div class="sus">'+cur.suspects.map(x=>{const p=ST[x.id];return '<label><input type="radio" name="sus" value="'+x.id+'">'+esc(p.name)+' <small>'+esc(p.team)+' '+esc(p.title)+'</small><small>'+esc(x.reason)+'</small></label>';}).join("")+'</div>'+
+    '<h5 style="margin:0 0 6px">2. 범행 시각</h5><p><select id="aTime"><option value="">시각 선택</option>'+timeOptions().map(t=>'<option>'+t+'</option>').join("")+'</select></p>'+
+    '<h5 style="margin:10px 0 6px">3. 결정적 증거 두 개</h5><div class="evl">'+cur.docs.map(d=>'<label><input type="checkbox" name="ev" value="'+d.id+'"> #'+d.id+' '+esc(d.title)+'</label>').join("")+'</div>'+
+    '<p class="fb" id="aFb" role="status"></p><div class="row"><button class="btn" id="aCancel">취소</button><button class="btn danger" id="aGo">고발 제출</button></div>';
+  const m=modal(html);
+  m.querySelectorAll("input[name=ev]").forEach(cb=>cb.onchange=()=>{const on=[...m.querySelectorAll("input[name=ev]:checked")];if(on.length>2)cb.checked=false;});
+  $("aCancel").onclick=()=>m.remove();
+  $("aGo").onclick=()=>{
+    const sus=(m.querySelector("input[name=sus]:checked")||{}).value,t=$("aTime").value,ev=[...m.querySelectorAll("input[name=ev]:checked")].map(x=>x.value).sort();
+    const fb=$("aFb");fb.className="fb bad";
+    if(!sus||!t||ev.length!==2){fb.textContent="범인, 시각, 증거 두 개를 모두 골라 주세요.";return;}
+    const ok=h53(cur.id+"|"+sus+"|"+t+"|"+ev.join(","))===cur.answerKey;
+    s.attempts++;
+    if(ok){s.solved=true;s.result={attempts:s.attempts,ms:s.activeMs,hints:s.hintsShown,at:Date.now()};save();m.remove();showResult();return;}
+    if(s.attempts>=3){s.failed=true;s.result={attempts:3,ms:s.activeMs,hints:s.hintsShown,at:Date.now()};save();m.remove();showResult();return;}
+    save();const ch=document.querySelector(".chances b");if(ch)ch.textContent=3-s.attempts;
+    fb.textContent="고발이 기각되었습니다. 남은 기회 "+(3-s.attempts)+"번. 기록을 다시 대조해 보세요.";
+    m.querySelector(".sub b").textContent=3-s.attempts;
+  };
+}
+
+/* ---------- 결과 ---------- */
+function showResult(){
+  clearInterval(timer);boss=false;
+  const s=cs(cur.id),r=s.result||{attempts:s.attempts,ms:s.activeMs,hints:s.hintsShown},sol=cur.solution;
+  let html='<div class="result"><p class="verdict'+(s.solved?"":" bad")+'">'+(s.solved?"✅ 사건 해결":"❌ 미해결 사건")+'</p><h1>#'+cur.id+' '+esc(cur.title)+'</h1>'+
+    '<div class="statsg"><div><b class="mono">'+fmtMin(r.ms)+'</b><span>조사 시간</span></div><div><b class="mono">'+(s.solved?r.attempts+"번째":"3회 실패")+'</b><span>고발</span></div><div><b class="mono">'+r.hints+'개</b><span>사용한 힌트</span></div></div>';
+  if(s.solved||s.showSol){
+    html+='<div class="epi"><div class="chat">'+sol.epilogue.map(([w,t,x])=>w==="system"?'<div class="sys">🔔 '+esc(x)+'</div>':'<div class="msg"><span class="av">'+esc(w.slice(-2))+'</span><span class="who">'+esc(w)+'<span>'+esc(t)+'</span></span><span class="tx">'+esc(x)+'</span></div>').join("")+'</div></div>'+
+      '<p>'+esc(sol.reveal)+'</p><p class="final">“'+esc(sol.finalLine)+'”</p>'+
+      '<details'+(s.solved?"":" open")+'><summary><b>추리 과정 해설</b></summary><p style="margin:8px 0">정답: '+esc(sname(sol.culprit))+' · '+esc(sol.time)+' · 증거 #'+sol.evidence.join(" + #")+'</p><ol class="steps">'+sol.steps.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ol></details>';
+  } else {
+    html+='<p>고발 기회를 모두 사용했습니다. 사건은 미궁으로 빠졌습니다… 아직 진실이 궁금하신가요?</p><div class="row" style="justify-content:flex-start"><button class="btn" id="rSol">해설 보기 (정답 공개)</button></div>';
+  }
+  html+='<div class="row" style="justify-content:flex-start;margin-top:18px"><button class="btn primary" id="rShare">결과 공유하기</button><button class="btn" id="rLobby">사건 파일 목록</button></div><p class="toast" id="toast" role="status"></p>';
+  if(DAILY_LINK) html+='<a class="crosslink" href="'+DAILY_LINK+'" target="'+(/^https?:/.test(DAILY_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🕕</span><div><b>퇴근 5분 전 DAILY</b><span>오늘의 퇴근 시각도 확인해 보세요</span></div></a>';
+  html+='</div>';
+  $("app").innerHTML=html;window.scrollTo(0,0);
+  const rs=$("rSol");if(rs)rs.onclick=()=>{s.showSol=true;save();showResult();};
+  $("rLobby").onclick=lobby;$("rShare").onclick=shareResult;
+}
+function shareText(){
+  const s=cs(cur.id),r=s.result;
+  const lines=["퇴근 5분 전: 사건 파일 #"+cur.id+(s.solved?" 해결 ✅":" 미해결 ❌")];
+  lines.push("⏱ "+fmtMin(r.ms)+"  🔎 "+(s.solved?(r.attempts===1?"첫 고발에 성공":r.attempts+"번째 고발에 성공"):"고발 3회 실패")+"  💡 힌트 "+r.hints+"개");
+  const u=typeof SHARE_URL==="function"?SHARE_URL():SHARE_URL;if(u)lines.push("",u);
+  return lines.join("\n");
+}
+async function shareResult(){
+  const t=shareText();
+  if(navigator.share&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){try{await navigator.share({text:t});return;}catch(e){if(e&&e.name==="AbortError")return;}}
+  let ok=false;try{await navigator.clipboard.writeText(t);ok=true;}catch(e){}
+  if(!ok){try{const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();ok=document.execCommand("copy");ta.remove();}catch(e){}}
+  $("toast").textContent=ok?"결과를 복사했어요. 정답은 들어 있지 않아요.":"복사하지 못했어요.";
+}
+
+/* ---------- 팀장님 지나갈 때 ---------- */
+function toggleBoss(){
+  const ex=$("boss");
+  if(ex){ex.remove();boss=false;document.title=prevTitle;return;}
+  boss=true;prevTitle=document.title;document.title="2026_4분기_예산검토.xlsx";
+  const cols="ABCDEFGHIJ".split(""),items=["인건비","복리후생비","교육훈련비","소모품비","통신비","지급수수료","임차료","회의비","여비교통비","광고선전비","도서인쇄비","수선비","보험료","차량유지비","잡비"];
+  let rows='<tr><th></th>'+cols.map(c=>'<th>'+c+'</th>').join("")+'</tr>';
+  const head=["계정과목","1분기","2분기","3분기","4분기(예상)","합계","전년 대비","예산","집행률","비고"];
+  rows+='<tr><th>1</th>'+head.map(h=>'<td class="l"><b>'+h+'</b></td>').join("")+'</tr>';
+  let seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  items.forEach((it,i)=>{const q=[0,0,0,0].map(()=>Math.round((rnd()*9+1)*1000000));const sum=q.reduce((a,b)=>a+b,0);const bud=Math.round(sum*(1+rnd()*.2));
+    rows+='<tr><th>'+(i+2)+'</th><td class="l">'+it+'</td>'+q.map(v=>'<td>'+v.toLocaleString("ko-KR")+'</td>').join("")+'<td>'+sum.toLocaleString("ko-KR")+'</td><td>'+(rnd()*20-8).toFixed(1)+'%</td><td>'+bud.toLocaleString("ko-KR")+'</td><td>'+(sum/bud*100).toFixed(1)+'%</td><td class="l">'+(i%5===0?"검토 필요":"")+'</td></tr>';});
+  for(let i=items.length+2;i<40;i++)rows+='<tr><th>'+i+'</th>'+cols.map(()=>'<td></td>').join("")+'</tr>';
+  const b=document.createElement("div");b.className="boss";b.id="boss";
+  b.innerHTML='<div class="bar"><span>2026_4분기_예산검토.xlsx – 저장됨</span><button id="bossBack" title="Esc">창 전환</button></div><div class="menu"><span>파일</span><span>홈</span><span>삽입</span><span>수식</span><span>데이터</span><span>검토</span><span>보기</span></div><div class="fx"><span>F7</span><span style="flex:1">=SUM(B7:E7)</span></div><div class="grid"><table>'+rows+'</table></div><div class="tabs"><span>4분기 예산</span><span style="background:transparent">전년 비교</span><span style="background:transparent">+</span></div>';
+  document.body.appendChild(b);$("bossBack").onclick=toggleBoss;
+}
+let prevTitle=document.title;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const md=document.querySelector(".modal");if(md&&!$("boss")){md.remove();return;}if(cur&&!(cs(cur.id).solved||cs(cur.id).failed))toggleBoss();}});
+
+/* ---------- 시작 ---------- */
+(function init(){
+  if(store.last&&DATA.cases.find(c=>c.id===store.last)&&openCases().some(c=>c.id===store.last)) openCase(store.last);
+  else lobby();
+})();
+</script>
+</body>
+</html>
