@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>18시 10분의 헤일 — 퇴근 5분 전: 사건 파일</title>
+<style>
+:root{--desk:#3d5764;--desk2:#365060;--win:#fff;--chrome:#eef1f3;--line:#d3d9de;--ink:#1d252b;--sub:#5f6d77;--xl:#1f6b47;--xlbg:#e7f1eb;--sel:#cde5d6;--mail:#2a5d8f;--amber:#c9822b;--bad:#b23b3b;--shadow:0 6px 24px rgba(10,25,35,.28);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--desk:#1f2d35;--desk2:#1a272e;--win:#1e2428;--chrome:#283035;--line:#3a454c;--ink:#e4e9ec;--sub:#9aa8b1;--xl:#4fb07f;--xlbg:#1f3329;--sel:#2c5a42;--mail:#7fb0e0;--bad:#e07a7a;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:14px/1.55 "Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",system-ui,sans-serif;color:var(--ink);background:var(--desk)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+#app{height:100%;display:flex;flex-direction:column}
+#bar{height:44px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--desk2);color:#e8eef1;border-bottom:1px solid rgba(255,255,255,.08)}
+#bar .who{font-weight:600;margin-right:auto}
+#bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:5px 11px;color:#e8eef1}
+#clock{display:flex;align-items:baseline;gap:8px;padding:4px 12px;border-radius:6px;background:rgba(0,0,0,.22);font-variant-numeric:tabular-nums}
+#clock b{font-size:20px;letter-spacing:.5px}
+#clock small{opacity:.8}
+#clock.warn{background:var(--amber);color:#1b1205}
+#desk{flex:1;min-height:0;display:grid;grid-template-columns:112px 1fr;gap:10px;padding:12px}
+#icons{display:flex;flex-direction:column;gap:4px;overflow:auto}
+.ico{background:none;border:1px solid transparent;border-radius:6px;color:#f2f6f8;padding:6px 4px;text-align:center;font-size:12px;line-height:1.3;word-break:break-all}
+.ico span{display:block;font-size:26px;line-height:1.2}
+.ico:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+#wins{min-width:0;min-height:0;display:flex;flex-direction:column;gap:6px}
+#tabs{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+#tabs button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#eef3f5;border-radius:6px 6px 0 0;padding:4px 10px;font-size:12px}
+#tabs button.on{background:var(--win);color:var(--ink)}
+#tabs .split{margin-left:auto;border-radius:6px}
+#panes{flex:1;min-height:0;display:flex;gap:8px}
+.empty{flex:1;display:grid;place-items:center;color:rgba(255,255,255,.55);text-align:center}
+.pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--win);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.tbar{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;background:var(--chrome);border-bottom:1px solid var(--line);font-size:13px}
+.tbar .t{margin-right:auto;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbar button{background:var(--win);border:1px solid var(--line);border-radius:5px;padding:2px 9px;font-size:12px}
+.tbar .pin.on{background:var(--xlbg);border-color:var(--xl);color:var(--xl)}
+.pbody{flex:1;overflow:auto;padding:14px 16px}
+.pbody.flush{padding:0}
+h3{margin:0 0 8px;font-size:15px}
+p{margin:0 0 10px;max-width:72ch}
+.muted{color:var(--sub);font-size:12.5px}
+table.t{border-collapse:collapse;font-size:13px;margin:6px 0 10px}
+table.t th,table.t td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--chrome);font-weight:600}
+.tool{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--xlbg);align-items:center;font-size:12.5px}
+.tool button{background:var(--win);border:1px solid var(--line);border-radius:4px;padding:2px 9px}
+.tool .sheet{margin-left:auto;display:flex;gap:3px}
+.tool .sheet button.on{border-color:var(--xl);color:var(--xl);font-weight:600}
+.fbar{display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid var(--line);font-size:13px;font-family:Consolas,"D2Coding",monospace}
+.fbar .addr{min-width:48px;padding:1px 6px;border:1px solid var(--line);border-radius:3px;text-align:center}
+.fbar i{color:var(--sub)}
+.cmt{margin:6px 10px;padding:6px 10px;background:#fff6c9;color:#3a3200;border:1px solid #e6d27a;border-radius:4px;font-size:13px;max-width:60ch}
+.gwrap{overflow:auto}
+table.grid{border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+table.grid th,table.grid td{border:1px solid var(--line);padding:3px 6px;height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table.grid thead th,table.grid th.rh{background:var(--chrome);color:var(--sub);font-weight:400;text-align:center}
+table.grid th.rh{width:34px}
+table.grid td{cursor:cell}
+table.grid td.hd{font-weight:600;background:var(--xlbg)}
+table.grid td.sel{outline:2px solid var(--xl);outline-offset:-2px;background:var(--sel)}
+table.grid td.bad{color:var(--bad)}
+table.grid td.cm{position:relative}
+table.grid td.cm::after{content:"";position:absolute;top:0;right:0;border:5px solid transparent;border-top-color:#d23;border-right-color:#d23}
+table.grid .gapc{width:5px;min-width:5px;max-width:5px;padding:0;background:var(--chrome);border-left:3px double var(--line)}
+table.grid thead .gapc{cursor:col-resize}
+tr.gapr td,tr.gapr th{height:5px;padding:0;background:var(--chrome);border-top:3px double var(--line)}
+tr.gapr{cursor:row-resize}
+.props{margin:10px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--chrome);font-size:13px;max-width:440px}
+.props div{display:flex;gap:10px}.props div span:first-child{width:96px;color:var(--sub)}
+.mail{display:grid;grid-template-columns:minmax(200px,34%) 1fr;height:100%}
+.mlist{border-right:1px solid var(--line);overflow:auto}
+.mlist button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 12px}
+.mlist button.on{background:var(--xlbg)}
+.mlist button.unread b{color:var(--mail)}
+.mlist small{display:block;color:var(--sub);font-size:11.5px}
+.mbody{overflow:auto;padding:14px 18px;white-space:pre-wrap}
+.mbody .mh{white-space:normal;border-bottom:1px solid var(--line);margin-bottom:10px;padding-bottom:8px}
+.chat{display:flex;flex-direction:column;gap:6px}
+.bub{max-width:76%;padding:7px 11px;border-radius:12px;background:var(--chrome)}
+.bub.me{align-self:flex-end;background:var(--xlbg)}
+.bub small{display:block;color:var(--sub);font-size:11px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.btn{background:var(--win);border:1px solid var(--line);border-radius:6px;padding:6px 12px;text-align:left}
+.btn:hover{border-color:var(--xl)}
+.btn.main{background:var(--xl);border-color:var(--xl);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.people{display:grid;grid-template-columns:170px 1fr;height:100%}
+.plist{border-right:1px solid var(--line);overflow:auto}
+.plist button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 12px}
+.plist button.on{background:var(--xlbg)}
+.plist small{display:block;color:var(--sub);font-size:11.5px}
+.talk{overflow:auto;padding:14px 16px}
+.line{margin:0 0 6px}.line b{display:inline-block;min-width:52px}
+.stmt{margin:10px 0;padding:10px 12px;border-left:3px solid var(--amber);background:var(--chrome);border-radius:0 6px 6px 0}
+.screen{margin:10px 0;padding:14px;border-radius:6px;background:#12303a;color:#d9ecef;max-width:420px;font-family:Consolas,monospace}
+.screen .clk{float:right;font-size:18px}
+#toasts{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:8px;z-index:30;max-width:360px}
+.toast{background:var(--win);color:var(--ink);border-left:4px solid var(--xl);border-radius:6px;padding:9px 12px;box-shadow:var(--shadow);font-size:13.5px;animation:tin .25s ease-out}
+.toast.npc{border-left-color:var(--mail)}
+.toast b{display:block;font-size:12px;color:var(--sub)}
+@keyframes tin{from{transform:translateY(8px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}}
+#modal{position:fixed;inset:0;background:rgba(8,18,24,.6);display:grid;place-items:center;z-index:40;padding:16px}
+#modal[hidden]{display:none}
+.mbox{background:var(--win);color:var(--ink);border-radius:10px;box-shadow:var(--shadow);width:min(640px,100%);max-height:90vh;overflow:auto;padding:22px 24px}
+.mbox h2{margin:0 0 12px;font-size:20px}
+.mbox label{display:block;margin:10px 0 4px;font-weight:600;font-size:13.5px}
+.mbox select{width:100%;padding:6px;border:1px solid var(--line);border-radius:5px;background:var(--win);color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:400!important;margin:4px 0!important}
+.say{margin:12px 0;padding:10px 12px;background:var(--chrome);border-radius:6px}
+.intro{width:min(560px,100%);background:var(--win);border-radius:10px;padding:30px 32px;box-shadow:var(--shadow)}
+.intro h1{margin:0 0 4px;font-size:30px;letter-spacing:-.5px}
+.intro .ep{color:var(--sub);margin-bottom:20px}
+.intro p{white-space:pre-line;font-size:15px}
+.pw{display:flex;gap:6px;margin:10px 0}
+.pw input{padding:6px 9px;border:1px solid var(--line);border-radius:5px;background:var(--win);color:var(--ink)}
+@media (max-width:760px){#desk{grid-template-columns:1fr;grid-template-rows:auto 1fr}#icons{flex-direction:row;overflow-x:auto}.ico{min-width:76px}#panes{flex-direction:column}.mail,.people{grid-template-columns:1fr;grid-template-rows:auto 1fr}#clock small{display:none}}
+</style>
+</head>
+<body>
+<div id="app" hidden>
+  <header id="bar">
+    <span class="who">헤일의 업무 PC</span>
+    <div id="clock"></div>
+    <button data-act="hint">💡 힌트</button>
+    <button data-act="cards" id="cardBtn">증거함</button>
+  </header>
+  <main id="desk">
+    <nav id="icons" aria-label="바탕화면"></nav>
+    <section id="wins"><div id="tabs"></div><div id="panes"></div></section>
+  </main>
+</div>
+<div id="modal"></div>
+<div id="toasts" aria-live="polite"></div>
+<script>
+/* ===== 데이터 (GPT 문서 전문으로 교체 가능한 영역) ===== */
+const ASSETS=[
+['EQ-0204','노트북','경영지원팀 구재하','사용','','구재하',''],
+['EQ-0311','모니터 27"','운영기획팀 공용','사용','','구재하',''],
+['EQ-0412','노트북','홍보팀 유다빈','사용','','구재하',''],
+['EQ-0533','태블릿','사업관리팀 하소은','사용','','구재하',''],
+['EQ-0618','데스크톱','품질관리팀 임도건','사용','','구재하',''],
+['EQ-0702','노트북(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-0788','데스크톱(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-0917','시연용 테스트 PC','운영기획팀 자동화 프로젝트','폐기','10/26 09:30','헤일','시연 원본 실행 로그 보관'],
+['EQ-0955','회의실2 PC','3층 공용','사용','','구재하',''],
+['EQ-1003','노트북','시스템운영팀 서민재','사용','','구재하',''],
+['EQ-1048','모니터 24"','홍보팀 공용','사용','','구재하',''],
+['EQ-1102','노트북','경영지원팀(교체 전)','폐기','10/26 09:30','구재하','교체 완료'],
+['EQ-1120','데스크톱','운영기획팀 차서윤','사용','','구재하',''],
+['EQ-1166','복합기','3층 복사실','사용','','구재하',''],
+['EQ-1189','태블릿','홍보팀 공용','사용','','구재하',''],
+['EQ-1240','데스크톱(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-1302','노트북','사업관리팀 공용','사용','','구재하',''],
+['EQ-1355','모니터 27"','시스템운영팀','사용','','구재하','']];
+
+const CARD={
+ props:'사본 파일 정보: 만든 날짜 금 18:10, 저장 PC 3F-회의실2',
+ row17:'사본의 숨겨진 17행: 헤일 노트북(EQ-1217) 09:30 초기화',
+ formula:'사본의 상태·확인자 칸은 공식 관리대장 값을 끌어옴(17행만 직접 입력)',
+ it:'IT 공지: 회의실2 PC 시계가 정확히 1시간 느림(그 PC에 저장한 파일만 해당)',
+ roompc:'회의실2 PC: 화면 시계가 1시간 느림, 헤일 계정 로그인 상태',
+ seat:'좌석 변경 안내: 금요일부터 12번 자리 = 차서윤(이전 하소은)',
+ oldseat:'9월 좌석배치도: 12번 자리 = 하소은',
+ resv:'회의실 예약: 금 19:00~21:00 예약자 하소은, 등록 18:33, 단말 3F-12',
+ att:'금요일 근태: 하소은 오후 반차(13:00~)',
+ meeting:'금요일 회의록: EQ-0917은 성과 평가 종료 시까지 보존',
+ ledgerlog:'공식 관리대장 변경 이력: 금 20:14 EQ-0917 사용→폐기, 변경자 헤일, 단말 3F-회의실2',
+ gate:'3층 게이트 퇴장 기록(금)',
+ copier:'복합기 작업 내역(금): 19:04~19:21 구재하·차서윤 출력',
+ parcel:'경비실 택배 대장: 20:02~20:27 구재하 수기 서명 14회',
+ dcopy:'구재하 진술: 19:00~19:30 차서윤과 복사실에 있었음',
+ dlobby:'구재하 진술: 20:00~20:30 로비에서 택배 수령',
+ msg:'헤일 계정 발송 메시지: 금 20:16 구재하에게 "그대로 진행" 승인',
+ rule:'이상 신고 규정: 신고는 프로젝트 책임자(차서윤)에게 자동 전달',
+ lie_s:'차서윤 진술: "복사실엔 안 갔다"',
+ lie_m:'서민재 진술: "회의 끝나고 바로 퇴근했다"'
+};
+
+const MAILS=[
+ {id:'it',from:'IT운영팀',subj:'[공지] 주말 서버 점검 결과 및 유의사항',time:'월 07:20',card:'it',body:`안녕하세요, IT운영팀입니다.
+주말(10/24~25) 서버 점검이 끝나 아래 사항을 안내드립니다.
+
+1. 그룹웨어 보안 패치 적용
+   첫 로그인 때 비밀번호를 다시 입력해야 할 수 있습니다.
+
+2. 개인 네트워크 폴더 동기화
+   점검 기간에 멈췄던 동기화가 10/26(월) 07:12에 일괄 완료되었습니다.
+   금요일 이후 저장된 파일이 오늘 아침 PC에 새로 나타날 수 있습니다.
+
+3. VPN 접속 주소는 바뀌지 않았습니다.
+
+4. 접수된 장애 처리 현황
+   - 3층 복합기 용지 걸림(10/23 접수): 조치 완료
+   - 3층 회의실2 PC(10/22 교체): 시간대 설정 오류로 PC 시계가 정확히 1시간 느리게 표시됩니다.
+     이 PC에 저장한 파일의 '만든 날짜/수정한 날짜'도 1시간 느리게 기록됩니다.
+     사내 웹 시스템(관리대장·예약·메신저)과 게이트·복합기 기록은 서버 시각을 쓰므로 영향이 없습니다.
+     이번 주 안에 조치하겠습니다.
+   - 4층 탕비실 정수기: IT 소관이 아닙니다. 총무팀에 문의해 주세요.
+
+5. 비밀번호 변경 주기: 90일
+
+문의: 내선 2200`},
+ {id:'menu',from:'총무팀',subj:'10월 4주 식단표',time:'월 07:00',body:`월: 김치볶음밥, 계란국
+화: 돈가스, 우동
+수: 비빔밥(채식 가능)
+목: 닭갈비
+금: 짜장면, 탕수육(금요일의 기쁨)`},
+ {id:'meet',from:'구재하',subj:'[회의록] 10/23(금) 4분기 장비 정리 회의',time:'금 18:35',card:'meeting',body:`일시: 10/23(금) 18:00~18:30, 회의실 2
+참석: 차서윤, 서민재, 구재하, 헤일 (화면 공유: 헤일)
+
+1. 4분기 정기 초기화
+   10/26(월) 09:30 일괄 실행. 대상은 공식 관리대장 상태가 '폐기'인 장비.
+
+2. 시연용 테스트 PC(EQ-0917)
+   - 차서윤: 시연이 끝났으니 이번 정리 대상에 포함하자.
+   - 서민재: 원본 실행 로그가 보관되어 있음. 성과 평가가 끝날 때까지 보존해야 함.
+   - 결정: EQ-0917은 성과 평가 종료 시까지 보존(상태 '사용' 유지).
+
+3. 대장 상태를 바꾸면 담당자(구재하)에게 승인 메시지를 보낼 것.
+
+4. 월요일 성과 평가 자료는 금일 18:00 제출 마감(제출 완료).
+
+회의록은 규정상 회의 후 30분 안에 공유합니다.
+- 구재하`},
+ {id:'dogeon',from:'임도건',subj:'RE: 보고서 파일 정리 건',time:'금 16:22',body:`품질관리팀 여러분,
+
+원본은 보존해야 합니다. 잘못된 파일은 정리 대상입니다.
+같은 보고서가 이름만 바뀌어 세 번 저장되어 있습니다. 파일명 규칙을 지켜 주십시오.
+
+첨부: QC_점검보고서_중복본.xlsx
+- 임도건`},
+ {id:'dabin',from:'유다빈',subj:'성과 발표 이미지 공유드려요',time:'금 15:40',body:`팀장님, 헤일 씨!
+월요일 성과 발표용 이미지 공유 폴더에 올렸어요.
+파일명: N_시연결과_홍보이미지.pptx
+
+숫자는 보고서에서 그대로 가져왔어요. "30건 중 29건 성공, 97%!" 크게 넣었습니다 ✨`},
+ {id:'sec',from:'보안팀',subj:'[필수] 자리 비울 때 화면 잠금 생활화',time:'금 10:00',body:`자리를 비울 때는 반드시 화면을 잠가 주세요.
+회의실 공용 PC는 사용 후 꼭 로그아웃해 주세요.
+로그아웃하지 않은 계정으로 생긴 일은 계정 주인의 책임이 될 수 있습니다.`},
+ {id:'att',from:'인사팀',subj:'[근태] 10/23(금) 부서별 근태 현황',time:'금 09:05',card:'att',body:`운영기획팀: 전원 정상 근무
+시스템운영팀: 전원 정상 근무
+경영지원팀: 전원 정상 근무
+사업관리팀: 하소은 부장 오후 반차(13:00~)
+홍보팀·품질관리팀: 전원 정상 근무`},
+ {id:'seat',from:'총무팀',subj:'3층 좌석 변경 안내 (10/23 금요일부터 적용)',time:'목 16:10',card:'seat',body:`3층 좌석이 아래와 같이 바뀝니다. 10/23(금) 출근 때부터 적용됩니다.
+
+  05번: 차서윤 → (공석)
+  12번: 하소은 → 차서윤
+  15번: (공석) → 하소은
+  그 밖의 자리는 그대로입니다.
+
+※ 각 자리의 PC 단말명은 '3F-자리번호'입니다. PC는 자리에 고정되어 있습니다.
+※ 이전 사용자의 로그인 정보가 남아 있을 수 있으니, 자리를 옮기기 전에 반드시 로그아웃해 주세요.`},
+ {id:'rule',from:'시스템운영팀',subj:'시스템 이상 신고 처리 절차 안내',time:'10/12',card:'rule',body:`시스템 이상 신고는 그룹웨어 [이상 신고] 메뉴에서 접수합니다.
+
+- 접수된 신고는 해당 시스템·프로젝트 책임자에게 자동으로 전달됩니다.
+- 신고자 정보도 책임자에게 함께 표시됩니다.
+
+책임자 현황
+  업무 자동화 프로젝트: 운영기획팀 차서윤 팀장
+  장비 관리대장: 경영지원팀 구재하 과장
+  그룹웨어: 시스템운영팀 서민재 차장`}
+];
+
+const CHATS={
+ jaeha:{name:'구재하',card:'msg',msgs:[{d:'금 20:16',me:1,t:'확인했습니다. 월요일 그대로 진행해 주세요.'},{d:'금 20:22',t:'넵. 근데 0917은 보존 아니었어요? 뭐 헤일 씨가 확인했으면…'},{d:'월 08:31',t:'헤일 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다. 커피는 안 사셔도 돼요. 사주시면 받고요.'}]},
+ seoyun:{name:'차서윤',msgs:[{d:'월 08:40',t:'헤일 씨~ 오늘 평가 날인 거 알죠? 끝나면 점심 내가 살게요 😊'}]},
+ soeun:{name:'하소은',msgs:[{d:'월 08:45',t:'헤일 씨 혹시 이거 뭔지 알아요? 금요일 저녁 회의실 예약 알림이 제 이름으로 와 있어요. 저 그날 1시에 나갔는데ㅋㅋ 귀신인가'}]},
+ minjae:{name:'서민재',msgs:[{d:'금 17:52',t:'회의 때 화면 공유 부탁합니다.'},{d:'금 17:53',me:1,t:'넵!'}]}
+};
+
+const PEOPLE={
+ jaeha:{name:'구재하',role:'경영지원팀 과장',topics:[
+  {id:'fri',q:'금요일 저녁에 뭐 하셨어요?',a:['7시부터 7시 반까진 차 팀장님이랑 복사실에 있었어요. 용지가 걸려서 둘이 30분 내내 씨름했죠.','8시부터 8시 반까진 로비에서 장비 박스 열네 개 받았고요. 서명만 열네 번 했습니다.'],give:['dcopy','dlobby']},
+  {id:'gate',q:'금요일 출입 기록 볼 수 있을까요?',a:['규정상 본인 확인용으로만 드릴 수 있어요. 헤일 씨 본인 기록 확인용이라고 적어 둘게요.','…근데 이 시스템은 한 장에 전원이 다 나오네요. 제 잘못 아닙니다.'],flag:'gate'},
+  {id:'reset',q:'9시 반 초기화는 기준이 뭐예요?',a:['공식 관리대장에서 \'폐기\'인 장비만 일괄 초기화해요.','금요일 밤에 헤일 씨가 확인 메시지 주셨잖아요. 0917도 폐기로 바뀌어 있던데, 회의 땐 보존이라더니. 뭐 승인하셨으니까요.']},
+  {id:'hold',q:'초기화를 보류해 주세요.',a:['근거 없이 멈추면 제가 시말서 써요. 보고서로 주세요.','근거 문서 첨부 필수입니다. 이건 양보 못 해요.'],act:'report'}]},
+ seoyun:{name:'차서윤',role:'운영기획팀 팀장',topics:[
+  {id:'fri',q:'금요일 회의 끝나고 뭐 하셨어요?',stmt:'s1'},
+  {id:'resv',q:'금요일 저녁 회의실 2 예약, 아세요?',a:['하소은 부장님 이름으로 돼 있던데요? 반차 쓰셨다면서…','아니에요. 제가 말할 일은 아니죠.']},
+  {id:'eq',q:'EQ-0917은요?',a:['시연 끝난 장비죠. 회의에선 보존하기로 했는데… 누가 바꿨나 봐요?','헤일 씨가 확인한 거 아니었어요?']},
+  {id:'orig',q:'복사실에서 출력하신 \'원본\'은 뭐예요?',need:'brokeS',a:['평가 자료 최종본이에요. 파일 이름에 \'원본\'이 붙었다고 대단한 건 아니고요.','…마감 지나고 한 번 더 들여다본 게 그렇게 이상해요?']}]},
+ minjae:{name:'서민재',role:'시스템운영팀 차장',topics:[
+  {id:'fri',q:'금요일 회의 끝나고 뭐 하셨어요?',stmt:'m1'},
+  {id:'eq',q:'EQ-0917은요?',a:['원본 실행 로그가 들어 있는 장비입니다. 회의에서 보존하기로 했고, 저는 찬성했습니다.','목요일에 대장 비고란도 제가 적었습니다.']},
+  {id:'rep',q:'이상하면 신고하면 되잖아요?',a:['신고 절차 안내 메일 보셨습니까.','신고는 프로젝트 책임자에게 자동으로 갑니다. 그 프로젝트 책임자가 누구인지도요.']}]},
+ soeun:{name:'하소은',role:'사업관리팀 부장',topics:[
+  {id:'resv',q:'금요일 저녁 회의실 예약이요.',a:['제 이름이요? 저 금요일 1시에 나갔어요. 치과요.','마취가 저녁까지 안 풀려서 말도 못 했어요. 귀신이 예약했나 봐요.']},
+  {id:'seat',q:'12번 자리 아세요?',a:['거기 제 옛날 자리예요! 금요일부터 15번으로 옮겼잖아요.','컴퓨터는 그대로 두고 왔는데… 로그아웃이요? 그걸 매번 해야 돼요?']}]},
+ dabin:{name:'유다빈',role:'홍보팀 대리',topics:[
+  {id:'file',q:'N_시연결과 파일은 뭐예요?',a:['발표용 이미지예요. 숫자는 보고서에서 그대로 옮겼고요.','저 금요일엔 6시 전에 나갔어요. 칼퇴의 날이었거든요.']}]},
+ dogeon:{name:'임도건',role:'품질관리팀 부장',topics:[
+  {id:'mail',q:'"잘못된 파일은 정리 대상"이 무슨 뜻이에요?',a:['품질관리팀 중복 보고서 얘기입니다. 첨부 파일명 확인하셨습니까?','파일명 규칙이 없으니 이런 오해가 생기는 겁니다. 이번 기회에 전사 파일명 규칙을…'],after:['헤일','부장님, 그건 다음에요.']},
+  {id:'fri',q:'금요일엔 언제 나가셨어요?',a:['6시 50분쯤 나갔습니다. 출력물 챙겨서요.']}]}
+};
+
+const STMT={
+ s1:{who:'seoyun',text:'금요일 저녁엔 계속 자리에서 보고서 정리했어요. 복사실엔 안 갔고요.',ok:'copier',card:'lie_s',hit:['헤일','그런데 복합기 기록에는 팀장님 이름이 있네요.'],next:'s2'},
+ s2:{who:'seoyun',text:'그건… 다른 사람이 제 사원증으로 출력했을 수도 있죠.',ok:'dcopy',hit:['헤일','구재하 과장님도 그 시간에 팀장님과 같이 출력했다고 하셨어요.'],broke:'brokeS',after:[['차서윤','……'],['헤일','복사실에 가셨는지가 중요한 건 아니에요. 왜 안 가셨다고 하셨는지가 궁금하네요.'],['차서윤','그런 사소한 것까지 설명해야 하나요?']]},
+ m1:{who:'minjae',text:'회의가 끝난 뒤에는 바로 퇴근했습니다.',ok:'gate',card:'lie_m',hit:['헤일','게이트 기록엔 19시 31분에 나가신 걸로 되어 있어요.'],broke:'brokeM',after:[['서민재','……'],['서민재','그 시간에 뭘 했는지는 지금 말씀드릴 수 없습니다.'],['헤일','그럼 제가 직접 찾아볼게요.'],['서민재','헤일 씨 계정, 금요일 저녁에 꽤 바빴더군요.']]}
+};
+const RETORT={seoyun:'그게 저랑 무슨 상관이죠?',minjae:'그 자료로는 아무것도 말할 수 없습니다.'};
+
+const HINTS=[
+ ['처음 보는 파일을 천천히 살펴보세요. 행 번호가 빠짐없이 이어지나요?','16 다음이 18입니다. 열 문자도 F 다음이 H예요.','16과 18 사이의 얇은 줄, F와 H 사이의 얇은 칸을 클릭하면 숨겨진 행과 열이 펼쳐집니다.'],
+ ['17행 첫 칸의 빨간 삼각형을 눌러 보세요. 잠긴 파일의 열쇠가 적혀 있어요.','"금요일에 보존하기로 한 것"은 금요일 회의록 메일에 있습니다.','공유 폴더의 공식 관리대장 비밀번호는 EQ-0917입니다.'],
+ ['사본의 "파일 정보"를 보세요. 18시 10분에 헤일은 어디서 무엇을 하고 있었죠?','그 파일이 저장된 PC를 직접 보러 가거나, 오늘 아침 온 공지 메일을 끝까지 읽어 보세요.','회의실 2 PC는 시계가 정확히 1시간 느립니다. 파일은 실제로는 19시대에 만들어졌어요.'],
+ ['금요일 저녁에 누가 회사에 남아 있었는지 알아야 합니다. 그런 기록은 누가 관리하죠?','경영지원팀 구재하에게 출입 기록을 물어보세요.','동료 → 구재하 → "금요일 출입 기록 볼 수 있을까요?"'],
+ ['19시대와 20시대에 남아 있던 사람들이 각각 어디 있었는지 확인하세요.','구재하에게 금요일 저녁을 묻고, 복사실과 로비 경비실에도 가 보세요.','이동 → 복사실(작업 내역), 로비(택배 대장). 찾은 문서는 증거로 저장해 두세요.'],
+ ['헤일 계정이 움직인 때는 두 번입니다. 사본을 만든 19시대, 대장을 바꾸고 메시지를 보낸 20시대. 한 사람이 둘 다 할 수 있었나요?','19시대에 차서윤과 구재하는 복사실에 있었고, 20시대에는 서민재가 이미 퇴근했고 구재하는 로비에 있었습니다.','경고 파일=서민재, 대장 수정=차서윤, 이유=회의실 PC 시계, 장비=EQ-0917. 근거로 출입 기록·시계 근거·변경 이력·19시와 20시 동선·회의록을 첨부하세요. 구재하에게 "보류해 주세요"를 고르면 보고서가 열립니다.']];
+
+/* ===== 상태 ===== */
+const S={t:527,cards:new Set(),f:{},open:[],focus:null,prev:null,split:false,sel:{},sheet:'main',mail:null,read:new Set(),chat:null,who:null,log:{},stmt:{},asked:{},hl:{},hints:0,t0:0,rep:{}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+function once(k,fn){if(!S.f[k]){S.f[k]=1;fn();}}
+function toast(who,text,npc){const d=document.createElement('div');d.className='toast'+(npc?' npc':'');d.innerHTML=`<b>${esc(who)}</b>${esc(text)}`;const box=$('#toasts');box.append(d);while(box.children.length>3)box.firstChild.remove();setTimeout(()=>d.remove(),6500);}
+const say=t=>toast('헤일',t);
+function card(id,quiet){if(!S.cards.has(id)){S.cards.add(id);if(!quiet)toast('증거함',CARD[id]);}}
+function tick(m){S.t=Math.min(S.t+m,569);
+ if(S.t>=545)once('e1',()=>toast('구재하','헤일 씨, 9시 반 그대로죠? 준비하고 있을게요.',1));
+ if(S.t>=560)once('e2',()=>toast('구재하','10분 남았습니다.',1));
+ if(S.t>=569)once('e3',()=>toast('구재하','9시 29분이에요. 보고서 주시면 그때까지는 기다릴게요. 규정상 그 정도는 됩니다.',1));}
+
+/* ===== 시트 ===== */
+const HDR_COPY={A:'자산번호',B:'품목',C:'사용 부서/사용자',D:'상태',E:'초기화 예정',F:'비고',G:'확인 메모',H:'최종 확인자'};
+function copyCell(r,c){
+ if(r===1)return{v:HDR_COPY[c],hd:1};
+ if(r===17)return({A:{v:'EQ-1217',cm:"열쇠는 금요일에 '보존'하기로 한 것의 번호."},B:{v:'노트북'},C:{v:'운영기획팀 헤일'},D:{v:'폐기'},E:{v:'10/26 09:30'},F:{v:''},G:{v:'09:30 전에 확인할 것'},H:{v:'헤일'}})[c];
+ const a=ASSETS[r<17?r-2:r-3],lr=r<17?r:r-1;
+ return({A:{v:a[0]},B:{v:a[1]},C:{v:a[2]},D:{v:a[3],f:'=공식관리대장!D'+lr},E:{v:a[4],f:'=공식관리대장!E'+lr},F:{v:a[6]},G:{v:r===9?'금요일 회의 결정과 같은가?':''},H:{v:a[5],f:'=공식관리대장!F'+lr}})[c];}
+const HDR_L={A:'자산번호',B:'품목',C:'사용 부서/사용자',D:'상태',E:'초기화 예정',F:'최종 확인자',G:'비고'};
+function ledgerCell(r,c){if(r===1)return{v:HDR_L[c],hd:1};const a=ASSETS[r-2];return{v:{A:a[0],B:a[1],C:a[2],D:a[3],E:a[4],F:a[5],G:a[6]}[c]};}
+const LOG=[['10/20(화) 10:12','전체','4분기 정기 초기화 대상 등록','구재하','3F-07'],['10/22(목) 15:40','EQ-0917',"비고 '시연 원본 실행 로그 보관' 추가",'서민재','3F-21'],['10/23(금) 17:05','EQ-1102','사용 → 폐기 (교체 완료)','구재하','3F-07'],['10/23(금) 20:14','EQ-0917','사용 → 폐기','헤일','3F-회의실2'],['10/23(금) 20:14','EQ-0917','최종 확인자 → 헤일','헤일','3F-회의실2'],['10/23(금) 20:19','전체','폐기 목록 최종 확인','헤일','3F-회의실2']];
+function logCell(r,c){if(r===1)return{v:{A:'일시(서버)',B:'자산번호',C:'변경 내용',D:'변경자',E:'접속 단말'}[c],hd:1};const x=LOG[r-2];return{v:x['ABCDE'.indexOf(c)]};}
+
+function grid(doc,cols,max,fn,hidR,hidC){
+ const sel=S.sel[doc];let fv='',cm='';
+ if(sel){const m=sel.match(/^([A-Z])(\d+)$/);const c=fn(+m[2],m[1])||{};fv=c.f||c.v||'';cm=c.cm||'';}
+ let h=`<div class="fbar"><span class="addr">${sel||''}</span><i>fx</i><span>${esc(fv)}</span></div>`;
+ if(cm)h+=`<div class="cmt">💬 메모: ${esc(cm)}</div>`;
+ h+='<div class="gwrap"><table class="grid"><thead><tr><th class="rh"></th>';
+ cols.forEach(([k,w])=>{h+=hidC.includes(k)?`<th class="gapc" data-act="uncol" title="열 숨기기 취소"></th>`:`<th style="width:${w}px">${k}</th>`;});
+ h+='</tr></thead><tbody>';
+ for(let r=1;r<=max;r++){
+  if(hidR.includes(r)){h+=`<tr class="gapr" data-act="unrow" title="행 숨기기 취소"><th></th>${cols.map(()=>'<td></td>').join('')}</tr>`;continue;}
+  h+=`<tr><th class="rh">${r}</th>`;
+  cols.forEach(([k])=>{if(hidC.includes(k)){h+='<td class="gapc"></td>';return;}const c=fn(r,k)||{v:''},a=k+r;
+   h+=`<td data-act="cell" data-doc="${doc}" data-a="${a}" class="${c.hd?'hd':''}${sel===a?' sel':''}${c.cm?' cm':''}${c.v==='폐기'?' bad':''}">${esc(c.v)}</td>`;});
+  h+='</tr>';}
+ return h+'</tbody></table></div>';}
+
+/* ===== 문서(창) ===== */
+const DOCS={
+ copy:{icon:'📗',title:'이관대상_목록_확인용.xlsx',flush:1,render(){
+  const cols=[['A',78],['B',118],['C',170],['D',52],['E',96],['F',150],['G',170],['H',84]];
+  return `<div class="tool"><button data-act="props">파일 정보</button><span class="muted">작성자: 헤일</span></div>`+(S.f.showProps?`<div class="props"><div><span>파일 이름</span><span>이관대상_목록_확인용.xlsx</span></div><div><span>작성자</span><span>헤일</span></div><div><span>만든 날짜</span><span>2026-10-23(금) 18:10</span></div><div><span>수정한 날짜</span><span>2026-10-23(금) 18:16</span></div><div><span>저장한 PC</span><span>3F-회의실2</span></div><div><span>위치</span><span>헤일 네트워크 폴더 (동기화 10-26 07:12)</span></div></div>`:'')+grid('copy',cols,20,copyCell,S.f.row17?[]:[17],S.f.colG?[]:['G']);}},
+ ledger:{icon:'📗',title:'공식_기기관리대장.xlsx',flush:1,card:()=>S.f.ledger?'ledgerlog':null,render(){
+  if(!S.f.ledger)return `<div class="pbody"><h3>🔒 암호로 보호된 파일</h3><p>이 파일을 열려면 암호가 필요합니다.</p><div class="pw"><input id="pwin" placeholder="암호 입력" aria-label="암호" autocomplete="off"><button class="btn main" data-act="pw">열기</button></div><p class="muted" id="pwmsg"></p></div>`;
+  const tab=S.sheet;let h=`<div class="tool"><span class="muted">서버 기록 기준</span><span class="sheet"><button data-act="sheet" data-s="main" class="${tab==='main'?'on':''}">대장</button><button data-act="sheet" data-s="log" class="${tab==='log'?'on':''}">변경 이력</button></span></div>`;
+  return h+(tab==='main'?grid('ledger',[['A',78],['B',118],['C',170],['D',52],['E',96],['F',84],['G',170]],19,ledgerCell,[],[]):grid('llog',[['A',120],['B',78],['C',210],['D',64],['E',96]],7,logCell,[],[]));}},
+ mail:{icon:'✉️',title:'메일',flush:1,card:()=>{const m=MAILS.find(x=>x.id===S.mail);return m&&m.card;},render(){
+  const m=MAILS.find(x=>x.id===S.mail);
+  return `<div class="mail"><div class="mlist">${MAILS.map(x=>`<button data-act="mail" data-id="${x.id}" class="${S.mail===x.id?'on':''} ${S.read.has(x.id)?'':'unread'}"><b>${esc(x.subj)}</b><small>${esc(x.from)} · ${x.time}</small></button>`).join('')}</div><div class="mbody">${m?`<div class="mh"><h3>${esc(m.subj)}</h3><span class="muted">보낸 사람 ${esc(m.from)} · ${m.time}</span></div>${esc(m.body)}`:'<span class="muted">메일을 선택하세요.</span>'}</div></div>`;}},
+ msgr:{icon:'💬',title:'메신저',flush:1,card:()=>S.chat&&CHATS[S.chat].card,render(){
+  const c=S.chat&&CHATS[S.chat];
+  return `<div class="mail"><div class="mlist">${Object.entries(CHATS).map(([k,v])=>`<button data-act="chat" data-id="${k}" class="${S.chat===k?'on':''}"><b>${v.name}</b><small>${esc(v.msgs[v.msgs.length-1].t.slice(0,22))}…</small></button>`).join('')}</div><div class="mbody" style="white-space:normal">${c?`<div class="chat">${c.msgs.map(x=>`<div class="bub ${x.me?'me':''}"><small>${x.me?'나(헤일)':c.name} · ${x.d}</small>${esc(x.t)}</div>`).join('')}</div>`:'<span class="muted">대화를 선택하세요.</span>'}</div></div>`;}},
+ share:{icon:'📁',title:'공유 폴더 \\\\3F-운영',render(){
+  return `<table class="t"><tr><th>이름</th><th>수정한 날짜</th></tr>
+  <tr><td><button class="btn" data-act="open" data-id="ledger">🔒 공식_기기관리대장.xlsx</button></td><td>10/23 20:19</td></tr>
+  <tr><td><button class="btn" data-act="open" data-id="qc">QC_점검보고서_중복본.xlsx</button></td><td>10/23 16:20</td></tr>
+  <tr><td><button class="btn" data-act="open" data-id="ppt">N_시연결과_홍보이미지.pptx</button></td><td>10/23 15:38</td></tr>
+  <tr><td><button class="btn" data-act="nope">📁 성과평가_제출자료</button></td><td>10/23 17:58</td></tr></table>`;}},
+ qc:{icon:'📗',title:'QC_점검보고서_중복본.xlsx',render:()=>`<p>품질관리팀 점검보고서다. 같은 내용이 이름만 바뀌어 세 번 저장되어 있다.</p><p class="muted">작성자: 품질관리팀 · EQ-0917과 관련된 내용은 없다.</p>`},
+ ppt:{icon:'🖼️',title:'N_시연결과_홍보이미지.pptx',render:()=>`<p class="muted">미리 보기를 지원하지 않는 형식입니다.</p><div class="screen" style="background:#fff;color:#123;font-family:inherit"><b style="font-size:22px">업무 자동화 성공률 97%</b><br>시연 30건 중 29건 자동 처리 성공</div>`},
+ resv:{icon:'📅',title:'회의실 예약 — 10/23(금)',card:()=>'resv',render:()=>`<table class="t"><tr><th>회의실</th><th>시간</th><th>제목</th><th>예약자</th><th>등록 시각</th><th>등록 단말</th></tr>
+  <tr><td>회의실 1</td><td>14:00~15:00</td><td>홍보팀 주간회의</td><td>유다빈</td><td>10/20 09:12</td><td>3F-18</td></tr>
+  <tr><td>회의실 2</td><td>18:00~18:30</td><td>4분기 장비 정리 회의</td><td>구재하</td><td>10/22 16:02</td><td>3F-07</td></tr>
+  <tr><td>회의실 2</td><td>19:00~21:00</td><td>자료 검토</td><td>하소은</td><td>10/23 18:33</td><td>3F-12</td></tr></table>
+  <p class="muted">※ 예약자는 등록 단말에 로그인된 그룹웨어 계정으로 기록됩니다.<br>※ 예약은 회의실 출입을 막지 않습니다.</p>`},
+ seat:{icon:'🖼️',title:'좌석배치도_9월.png',card:()=>'oldseat',render:()=>`<h3>3층 좌석배치도 (9월 기준)</h3><table class="t">${[['03','헤일'],['05','차서윤'],['07','구재하'],['12','하소은'],['15','(공석)'],['18','유다빈'],['21','서민재'],['24','임도건']].map(([n,p])=>`<tr><th>${n}번</th><td>${p}</td></tr>`).join('')}</table><p class="muted">※ 각 자리의 PC 단말명은 '3F-자리번호'입니다.</p>`},
+ gate:{icon:'🚪',title:'출입 기록 — 3층 게이트 퇴장(10/23 금)',card:()=>'gate',render:()=>`<table class="t"><tr><th>시각</th><th>이름</th><th>소속</th></tr>${[['13:02','하소은','사업관리팀'],['17:48','유다빈','홍보팀'],['18:41','헤일','운영기획팀'],['18:52','임도건','품질관리팀'],['19:31','서민재','시스템운영팀'],['21:08','차서윤','운영기획팀'],['21:15','구재하','경영지원팀']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</table><p class="muted">※ 3층 출입은 게이트 한 곳뿐이며, 퇴장 때 사원증을 태그해야 문이 열립니다.<br>※ 금요일 18:00 이후 입장 기록 없음.</p>`},
+ places:{icon:'🚶',title:'이동',render:()=>`<p>어디로 갈까?</p><div class="btns"><button class="btn" data-act="open" data-id="room">회의실 2</button><button class="btn" data-act="open" data-id="copier">복사실</button><button class="btn" data-act="open" data-id="lobby">1층 로비 경비실</button></div><p class="muted">이동하면 시간이 조금 더 흐릅니다.</p>`},
+ room:{icon:'🚪',title:'회의실 2',render:()=>`<p>금요일 회의 때 쓴 PC가 그대로 켜져 있다. 테이블은 깨끗하다.</p><div class="screen"><span class="clk">${hm(S.t-60)}</span>그룹웨어<br>로그인: ${S.f.logout?'(로그아웃됨)':'헤일'}<br><br>${S.f.logout?'잠금 화면':'메신저 · 관리대장 · 예약 창이 열려 있다'}</div><div class="btns"><button class="btn" data-act="logout" ${S.f.logout?'disabled':''}>로그아웃하기</button></div>`},
+ copier:{icon:'🖨️',title:'복사실 — 복합기 작업 내역',card:()=>'copier',render:()=>`<p>복합기 화면에서 최근 작업 내역을 열었다.</p><table class="t"><tr><th>일시(서버)</th><th>사용자</th><th>문서</th><th>매수</th></tr>${[['금 16:40','유다빈','성과발표_이미지_시안.pptx','12'],['금 18:44','임도건','QC_점검표.xlsx','6'],['금 19:04','구재하','정기초기화_작업지시서.docx','30'],['금 19:06','차서윤','N_시연성과_최종보고서_원본.pdf','40'],['금 19:12','구재하','장비반납_확인서.pdf (용지 걸림 2회)','50'],['금 19:21','차서윤','성과평가_발표자료.pdf','25']].map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table><p class="muted">※ 사원증을 대야 출력됩니다.</p>`},
+ lobby:{icon:'🏢',title:'1층 로비 — 경비실 택배 대장',card:()=>'parcel',render:()=>`<p>경비원: "구 과장님이요? 금요일에 박스 열네 개를 혼자 다 받으셨어요. 한숨도 열네 번 쉬시더라고요."</p><table class="t"><tr><th>일시</th><th>수령인</th><th>내용</th><th>서명</th></tr><tr><td>금 17:30</td><td>홍보팀 유다빈</td><td>홍보물 2박스</td><td>✍️ 수기</td></tr><tr><td>금 20:02~20:27</td><td>경영지원팀 구재하</td><td>장비 교체분 14박스</td><td>✍️ 수기 14회</td></tr></table>`},
+ people:{icon:'👥',title:'동료',flush:1,render(){
+  const p=S.who&&PEOPLE[S.who];let h=`<div class="people"><div class="plist">${Object.entries(PEOPLE).map(([k,v])=>`<button data-act="who" data-id="${k}" class="${S.who===k?'on':''}"><b>${v.name}</b><small>${v.role}</small></button>`).join('')}</div><div class="talk">`;
+  if(!p)return h+'<span class="muted">이야기할 사람을 고르세요.</span></div></div>';
+  (S.log[S.who]||[]).forEach(([w,t])=>h+=`<p class="line"><b>${esc(w)}</b> ${esc(t)}</p>`);
+  const st=S.stmt[S.who];
+  if(st)h+=`<div class="stmt"><b>${p.name}</b> "${esc(STMT[st].text)}"<div class="btns"><button class="btn main" data-act="present" data-id="${st}">증거 제시</button></div></div>`;
+  h+='<div class="btns">'+p.topics.filter(t=>!t.need||S.f[t.need]).map(t=>`<button class="btn" data-act="ask" data-id="${t.id}" ${(t.stmt&&(S.stmt[S.who]||S.asked[S.who+t.id]))?'disabled':''}>${S.asked[S.who+t.id]?'✓ ':''}${esc(t.q)}</button>`).join('')+'</div>';
+  return h+'</div></div>';}}
+};
+
+/* ===== 렌더 ===== */
+function iconsHTML(){const list=[['copy','📗','이관대상_목록_확인용.xlsx'],['mail','✉️','메일'],['msgr','💬','메신저'],['share','📁','공유 폴더'],['resv','📅','회의실 예약'],['seat','🖼️','좌석배치도_9월.png'],['places','🚶','이동'],['people','👥','동료']];if(S.f.gate)list.push(['gate','🚪','출입 기록']);
+ return list.map(([id,i,n])=>`<button class="ico" data-act="open" data-id="${id}"><span>${i}</span>${n}</button>`).join('');}
+function pane(id){const d=DOCS[id];const pc=d.card&&d.card();
+ return `<div class="pane"><div class="tbar"><span class="t">${d.icon} ${esc(d.title)}</span>${pc?`<button data-act="pin" data-id="${pc}" class="pin ${S.cards.has(pc)?'on':''}">${S.cards.has(pc)?'증거 저장됨':'📌 증거로 저장'}</button>`:''}<button data-act="close" data-id="${id}" aria-label="닫기">✕</button></div><div class="pbody ${d.flush?'flush':''}">${d.render()}</div></div>`;}
+function render(){
+ const left=569-S.t,ck=$('#clock');ck.className=left<=15?'warn':'';ck.innerHTML=`<small>월</small><b>${hm(S.t)}</b><small>초기화까지 ${left+1}분</small>`;
+ $('#cardBtn').textContent=`증거함 ${S.cards.size}`;
+ $('#icons').innerHTML=iconsHTML();
+ $('#tabs').innerHTML=S.open.map(id=>`<button data-act="focus" data-id="${id}" class="${S.focus===id?'on':''}">${DOCS[id].icon} ${esc(DOCS[id].title)}</button>`).join('')+(S.open.length>1?`<button class="split" data-act="split">${S.split?'한 창으로 보기':'나란히 보기'}</button>`:'');
+ const show=[S.focus];if(S.split&&S.prev&&S.open.includes(S.prev)&&S.prev!==S.focus)show.unshift(S.prev);
+ $('#panes').innerHTML=S.focus?show.map(pane).join(''):'<div class="empty">바탕화면의 아이콘을 눌러 조사를 시작하세요.<br>09:30이 되기 전에.</div>';}
+
+function openDoc(id){if(!S.open.includes(id)){S.open.push(id);tick(['places','room','copier','lobby'].includes(id)?2:1);}
+ if(S.focus!==id){S.prev=S.focus;S.focus=id;}
+ if(id==='copy')once('o_copy',()=>say('이게 뭐지? 만든 적 없는 파일인데… 작성자가 나야.'));
+ if(id==='room'){card('roompc');once('o_room',()=>say('화면 시계가… 지금보다 정확히 한 시간 느려. 그리고 주말 내내 내 계정이 로그인돼 있었네.'));}
+ if(id==='resv')once('o_resv',()=>say('19시부터 21시까지 하소은 부장님 이름으로? 단말은 3F-12…'));
+ render();}
+
+/* ===== 모달 ===== */
+function modal(html){const m=$('#modal');m.innerHTML=`<div class="mbox">${html}</div>`;m.hidden=false;}
+function closeModal(){$('#modal').hidden=true;}
+function stage(){if(!S.f.row17||!S.f.colG)return 0;if(!S.f.ledger)return 1;if(!(S.cards.has('it')||S.cards.has('roompc')))return 2;if(!S.f.gate)return 3;if(!((S.cards.has('copier')||S.cards.has('dcopy'))&&(S.cards.has('parcel')||S.cards.has('dlobby'))))return 4;return 5;}
+function hintModal(){const s=stage(),n=S.hl[s]||0;modal(`<h2>💡 힌트</h2>${HINTS[s].slice(0,n).map((h,i)=>`<div class="say"><b>${i+1}단계</b><br>${esc(h)}</div>`).join('')||'<p>막힌 곳에 맞는 힌트를 단계별로 보여 줍니다.</p>'}<div class="btns">${n<3?`<button class="btn main" data-act="hintnext">${n?'더 구체적인 힌트':'힌트 보기'}</button>`:''}<button class="btn" data-act="mclose">닫기</button></div>`);}
+function cardsModal(){modal(`<h2>증거함</h2>${S.cards.size?`<ul>${[...S.cards].map(c=>`<li>${esc(CARD[c])}</li>`).join('')}</ul>`:'<p>아직 모은 증거가 없습니다. 중요한 문서는 창 위의 📌 버튼으로 저장하세요.</p>'}<div class="btns"><button class="btn" data-act="mclose">닫기</button></div>`);}
+const NAMES=['차서윤','서민재','구재하','하소은','유다빈','임도건','헤일'];
+const Q3=['헤일이 회의 중에 실수로 저장했다','회의실 2 PC 시계가 1시간 느리다','주말 서버 점검 때 시각이 바뀌었다','누군가 파일 정보를 직접 고쳤다'];
+const Q4=['EQ-0917','EQ-1217','EQ-1102','EQ-0955'];
+const CATS=[['누가 언제 건물에 있었는지',['gate']],['파일 시각을 바로 읽는 근거',['it','roompc']],['공식 대장이 바뀐 기록',['ledgerlog']],['19시대 동선',['copier','dcopy']],['20시대 동선',['parcel','dlobby']],['그 장비를 지켜야 하는 이유',['meeting']]];
+function sel(id,opts){return `<select id="${id}"><option value="">선택</option>${opts.map(o=>`<option ${S.rep[id]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;}
+function reportModal(msg){modal(`<h2>📝 초기화 보류 요청서</h2><p class="muted">받는 사람: 구재하 과장(장비 관리대장 책임자)</p>
+ <label>1. 헤일 계정으로 사본(경고 파일)을 만든 사람</label>${sel('q1',NAMES)}
+ <label>2. 헤일 계정으로 공식 대장을 바꾸고 승인 메시지를 보낸 사람</label>${sel('q2',NAMES)}
+ <label>3. 사본 파일이 18:10에 만들어진 것처럼 보인 이유</label>${sel('q3',Q3)}
+ <label>4. 초기화를 멈춰야 할 장비</label>${sel('q4',Q4)}
+ <label>5. 근거 문서 첨부</label>${S.cards.size?[...S.cards].map(c=>`<label class="chk"><input type="checkbox" value="${c}" ${S.rep.att&&S.rep.att.includes(c)?'checked':''}> ${esc(CARD[c])}</label>`).join(''):'<p class="muted">증거함이 비어 있습니다.</p>'}
+ ${msg?`<div class="say"><b>구재하</b><br>${esc(msg)}</div>`:''}
+ <div class="btns"><button class="btn main" data-act="submit">제출하기</button><button class="btn" data-act="mclose">닫기</button></div>`);}
+function submit(){['q1','q2','q3','q4'].forEach(k=>S.rep[k]=$('#'+k).value);S.rep.att=[...document.querySelectorAll('.mbox input[type=checkbox]:checked')].map(x=>x.value);tick(1);
+ const ans={q1:'서민재',q2:'차서윤',q3:Q3[1],q4:'EQ-0917'};const wrong=Object.keys(ans).filter(k=>S.rep[k]!==ans[k]).length;
+ if(wrong)return reportModal(`적어 주신 것 중 ${wrong}개는 기록이랑 안 맞는 것 같아요. 규정상 이대로는 못 멈춥니다.`);
+ const miss=CATS.filter(([,ids])=>!ids.some(i=>S.rep.att.includes(i))).map(c=>c[0]);
+ if(miss.length)return reportModal(`내용은 맞는 것 같은데 근거가 빠졌어요. 필요한 것: ${miss.join(', ')}.`);
+ ending();}
+const END=[
+ [['구재하',`…근거 문서가 다 붙어 있네요. 규정상 막을 이유가 없습니다. EQ-0917 초기화 보류합니다.`],['구재하','지금 9시 '+'%M%'+'분. 아슬아슬했어요.']],
+ [['','EQ-0917의 원본 실행 로그가 열린다.'],['서민재','시연 대상 30건. 성공 18건.'],['헤일','보고서엔 29건이었는데요.']],
+ [['서민재','금요일 7시쯤 회의실에 다시 갔습니다. 헤일 씨 계정이 열려 있더군요.'],['서민재','신고하면 차 팀장님께 바로 전달되는 구조라서, 헤일 씨가 직접 보게 만들고 싶었습니다.'],['서민재','17행은 제가 넣었습니다. 놀라게 해서 죄송합니다. 허락 없이 계정을 쓴 건 제 잘못입니다. 책임지겠습니다.']],
+ [['차서윤','…헤일 씨 계정이 열려 있었어요.'],['차서윤','그 숫자 하나만 없으면 될 것 같았어요.']],
+ [['헤일','다음부터 회의 끝나면 로그아웃부터 할게요.'],['구재하','규정상 그게 맞습니다.'],['헤일','…근데 제 노트북은 진짜 안 지우는 거죠?']],
+ [['서민재','헤일 씨. 원본 로그에 이상한 게 하나 더 있었습니다.'],['서민재','그건… 다음에 말씀드리죠.']]];
+function ending(i=0){if(i>=END.length){const sec=Math.round((Date.now()-S.t0)/1000);return modal(`<h2>사건 해결</h2><p>「18시 10분의 헤일」을 해결했습니다.</p><table class="t"><tr><th>플레이 시간</th><td>${Math.floor(sec/60)}분 ${sec%60}초</td></tr><tr><th>게임 속 시각</th><td>${hm(S.t)}</td></tr><tr><th>힌트 사용</th><td>${S.hints}회</td></tr><tr><th>모은 증거</th><td>${S.cards.size}개</td></tr></table><div class="btns"><button class="btn" data-act="mclose">조사 화면으로 돌아가기</button></div>`);}
+ modal(END[i].map(([w,t])=>`<p class="line">${w?`<b>${w}</b> `:''}${esc(t.replace('%M%',String(S.t%60).padStart(2,'0')))}</p>`).join('')+`<div class="btns"><button class="btn main" data-act="end" data-i="${i+1}">다음</button></div>`);}
+
+/* ===== 대화 ===== */
+function addLog(w,t){(S.log[S.who]=S.log[S.who]||[]).push([w,t]);}
+function ask(tid){const p=PEOPLE[S.who],t=p.topics.find(x=>x.id===tid);const first=!S.asked[S.who+tid];S.asked[S.who+tid]=1;tick(1);addLog('헤일',t.q);
+ if(t.stmt){S.stmt[S.who]=t.stmt;const st=STMT[t.stmt];if(st.card)card(st.card,1);return render();}
+ t.a.forEach(x=>addLog(p.name,x));if(t.after)addLog(t.after[0],t.after[1]);
+ if(t.give)t.give.forEach(c=>card(c));
+ if(t.flag==='gate'&&first){S.f.gate=1;toast('바탕화면','"출입 기록"이 추가되었습니다.');}
+ render();if(t.act==='report')reportModal();}
+function presentModal(sid){modal(`<h2>증거 제시</h2><p>"${esc(STMT[sid].text)}"</p>${[...S.cards].map(c=>`<div class="btns" style="margin:4px 0"><button class="btn" data-act="pick" data-s="${sid}" data-id="${c}">${esc(CARD[c])}</button></div>`).join('')||'<p class="muted">제시할 증거가 없습니다.</p>'}<div class="btns"><button class="btn" data-act="mclose">취소</button></div>`);}
+function pick(sid,c){closeModal();const st=STMT[sid],p=PEOPLE[st.who];tick(1);
+ if(c!==st.ok){addLog(p.name,RETORT[st.who]);return render();}
+ addLog(st.hit[0],st.hit[1]);
+ if(st.next){S.stmt[st.who]=st.next;}else{delete S.stmt[st.who];}
+ if(st.broke){S.f[st.broke]=1;(st.after||[]).forEach(([w,t])=>addLog(w,t));}
+ render();}
+
+/* ===== 이벤트 ===== */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const a=el.dataset.act,id=el.dataset.id;
+ switch(a){
+ case'start':$('#app').hidden=false;closeModal();S.t0=Date.now();render();setTimeout(()=>toast('구재하','헤일 씨, 금요일에 확인해 주신 대로 9시 반에 진행할게요.',1),900);break;
+ case'open':openDoc(id);break;
+ case'focus':S.prev=S.focus;S.focus=id;render();break;
+ case'close':S.open=S.open.filter(x=>x!==id);if(S.focus===id)S.focus=S.prev&&S.open.includes(S.prev)?S.prev:S.open[S.open.length-1]||null;if(S.prev===id||S.prev===S.focus)S.prev=S.open.filter(x=>x!==S.focus).pop()||null;render();break;
+ case'split':S.split=!S.split;if(!S.prev||S.prev===S.focus)S.prev=S.open.filter(x=>x!==S.focus).pop()||null;render();break;
+ case'pin':card(id);render();break;
+ case'cell':{S.sel[el.dataset.doc]=el.dataset.a;if(el.dataset.doc==='copy'){const m=el.dataset.a.match(/^([A-Z])(\d+)$/),c=copyCell(+m[2],m[1]);
+  if(c&&c.f)once('o_fx',()=>{card('formula');say('이 칸은 직접 쓴 게 아니야. 공식 관리대장 값을 그대로 끌어오고 있어.');});
+  if(c&&!c.f&&+m[2]===17&&'DEH'.includes(m[1])&&S.cards.has('formula'))once('o_fx17',()=>say('그런데 17행은 직접 입력돼 있네. 공식 대장엔 이 줄이 없다는 뜻인가?'));}
+  render();break;}
+ case'unrow':S.f.row17=1;tick(1);card('row17');say('17행… 내 노트북이 왜 여기 있어? 9시 30분 초기화?');render();break;
+ case'uncol':S.f.colG=1;tick(1);say('"확인 메모"… 누군가 나한테 뭘 보라고 하는 것 같아.');render();break;
+ case'props':S.f.showProps=!S.f.showProps;if(S.f.showProps){card('props');once('o_props',()=>say('18시 10분… 그때 나, 회의실에서 바로 그 PC로 화면 공유하고 있었는데. 설마 내가 만든 거야?'));}render();break;
+ case'pw':{const v=($('#pwin').value||'').toUpperCase().replace(/[\s-]/g,'');tick(1);if(v==='EQ0917'){S.f.ledger=1;render();say('공식 대장엔 17행이 없어. 그런데 EQ-0917을 폐기로 바꾼 사람이… 나?');}else{render();$('#pwmsg').textContent='암호가 맞지 않습니다.';}break;}
+ case'sheet':S.sheet=el.dataset.s;render();break;
+ case'mail':S.mail=id;if(!S.read.has(id)){S.read.add(id);tick(1);}render();break;
+ case'chat':S.chat=id;if(id==='jaeha')once('o_msg',()=>say('금요일 8시 16분에 내가 보냈다고? 그 시간엔 집에서 드라마 보고 있었는데.'));render();break;
+ case'nope':toast('공유 폴더','이 폴더에 접근할 권한이 없습니다.');break;
+ case'logout':S.f.logout=1;say('늦었지만… 로그아웃.');render();break;
+ case'who':S.who=id;render();break;
+ case'ask':ask(id);break;
+ case'present':presentModal(id);break;
+ case'pick':pick(el.dataset.s,id);break;
+ case'hint':hintModal();break;
+ case'hintnext':{const s=stage();S.hl[s]=(S.hl[s]||0)+1;S.hints++;hintModal();break;}
+ case'cards':cardsModal();break;
+ case'submit':submit();break;
+ case'end':ending(+el.dataset.i);break;
+ case'mclose':closeModal();render();break;}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pwin')$('[data-act=pw]').click();if(e.key==='Escape'&&!$('#modal').hidden&&$('#app').hidden===false&&!$('.intro'))closeModal();});
+
+$('#modal').innerHTML=`<div class="intro"><h1>18시 10분의 헤일</h1><div class="ep">퇴근 5분 전: 사건 파일 · 정식 1화</div><p>월요일 아침 8시 47분.
+출근하자마자 바탕화면에 처음 보는 파일이 있다.
+작성자는 나, 헤일. 나는 이 파일을 만든 적이 없다.
+
+그리고 9시 30분, 무언가가 지워진다.</p><div class="btns"><button class="btn main" data-act="start">출근하기</button></div><p class="muted">PC 화면에 맞춰 만들었습니다. 막히면 상단의 💡 힌트를 쓰세요.</p></div>`;
+</script>
+</body>
+</html>
