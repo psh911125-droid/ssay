@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>안개등 여관 — 퇴근 5분 전</title>
+<title>안개등 여관 — 출근 5분 후</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -33,17 +33,40 @@ ol.clues{margin:0;padding-left:26px}
 ol.clues li{padding:4px 2px;cursor:pointer;border-bottom:1px dashed var(--rule)}
 ol.clues li:last-child{border-bottom:0}
 ol.clues li.done{color:#a39985;text-decoration:line-through}
-.gwrap{overflow-x:auto;padding-bottom:4px}
-table.lg{border-collapse:collapse;margin:0 auto;font-size:13px}
-table.lg th{font-weight:600;color:var(--ink);padding:2px 6px;white-space:nowrap}
-table.lg thead th{vertical-align:bottom;height:112px}
-table.lg thead th span{writing-mode:vertical-rl;transform:rotate(180deg);display:inline-block}
-table.lg thead th.grp{height:auto;font-size:12px;color:var(--sub);font-weight:400;border-bottom:0}
-table.lg th.rl{text-align:right}
-.cell{width:30px;height:30px;border:1px solid var(--rule);background:#f4efe3;text-align:center;cursor:pointer;font-size:17px;line-height:28px;user-select:none}
-.cell.x{color:var(--x)}.cell.o{color:var(--o);font-weight:700;background:#e3ecdf}
-.cell.bl{border-left:2px solid #6d6150}.cell.bt{border-top:2px solid #6d6150}
-td.void{border:0}
+.gtool{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
+.pen{display:inline-flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden}
+.pen button{min-width:76px;min-height:42px;border:0;background:#f6f1e6;color:var(--ink);font-size:15px;cursor:pointer;padding:4px 12px}
+.pen button+button{border-left:1px solid var(--ink)}
+.pen button.on[data-pen=x]{background:var(--x);color:#fff;font-weight:700}.pen button.on[data-pen=o]{background:var(--o);color:#fff;font-weight:700}
+.gwrap{overflow:auto;max-height:76vh;border:1px solid var(--rule);background:var(--paper);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+table.lg{border-collapse:separate;border-spacing:0;margin:0;font-size:13px}
+table.lg th{font-weight:600;color:var(--ink);background:var(--paper);padding:0 4px;line-height:1.2}
+table.lg thead th{position:sticky;z-index:2}
+table.lg tr.gh th{top:0;height:24px;font-size:12px;color:var(--sub);font-weight:600;border-bottom:1px solid var(--rule)}
+table.lg tr.ch th{top:24px;height:40px;font-size:12px;letter-spacing:-.3px;white-space:nowrap;text-align:center;vertical-align:middle;border-bottom:2px solid #6d6150;min-width:36px}
+table.lg th.corner{left:0;top:0;z-index:4;text-align:left;vertical-align:bottom;padding:4px 8px;border-bottom:2px solid #6d6150;border-right:2px solid #6d6150}
+table.lg th.rl{position:sticky;left:0;z-index:1;text-align:right;padding:0 8px;white-space:nowrap;border-right:2px solid #6d6150;border-bottom:1px solid var(--rule)}
+table.lg .gR{background:#eadfc5}table.lg .gT{background:#dde6dc}table.lg .gI{background:#e8dde6}table.lg .gP{background:var(--paper)}
+table.lg th.hl{background:var(--lamp)!important;color:#22190a}
+.cell{width:36px;min-width:36px;height:34px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);background:#f4efe3;text-align:center;cursor:pointer;font-size:17px;user-select:none;-webkit-tap-highlight-color:transparent}
+.cell.hx{box-shadow:inset 0 0 0 99px rgba(226,162,59,.16)}
+.cell.x{color:var(--x)}.cell.xa{opacity:.5}.cell.o{color:var(--o);font-weight:700;background:#e3ecdf}
+.bl{border-left:2px solid #6d6150!important}.bt{border-top:2px solid #6d6150!important}
+td.void{background:var(--paper)}
+.tale>summary{color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;list-style:none;cursor:pointer}
+.tale summary::-webkit-details-marker{display:none}
+.tale summary h2{margin:0}
+.tale[open] summary{margin-bottom:10px}
+.tale-b p{font-family:"Noto Serif KR",Batang,serif;font-size:15.5px;line-height:1.85;margin:0 0 12px;word-break:keep-all}
+.tale-b p.lead{font-family:inherit;font-size:14.5px;border-left:3px solid var(--lamp);padding-left:10px}
+.rule{margin:4px 0 8px}
+.nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn.ghost{border-color:#5b6670;color:#d9cfbb}.btn.sm{padding:3px 10px;margin-left:6px}
+.lvlist{display:grid;gap:8px;margin-top:6px}
+.lv{display:grid;grid-template-columns:1fr auto;grid-template-areas:"n s" "d a";gap:2px 12px;text-align:left;border:1px solid var(--rule);background:#f6f1e6;color:var(--ink);border-radius:4px;padding:10px 14px;cursor:pointer;font:inherit}
+.lv:hover{border-color:var(--ink)}
+.lvn{grid-area:n;font-weight:700}.lvd{grid-area:d;color:var(--sub);font-size:13px}.lvs{grid-area:s;justify-self:end;font-size:13px;border-radius:99px;padding:0 10px;border:1px solid var(--rule)}.lva{grid-area:a;justify-self:end;font-size:13px;color:var(--sub)}
+.lv.going .lvs{background:#f3e2bd;border-color:var(--lampdim)}.lv.done .lvs{background:#d9e7d6;border-color:var(--o);color:var(--o)}
 .ledger{width:100%;border-collapse:collapse;font-size:14px}
 .ledger th,.ledger td{border-bottom:1px solid var(--rule);padding:6px 4px;text-align:left}
 .ledger select{width:100%;padding:4px;border:1px solid var(--rule);background:#f6f1e6;color:var(--ink);border-radius:3px}
@@ -57,12 +80,12 @@ td.void{border:0}
 .row{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
 .row b{display:block;font-size:20px}
 .foot{text-align:center;color:#6f7880;font-size:12.5px;margin-top:30px}
-@media (max-width:560px){h1{font-size:32px}.cell{width:26px;height:26px;line-height:24px;font-size:15px}table.lg thead th{height:96px}}
+@media (max-width:560px){h1{font-size:32px}.wrap{padding-left:10px;padding-right:10px}.card{padding:16px 12px}.cell{width:32px;min-width:32px;height:32px;font-size:15px}table.lg tr.ch th{min-width:32px;font-size:11px;padding:0 1px}table.lg th.rl{white-space:normal;word-break:keep-all;min-width:4.6em;max-width:5em;font-size:12px;padding:0 5px}.gwrap{max-height:70vh}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><a href="./">← 퇴근 5분 전</a><span id="today"></span></div>
+  <div class="top"><a href="./">← 출근 5분 후</a><span id="today"></span></div>
   <div id="app"></div>
   <p class="foot">문제는 날짜마다 자동으로 만들어지고, 답이 하나뿐인지 검증된 것만 나옵니다.</p>
 </div>
@@ -146,67 +169,137 @@ function clueText(k,P){
  return fmt(k.K==='T'?D.clue.earlierC:D.clue.roomLowerC,{A,[k.K]:label(k.K,k.c,P)});}
 function ending(P){const p=P.endRow;return fmt(D.endings[P.endT],{P:label('P',p,P),R:label('R',P.sol.R[p],P),T:label('T',P.sol.T[p],P),I:label('I',P.sol.I[p],P)});}
 
-/* ===== 저장 ===== */
-const KEY='inn_v1';
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{days:{}};}catch(e){return{days:{}};}}
-function save(){if(ST.mode!=='daily')return;try{const s=load();s.days[ST.date]={marks:ST.marks,done:ST.done,ans:ST.ans,tries:ST.tries,solved:ST.solved,ms:elapsed()};localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+/* ===== 날짜·난이도 ===== */
+const LVNAME={1:'입문',2:'쉬움',3:'보통',4:'어려움',5:'매우 어려움'};
+const KN={4:'네',5:'다섯',6:'여섯'};
+const QS=new URLSearchParams(location.search);
+const PREVIEW=(()=>{const d=QS.get('date')||'';return /^\d{4}-\d{2}-\d{2}$/.test(d)&&addDays(d,0)===d?d:null;})(); // 개발자 미리보기(기록 저장 안 함)
+let TODAY=PREVIEW||kstDate();
+/* 기존(평일·요일=난이도) 문제는 예전 시드를 그대로 써서 같은 문제가 나오게 한다 */
+const seedFor=(ds,lv)=>dow(ds)===lv?'inn-'+ds:'inn-'+ds+'-L'+lv;
+const dayNo=ds=>ds<D.launchDate?0:Math.round((parseD(ds)-parseD(D.launchDate))/864e5)+1;
 
-/* ===== 상태·화면 ===== */
-const TODAY=kstDate();
-const ST={mode:'daily',date:TODAY,P:null,marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:''};
+/* ===== 저장 =====
+   inn_v2: {v:2, days:{'YYYY-MM-DD':{'1'..'5':{marks,done,ans,tries,solved,ms,rec,intro}}}}
+   inn_v1(예전 평일 기록)은 지우지 않고, 같은 날짜·같은 난이도(=그날 요일)로만 읽어 온다. */
+const KEY='inn_v2',OLD='inn_v1',UI='inn_ui';
+function loadAll(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.days)return s;}catch(e){}return{v:2,days:{}};}
+function fromOld(ds,lv){if(dow(ds)!==lv)return null;let o=null;try{o=(JSON.parse(localStorage.getItem(OLD))||{}).days;o=o&&o[ds];}catch(e){}if(!o)return null;
+ const e={marks:o.marks||{},done:o.done||{},ans:o.ans||{},tries:o.tries||0,solved:!!o.solved,ms:o.ms||0,from:'v1'};if(e.solved)e.rec={ms:e.ms,tries:e.tries};return e;}
+function getEntry(ds,lv){const s=loadAll();return(s.days[ds]&&s.days[ds][lv])||fromOld(ds,lv);}
+function putEntry(ds,lv,e){try{const s=loadAll();(s.days[ds]=s.days[ds]||{})[lv]=e;localStorage.setItem(KEY,JSON.stringify(s));}catch(x){}}
+function statusOf(e){if(!e)return'new';if(e.rec||e.solved)return'done';
+ if(Object.keys(e.marks||{}).length||Object.values(e.ans||{}).some(v=>v!==''&&v!=null)||Object.values(e.done||{}).some(Boolean)||e.tries)return'going';return'new';}
+function uiLoad(){try{return JSON.parse(localStorage.getItem(UI))||{};}catch(e){return{};}}
+function uiSave(o){try{localStorage.setItem(UI,JSON.stringify(Object.assign(uiLoad(),o)));}catch(e){}}
+function save(){if(ST.mode!=='daily'||!ST.P)return;const e={marks:ST.marks,done:ST.done,ans:ST.ans,tries:ST.tries,solved:ST.solved,ms:elapsed(),intro:ST.intro};if(ST.rec)e.rec=ST.rec;putEntry(ST.date,ST.lv,e);}
+
+/* 만든 장부는 그날 하루 동안 이 브라우저에 보관(5단계는 만들 때 시간이 걸릴 수 있음). 내용은 시드로 다시 만든 것과 같다. */
+const CACHE='inn_cache',ENGINE='e1';
+function genCached(seed,lv,ds){let c=null;try{c=JSON.parse(localStorage.getItem(CACHE));}catch(e){}
+ if(!c||c.d!==ds||c.e!==ENGINE)c={d:ds,e:ENGINE,p:{}};const hit=c.p[seed];if(hit&&hit.lv===lv&&hit.clues&&hit.sol)return hit;
+ const P=generate(seed,lv);if(P){c.p[seed]=P;try{localStorage.setItem(CACHE,JSON.stringify(c));}catch(e){}}return P;}
+
+/* ===== 상태 ===== */
+const ST={mode:PREVIEW?'preview':'daily',view:'select',date:TODAY,lv:1,P:null,seed:'',marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:'',rec:null,intro:true,pen:uiLoad().pen==='o'?'o':'x',hl:null,newDay:false};
 const elapsed=()=>ST.ms+(ST.t0&&!ST.solved?Date.now()-ST.t0:0);
 const startClock=()=>{if(!ST.t0&&!ST.solved)ST.t0=Date.now();};
-function startDaily(){const w=dow(TODAY);ST.mode='daily';ST.date=TODAY;if(w===0||w===6){ST.P=null;return render();}
- loading();setTimeout(()=>{ST.P=generate('inn-'+TODAY,w);const s=load().days[TODAY];Object.assign(ST,{marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:''},s||{});render();},40);}
+const BLANK=()=>({marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:'',rec:null,hl:null});
 function loading(){document.getElementById('app').innerHTML=`<header><h1>${esc(D.title)}</h1><p class="tag">뒤섞인 장부를 펼치는 중…</p></header>`;}
-function startPractice(){ST.mode='practice';loading();scrollTo({top:0});setTimeout(()=>{ST.P=generate('practice-'+Date.now(),3);Object.assign(ST,{marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:''});render();},40);}
+function toSelect(){if(ST.view==='play')save();ST.view='select';ST.P=null;ST.newDay=false;ST.mode=PREVIEW?'preview':'daily';ST.date=TODAY;render();scrollTo({top:0});}
+function openLevel(lv){ST.lv=lv;ST.date=TODAY;ST.mode=PREVIEW?'preview':'daily';loading();scrollTo({top:0});
+ setTimeout(()=>{ST.seed=seedFor(ST.date,lv);ST.P=genCached(ST.seed,lv,ST.date);
+  if(!ST.P){document.getElementById('app').innerHTML='<div class="card"><p>장부를 만들지 못했습니다. 새로고침해 주세요.</p></div>';return;}
+  const e=getEntry(ST.date,lv);Object.assign(ST,BLANK());
+  if(e)Object.assign(ST,{marks:e.marks||{},done:e.done||{},ans:e.ans||{},tries:e.tries||0,solved:!!e.solved,ms:e.ms||0,rec:e.rec||null});
+  ST.intro=e&&'intro' in e?!!e.intro:statusOf(e)==='new';
+  ST.view='play';if(e&&e.from==='v1')save();render();},40);}
+function startPractice(){if(ST.view==='play')save();ST.mode='practice';ST.lv=3;loading();scrollTo({top:0});
+ setTimeout(()=>{ST.seed='practice-'+Date.now();ST.P=generate(ST.seed,3);Object.assign(ST,BLANK());ST.intro=true;ST.view='play';render();},40);}
+function replay(){if(!confirm('표와 장부를 비우고 다시 풀까요?\n처음 완료한 기록은 그대로 남습니다.'))return;const rec=ST.rec;Object.assign(ST,BLANK());ST.rec=rec;save();render();scrollTo({top:0});}
 
+/* ===== 도입부 이야기 ===== */
+function storyHTML(P){const S=D.story;if(!S)return`<p>${esc(D.intro)}</p>`;const r=rng(hash('story|'+ST.seed));const n=P.n;
+ const names=range(n).map(p=>label('P',p,P)),items=range(n).map(v=>label('I',v,P));
+ const facts=S.facts.replace(/\{NAMES\}/g,names.join(', ')).replace(/\{N\}/g,KN[n]||n).replace('{F}',label('T',0,P)).replace('{L}',label('T',n-1,P))
+  .replace('{R1}',label('R',0,P)).replace('{R2}',label('R',n-1,P)).replace('{ITEMS}',items.slice(0,-1).join(', ')+', '+fmt('{I:이}',{I:items[n-1]}));
+ const who=shuffle(range(n),r).slice(0,2).map(p=>{const v=D.people[P.people[p]].voices;return v?fmt(pick(v,r),{P:names[p]}):'';}).filter(Boolean);
+ const ps=[pick(S.scene,r)+' '+pick(S.incident,r),facts,who.join(' '),pick(S.request,r)];
+ return ps.map(t=>`<p>${esc(t)}</p>`).join('')+`<p class="lead">${esc(pick(S.lead,r))}</p>`;}
+
+/* ===== 추리 표 ===== */
+const CN={R:'gR',T:'gT',I:'gI',P:'gP'};
+function headTxt(c,v,P){const t=esc(label(c,v,P,1));return c==='I'?t.replace(' ','<br>'):t;}
 function gridHTML(P){const n=P.n,cols=[['R',n],['T',n],['I',n]],rows=[['P',['R','T','I']],['I',['R','T']],['T',['R']]];
- let h='<div class="gwrap"><table class="lg"><thead><tr><th></th>'+cols.map(([c])=>`<th class="grp" colspan="${n}">${D.cats[c].label}</th>`).join('')+'</tr><tr><th></th>';
- cols.forEach(([c])=>range(n).forEach(v=>h+=`<th><span>${esc(label(c,v,P,1))}</span></th>`));h+='</tr></thead><tbody>';
- rows.forEach(([rc,cc],ri)=>range(n).forEach(rv=>{h+=`<tr><th class="rl">${esc(label(rc,rv,P,1))}</th>`;
-  cols.forEach(([c],ci)=>range(n).forEach(cv=>{if(!cc.includes(c)){h+='<td class="void"></td>';return;}const k=rc+rv+'|'+c+cv,m=ST.marks[k]||0;
-   h+=`<td class="cell${m===1?' x':m===2?' o':''}${cv===0&&ci>0?' bl':''}${rv===0&&ri>0?' bt':''}" data-k="${k}" tabindex="0" role="button" aria-label="${esc(label(rc,rv,P,1))}, ${esc(label(c,cv,P,1))}">${m===1?'✕':m===2?'○':''}</td>`;}));
+ let h=`<div class="gtool"><span class="pen" role="group" aria-label="표시 도구"><button data-pen="x" class="${ST.pen==='x'?'on':''}" aria-pressed="${ST.pen==='x'}">✕ 아님</button><button data-pen="o" class="${ST.pen==='o'?'on':''}" aria-pressed="${ST.pen==='o'}">○ 맞음</button></span><span class="muted">같은 칸을 한 번 더 누르면 지워집니다.</span></div>`;
+ h+='<div class="gwrap"><table class="lg"><thead><tr class="gh"><th class="corner" rowspan="2"></th>'+cols.map(([c],ci)=>`<th class="grp ${CN[c]}${ci?' bl':''}" colspan="${n}">${D.cats[c].label}</th>`).join('')+'</tr><tr class="ch">';
+ cols.forEach(([c],ci)=>range(n).forEach(v=>h+=`<th class="col ${CN[c]}${v===0&&ci?' bl':''}" data-col="${c}${v}">${headTxt(c,v,P)}</th>`));h+='</tr></thead><tbody>';
+ rows.forEach(([rc,cc],ri)=>range(n).forEach(rv=>{h+=`<tr><th class="rl ${CN[rc]}${rv===0&&ri?' bt':''}" data-row="${rc}${rv}">${esc(label(rc,rv,P,1))}</th>`;
+  cols.forEach(([c],ci)=>range(n).forEach(cv=>{if(!cc.includes(c)){h+=`<td class="void${rv===0&&ri?' bt':''}"></td>`;return;}const k=rc+rv+'|'+c+cv,m=ST.marks[k]||0;
+   h+=`<td class="cell${m===1?' x':m===3?' x xa':m===2?' o':''}${cv===0&&ci>0?' bl':''}${rv===0&&ri>0?' bt':''}" data-k="${k}" data-r="${rc}${rv}" data-c="${c}${cv}" tabindex="0" role="button" aria-label="${esc(label(rc,rv,P,1))}, ${esc(label(c,cv,P,1))}">${m===1||m===3?'✕':m===2?'○':''}</td>`;}));
   h+='</tr>';}));
  return h+'</tbody></table></div>';}
+function hilite(k){document.querySelectorAll('.lg .hl,.lg .hx').forEach(e=>e.classList.remove('hl','hx'));if(!k)return;const[r,c]=k.split('|');
+ document.querySelectorAll(`.lg [data-row="${r}"],.lg [data-col="${c}"]`).forEach(e=>e.classList.add('hl'));
+ document.querySelectorAll(`.lg td[data-r="${r}"],.lg td[data-c="${c}"]`).forEach(e=>e.classList.add('hx'));}
+/* marks: 1=✕(직접) 2=○ 3=✕(○ 때문에 자동) — ○를 지우면 그 ○ 때문에 생긴 자동 ✕도 정리 */
+function pruneAuto(){const rowO=new Set(),colO=new Set();for(const k in ST.marks)if(ST.marks[k]===2){const[a,b]=k.split('|');rowO.add(a+'|'+b[0]);colO.add(a[0]+'|'+b);}
+ for(const k in ST.marks)if(ST.marks[k]===3){const[a,b]=k.split('|');if(!rowO.has(a+'|'+b[0])&&!colO.has(a[0]+'|'+b))delete ST.marks[k];}}
+function setMark(k,m){const[a,b]=k.split('|');const rc=a[0],rv=a.slice(1),cc=b[0],cv=b.slice(1);const was=ST.marks[k]||0;
+ if(m)ST.marks[k]=m;else delete ST.marks[k];
+ if(m===2)for(let i=0;i<ST.P.n;i++){const k1=rc+rv+'|'+cc+i,k2=rc+i+'|'+cc+cv;if(String(i)!==cv&&!ST.marks[k1])ST.marks[k1]=3;if(String(i)!==rv&&!ST.marks[k2])ST.marks[k2]=3;}
+ if(was===2&&m!==2)pruneAuto();}
+function tap(k){const m=ST.marks[k]||0;if(ST.pen==='x')setMark(k,m===1||m===3?0:1);else setMark(k,m===2?0:2);}
+
+/* ===== 화면 ===== */
 function ledgerHTML(P){const n=P.n,opt=(c,p)=>`<select data-a="${c}${p}" ${ST.solved?'disabled':''}><option value="">—</option>${range(n).map(v=>`<option value="${v}" ${String(ST.ans[c+p])===String(v)?'selected':''}>${esc(label(c,v,P,1))}</option>`).join('')}</select>`;
  return `<table class="ledger"><tr><th>직원</th><th>객실</th><th>점검 시작</th><th>분실물</th></tr>${range(n).map(p=>`<tr><td><b>${esc(label('P',p,P))}</b></td><td>${opt('R',p)}</td><td>${opt('T',p)}</td><td>${opt('I',p)}</td></tr>`).join('')}</table>`;}
-function render(){
- const app=document.getElementById('app'),w=dow(TODAY),no=epNo(TODAY);
- document.getElementById('today').textContent=koDate(TODAY);
- const wk=D.weekly[no?Math.floor((no-1)/5)%D.weekly.length:0];
- let h=`<header><h1>${esc(D.title)}</h1><p class="tag">${esc(D.tagline)}</p>`;
- if(ST.mode==='practice')h+=`<div class="meta">연습 장부<span class="pill">보통</span></div>`;
- else if(ST.P)h+=`<div class="meta">${koDate(TODAY)} ${no?`객실 기록 #${String(no).padStart(3,'0')}`:'공개 전 미리 보기'}<span class="pill">${'●'.repeat(w)}${'○'.repeat(5-w)}</span></div>`;
- h+='</header>';
- h+=`<div class="card story"><b>이번 주 이야기: ${esc(wk.title)}</b><br>${esc(wk.text)}</div>`;
- if(!ST.P){h+=`<div class="card"><h2>오늘은 쉬는 날</h2><p>${esc(D.closed)}</p><div class="btns"><button class="btn main" data-act="practice">연습 장부 풀기</button></div></div>`;app.innerHTML=h;return;}
- const P=ST.P;
- h+=`<div class="card"><h2>오늘 밤의 점검</h2><p>${esc(D.intro)}</p><p class="muted">${esc(D.rule)}</p>
-  <details><summary>푸는 방법</summary><p class="muted">직원마다 객실 하나, 점검 시작 시각 하나, 분실물 하나가 짝지어집니다. 같은 항목을 두 사람이 나눠 갖지 않습니다.<br>아래 표의 칸을 누를 때마다 ✕(아님) → ○(맞음) → 빈칸으로 바뀝니다. 메모는 다 풀었으면 눌러서 지워 두세요.<br>답이 정해지면 맨 아래 장부를 채워 제출합니다.</p></details></div>`;
+const dots=lv=>'●'.repeat(lv)+'○'.repeat(5-lv);
+const mmss=ms=>{const s=Math.round(ms/1000);return Math.floor(s/60)+'분 '+(s%60)+'초';};
+function weekly(){const no=dayNo(TODAY);return D.weekly[no?Math.floor((no-1)/7)%D.weekly.length:0];}
+function headerHTML(meta){return `<header><h1>${esc(D.title)}</h1><p class="tag">${esc(D.tagline)}</p>${meta?`<div class="meta">${meta}</div>`:''}</header>`;}
+function selectHTML(){const no=dayNo(TODAY),wk=weekly();
+ let h=headerHTML(`${koDate(TODAY)} · ${no?`객실 기록 #${String(no).padStart(3,'0')}`:'공개 전 미리 보기'}`);
+ if(PREVIEW)h+=`<div class="card story"><b>개발자 미리보기</b> — ${koDate(PREVIEW)} 장부입니다. 이 화면의 풀이는 저장되지 않습니다. <a href="inn.html">오늘 장부로</a></div>`;
+ h+=`<div class="card story"><b>이번 주 여관에 떠도는 이야기: ${esc(wk.title)}</b><br>${esc(wk.text)}</div>`;
+ h+=`<div class="card"><h2>오늘 밤의 장부</h2><p class="muted">매일 0시(한국 시각)에 난이도마다 서로 다른 장부 5권이 열립니다. 주말과 공휴일에도 열립니다.</p><div class="lvlist">`;
+ for(let lv=1;lv<=5;lv++){const st=statusOf(getEntry(TODAY,lv)),n=LEVEL[lv].n;
+  const tx={new:'미시작',going:'이어하기',done:'오늘 완료'}[st],act={new:'시작',going:'이어서 풀기',done:'다시 보기'}[st];
+  h+=`<button class="lv ${st}" data-lv="${lv}"><span class="lvn">${lv}단계 · ${LVNAME[lv]}</span><span class="lvd">${dots(lv)} · 직원 ${n}명</span><span class="lvs">${tx}</span><span class="lva">${act} →</span></button>`;}
+ h+=`</div><div class="btns"><button class="btn" data-act="practice">연습 장부 풀기 (보통 · 기록 없음)</button></div></div>`;return h;}
+function playHTML(){const P=ST.P,no=dayNo(ST.date);
+ const meta=ST.mode==='practice'?`연습 장부<span class="pill">3단계 · 보통</span>`:`${koDate(ST.date)} ${no?`객실 기록 #${String(no).padStart(3,'0')}`:'공개 전 미리 보기'}<span class="pill">${ST.lv}단계 · ${LVNAME[ST.lv]}</span>`;
+ let h=`<div class="nav"><button class="btn ghost" data-act="back">← 난이도 선택</button>${ST.rec&&!ST.solved?'<span class="muted">오늘 완료한 장부를 다시 푸는 중 · 완료 기록은 유지됩니다</span>':''}</div>`;
+ if(ST.newDay)h+=`<div class="card story"><b>날짜가 바뀌었습니다.</b> 지금 풀던 ${koDate(ST.date)} 장부는 그대로 저장됩니다. <button class="btn lamp sm" data-act="back">오늘 장부 보기</button></div>`;
+ h+=headerHTML(meta);
+ h+=`<details class="card tale" ${ST.intro?'open':''}><summary><h2>오늘 밤의 사건</h2><span class="muted tg">${ST.intro?'접기':'펼치기'}</span></summary><div class="tale-b">${storyHTML(P)}</div>
+  <p class="muted rule">${esc(D.rule)}</p>
+  <details class="how"><summary>푸는 방법</summary><p class="muted">직원마다 객실 하나, 점검 시작 시각 하나, 분실물 하나가 짝지어집니다. 같은 항목을 두 사람이 나눠 갖지 않습니다.<br>추리 표 위에서 ✕(아님) 또는 ○(맞음)를 고른 뒤 칸을 누르세요. 같은 칸을 다시 누르면 지워집니다. ○를 표시하면 같은 줄의 빈칸에 ✕가 흐리게 채워지고, 그 ○를 지우면 함께 사라집니다.<br>다 쓴 메모는 눌러서 지워 둘 수 있습니다. 답이 정해지면 맨 아래 장부를 채워 제출합니다.</p></details></details>`;
  h+=`<div class="card"><h2>직원들의 메모</h2><ol class="clues">${P.clues.map((k,i)=>`<li class="${ST.done[i]?'done':''}" data-c="${i}">${esc(clueText(k,P))}</li>`).join('')}</ol></div>`;
  h+=`<div class="card"><h2>추리 표</h2>${gridHTML(P)}<div class="btns"><button class="btn" data-act="clear" ${ST.solved?'disabled':''}>표 지우기</button></div></div>`;
- if(ST.solved){const sec=Math.round(ST.ms/1000);
-  h+=`<div class="card solved"><h2>장부 복원 완료</h2><p class="end">${esc(ending(P))}</p><div class="row"><div><b>${Math.floor(sec/60)}분 ${sec%60}초</b>걸린 시간</div><div><b>${ST.tries}번</b>제출</div></div>
-   <div class="btns">${ST.mode==='daily'?'<button class="btn lamp" data-act="share">결과 복사</button>':''}<button class="btn" data-act="practice">연습 장부 한 판 더</button></div><p class="muted" id="sharemsg">${ST.mode==='daily'?'내일 밤 0시(한국 시각)에 새 장부가 열립니다.':''}</p></div>`;}
+ if(ST.solved){const first=ST.rec&&(ST.rec.ms!==ST.ms||ST.rec.tries!==ST.tries)?ST.rec:null;
+  h+=`<div class="card solved"><h2>장부 복원 완료</h2><p class="end">${esc(ending(P))}</p><div class="row"><div><b>${mmss(ST.ms)}</b>${first?'이번 풀이':'걸린 시간'}</div><div><b>${ST.tries}번</b>제출</div>${first?`<div><b>${mmss(first.ms)} · ${first.tries}번</b>처음 완료 기록</div>`:''}</div>
+   <div class="btns">${ST.mode==='daily'?'<button class="btn lamp" data-act="share">결과 복사</button><button class="btn" data-act="replay">다시 풀기</button><button class="btn" data-act="back">다른 난이도</button>':''}<button class="btn" data-act="practice">연습 장부 한 판 더</button></div><p class="muted" id="sharemsg">${ST.mode==='daily'?'내일 0시(한국 시각)에 새 장부가 열립니다.':''}</p></div>`;}
  h+=`<div class="card"><h2>점검 장부</h2>${ledgerHTML(P)}${ST.msg?`<div class="msg">${esc(ST.msg)}</div>`:''}${ST.solved?'':`<div class="btns"><button class="btn" data-act="fill">표의 ○로 채우기</button><button class="btn main" data-act="submit">제출하기</button></div>`}</div>`;
- app.innerHTML=h;}
+ return h;}
+function render(){document.getElementById('today').textContent=koDate(TODAY);
+ document.getElementById('app').innerHTML=ST.view==='play'&&ST.P?playHTML():selectHTML();if(ST.view==='play')hilite(ST.hl);}
 
-function setMark(k,m){const[a,b]=k.split('|');const rc=a[0],rv=a.slice(1),cc=b[0],cv=b.slice(1);ST.marks[k]=m;
- if(m===2)for(let i=0;i<ST.P.n;i++){const k1=rc+rv+'|'+cc+i,k2=rc+i+'|'+cc+cv;if(String(i)!==cv&&!ST.marks[k1])ST.marks[k1]=1;if(String(i)!==rv&&!ST.marks[k2])ST.marks[k2]=1;}}
 function submit(){const P=ST.P,n=P.n;startClock();let wrong=0,empty=0;
  for(let p=0;p<n;p++)for(const c of['R','T','I']){const v=ST.ans[c+p];if(v===undefined||v==='')empty++;else if(+v!==P.sol[c][p])wrong++;}
  if(empty){ST.msg=`아직 비어 있는 칸이 ${empty}개 있습니다.`;return render();}
  ST.tries++;
  if(wrong){ST.msg=`${wrong}칸이 기록과 맞지 않습니다. 메모를 다시 대조해 보세요.`;save();return render();}
- ST.ms=elapsed();ST.t0=null;ST.solved=true;ST.msg='';save();render();}
-function share(){const P=ST.P,no=epNo(TODAY),sec=Math.round(ST.ms/1000);
- const t=`${D.title} ${no?'#'+String(no).padStart(3,'0'):koDate(TODAY)} ${'●'.repeat(P.lv)}${'○'.repeat(5-P.lv)}\n🕯️ ${ST.tries}번 만에 복원 · ${Math.floor(sec/60)}분 ${sec%60}초\n${D.url}`;
+ ST.ms=elapsed();ST.t0=null;ST.solved=true;ST.msg='';if(!ST.rec&&ST.mode==='daily')ST.rec={ms:ST.ms,tries:ST.tries};save();render();}
+function share(){const P=ST.P,no=dayNo(ST.date),r=ST.rec||{ms:ST.ms,tries:ST.tries};
+ const t=`${D.title} ${no?'#'+String(no).padStart(3,'0'):koDate(ST.date)} · ${P.lv}단계 ${LVNAME[P.lv]} ${dots(P.lv)}\n🕯️ ${r.tries}번 만에 복원 · ${mmss(r.ms)}\n${D.url}`;
  const done=()=>{const m=document.getElementById('sharemsg');if(m)m.textContent='결과를 복사했습니다.';};
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>prompt('아래 내용을 복사하세요',t));else prompt('아래 내용을 복사하세요',t);}
 
 document.addEventListener('click',e=>{const t=e.target;
- const cell=t.closest('.cell');if(cell&&!ST.solved){startClock();const k=cell.dataset.k;setMark(k,((ST.marks[k]||0)+1)%3);save();return render();}
+ const cell=t.closest('.cell');if(cell){ST.hl=cell.dataset.k;if(ST.solved){hilite(ST.hl);return;}startClock();tap(cell.dataset.k);save();return render();}
+ const pen=t.closest('[data-pen]');if(pen){ST.pen=pen.dataset.pen;uiSave({pen:ST.pen});return render();}
+ const lv=t.closest('[data-lv]');if(lv)return openLevel(+lv.dataset.lv);
  const li=t.closest('li[data-c]');if(li){ST.done[li.dataset.c]=!ST.done[li.dataset.c];save();return render();}
  const b=t.closest('[data-act]');if(!b)return;
  switch(b.dataset.act){
@@ -214,11 +307,22 @@ document.addEventListener('click',e=>{const t=e.target;
   case'fill':for(let p=0;p<ST.P.n;p++)for(const c of['R','T','I'])for(let v=0;v<ST.P.n;v++)if(ST.marks['P'+p+'|'+c+v]===2)ST.ans[c+p]=v;save();render();break;
   case'submit':submit();break;
   case'share':share();break;
+  case'replay':replay();break;
+  case'back':toSelect();break;
   case'practice':startPractice();break;}});
-document.addEventListener('keydown',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();c.click();}});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('tale')){ST.intro=d.open;const tg=d.querySelector('.tg');if(tg)tg.textContent=d.open?'접기':'펼치기';save();}},true);
+document.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});
+document.addEventListener('mouseleave',()=>hilite(ST.hl));
+document.addEventListener('focusin',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});
+document.addEventListener('keydown',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();c.click();return;}
+ if(ST.view==='play'&&!/SELECT|INPUT|TEXTAREA/.test(e.target.tagName)&&(e.key==='x'||e.key==='X'||e.key==='o'||e.key==='O')){ST.pen=e.key.toLowerCase();uiSave({pen:ST.pen});render();}});
 document.addEventListener('change',e=>{const s=e.target.closest('select[data-a]');if(s){startClock();ST.ans[s.dataset.a]=s.value;ST.msg='';save();}});
 window.addEventListener('beforeunload',save);
-if(!D)document.getElementById('app').innerHTML='<p>inn-data.js 파일을 찾을 수 없습니다. 같은 폴더에 올려 주세요.</p>';else startDaily();
+/* 한국 시각 자정이 지나면 새 날짜로 */
+function checkDay(){if(PREVIEW)return;const d=kstDate();if(d===TODAY)return;TODAY=d;
+ if(ST.view==='select'){ST.date=d;render();}else{if(ST.mode==='daily'){ST.newDay=true;save();}render();}}
+setInterval(checkDay,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDay();});
+if(!D)document.getElementById('app').innerHTML='<p>inn-data.js 파일을 찾을 수 없습니다. 같은 폴더에 올려 주세요.</p>';else render();
 </script>
 </body>
 </html>

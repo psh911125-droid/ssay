@@ -124,6 +124,12 @@ textarea{width:100%;min-height:220px;padding:10px;border:1px solid var(--line);b
 .intro .ep{color:var(--sub);margin-bottom:18px}
 .intro p{font-size:15px}
 .intro .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+#guide{margin:8px 12px 0;padding:8px 12px;border-radius:6px;background:var(--info);color:var(--ink);border:1px solid var(--line);font-size:13.5px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+#guide b{color:var(--amber)}#guide .gx{margin-left:auto;background:none;border:1px solid var(--line);border-radius:5px;padding:1px 9px;font-size:12px}
+.brief{margin:0 0 14px;padding-left:18px}.brief li{margin:0 0 5px}
+.box{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:0 0 12px;background:var(--chrome)}
+.box h4{margin:0 0 6px;font-size:13.5px;color:var(--sub);font-weight:600}
+.steps{list-style:none;margin:0;padding:0}.steps li{margin:0 0 4px}.steps .ok{color:var(--xl)}
 /* 오프닝 */
 #op{position:fixed;inset:0;z-index:50;background:#060b0e;color:#cfd8dc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;cursor:pointer;user-select:none;padding:20px}
 #op .mon{width:min(300px,70vw);aspect-ratio:16/10;border:6px solid #1c2429;border-radius:6px;background:#0d1a20;position:relative;transition:background .6s,box-shadow .6s}
@@ -147,11 +153,14 @@ textarea{width:100%;min-height:220px;padding:10px;border:1px solid var(--line);b
   <header id="bar">
     <span class="who">강이안 · 전략분석팀</span>
     <div id="clock"></div>
+    <button data-act="brief">사건 개요</button>
+    <button data-act="goal">조사 목표</button>
     <button data-act="note">수첩</button>
     <button data-act="hint">힌트</button>
     <button data-act="title">메뉴</button>
   </header>
   <nav id="nav"></nav>
+  <div id="guide" hidden></div>
   <main id="main"><div id="icons"></div><div id="winwrap"></div></main>
 </div>
 <div id="modal" hidden></div>
@@ -453,7 +462,7 @@ const WIN={
 
 /* ===== 화면 ===== */
 function render(){
- $('#clock').innerHTML=`${NOW.date} <b>${NOW.time}</b>`;
+ $('#clock').innerHTML=`${NOW.date} <b>${NOW.time}</b>`;guideRender();
  $('#nav').innerHTML=Object.entries(PLACES).map(([k,p])=>`<button data-act="go" data-id="${k}" class="${S.place===k?'on':''}${p.locked?' lock':''}">${p.name}${p.locked?' 🔒':''}</button>`).join('');
  const P=PLACES[S.place];
  if(P.locked){$('#icons').innerHTML='';$('#winwrap').innerHTML=`<div class="empty">${P.name}은(는) 다음 업데이트에서 열립니다.<br>지금은 내 자리와 회의실 2를 조사할 수 있습니다.</div>`;return;}
@@ -475,13 +484,46 @@ function noteHTML(){const t=S.ntab;
 function hintHTML(){const tot=S.hints.reduce((a,b)=>a+b,0);
  return `<h2>힌트</h2><p class="muted">필요한 질문만 여세요. 단계마다 조금씩 구체적입니다. 지금까지 연 힌트: ${tot}개</p>`+HINTS.map((h,i)=>`<div class="hint"><b>${h.q}</b>${S.hints[i]?`<ol>${h.l.slice(0,S.hints[i]).map(x=>`<li>${x}</li>`).join('')}</ol>`:''}${S.hints[i]<3?`<button class="btn" data-act="hopen" data-id="${i}">${S.hints[i]+1}단계 보기</button>`:''}</div>`).join('')+`<p><button class="btn" data-act="mclose">닫기</button></p>`;}
 
+/* ===== 사건 개요 · 조사 목표 (정답이나 시간 트릭은 알려 주지 않는다) ===== */
+const STEPS=[
+ {t:'내 PC에서 의문의 파일을 확인하세요.',how:'[📁 내 네트워크 폴더]에서 이관대상_목록_확인용.xlsx를 여세요.',done:()=>!!S.f.o_copy},
+ {t:'이 파일이 언제, 어디서 만들어졌는지 확인하세요.',how:'파일 창 위쪽의 [파일 정보] 버튼을 누르세요.',done:()=>S.cards.includes('props')},
+ {t:'파일 정보에 적힌 장소를 직접 살펴보세요.',how:'화면 위쪽 탭을 누르면 장소를 옮길 수 있습니다.',done:()=>!!S.f.o_room}];
+const curStep=()=>STEPS.findIndex(x=>!x.done());
+function guideRender(){const g=$('#guide'),i=curStep();
+ if(i<0&&S.f.gdone){g.hidden=true;return;}g.hidden=false;
+ g.innerHTML=i>=0?`<b>지금 할 일 ${i+1}/${STEPS.length}</b><span>${STEPS[i].t}</span><span class="muted">${STEPS[i].how}</span>`
+  :`<b>첫 조사 완료</b><span>이제 자유롭게 조사하세요. 메일·메신저·관리대장·회의실 자료를 서로 비교해 보세요. 막히면 [힌트]를 요청할 수 있습니다.</span><button class="gx" data-act="gdone">닫기</button>`;}
+function briefHTML(first){return `<h2>사건 개요</h2><ul class="brief">
+ <li>나는 <b>강이안</b>, 전략분석팀 직원이다.</li>
+ <li>월요일 오전 <b>08:40</b>. 출근해서 PC를 켰다.</li>
+ <li>내 네트워크 폴더에 처음 보는 엑셀 파일이 동기화되어 있다. 작성자는 <b>내 계정(강이안)</b>. 하지만 나는 이 파일을 만든 기억이 없다.</li>
+ <li>파일에 표시된 만든 시각은 <b>금요일 18:10</b>.</li>
+ <li>오늘 <b>09:30</b>에는 장비 정기 초기화가 예정되어 있다. 초기화가 끝나면 지금 남아 있는 기록을 다시 확인하기 어렵다.</li></ul>
+ <div class="box"><h4>내가 할 일</h4>내 이름으로 남은 이상한 기록이 어떻게 생겼는지, 자료를 직접 비교해 진실을 밝힌다.</div>
+ <div class="box"><h4>첫 행동</h4>${STEPS[0].t} <span class="muted">${STEPS[0].how}</span></div>
+ <div class="box"><h4>조작 방법</h4><ul class="brief" style="margin:0">
+  <li>위쪽 탭: 장소 이동 (지금은 내 자리 · 회의실 2)</li><li>자료 아이콘(PC는 왼쪽, 휴대폰은 위쪽): 그 장소에서 볼 수 있는 자료 열기 — 자료 안의 버튼과 칸도 눌러 볼 수 있습니다.</li>
+  <li>[수첩]: 확인한 사실이 자동으로 쌓이고, 내 기억과 자유 메모를 볼 수 있습니다.</li>
+  <li>[조사 목표]: 지금 할 일과 풀어야 할 질문 · [힌트]: 원할 때만, 질문마다 3단계</li>
+  <li>조사하는 동안 게임 속 시각은 흐르지 않습니다. 진행 상황은 자동 저장됩니다.</li></ul></div>
+ <p>${first?'<button class="btn main" data-act="bstart">조사 시작</button>':'<button class="btn" data-act="mclose">닫기</button>'}</p>`;}
+function goalHTML(){const i=curStep();
+ const qs=['내가 만든 적 없는 이 파일은 누가, 어떻게 내 이름으로 남긴 것일까?','09:30 초기화 전에, 무엇을 지켜야 할까?'];
+ if(S.cards.includes('ledgerlog'))qs.splice(1,0,'금요일 밤, 내 계정으로 공식 관리대장을 바꾼 사람은 누구일까?');
+ return `<h2>조사 목표</h2><div class="box"><h4>지금 할 일</h4>${i>=0?`${STEPS[i].t}<br><span class="muted">${STEPS[i].how}</span>`:'첫 조사를 마쳤습니다. 이제 자유롭게 장소를 오가며 자료를 비교하세요.'}</div>
+ <div class="box"><h4>첫 조사</h4><ul class="steps">${STEPS.map((x,k)=>`<li class="${x.done()?'ok':''}">${x.done()?'✓':'○'} ${x.t}</li>`).join('')}</ul></div>
+ <div class="box"><h4>풀어야 할 질문</h4><ol style="margin:0;padding-left:20px">${qs.map(q=>`<li>${q}</li>`).join('')}</ol></div>
+ <p class="muted">현재 시각 ${NOW.date} ${NOW.time} · 초기화 예정 09:30 · 확인한 기록 ${S.cards.length}개(수첩)</p>
+ <p><button class="btn" data-act="mclose">닫기</button></p>`;}
+
 function titleScreen(){const has=S.started;
  $('#app').hidden=!has;
  modal(`<div class="intro" style="padding:0;box-shadow:none"><h1>마지막 접속자</h1><div class="ep">출근 5분 후 사건 파일 · 1화 프로토타입</div>
- <p>월요일 오전 8시 40분. 강이안의 네트워크 폴더에 처음 보는 엑셀 파일이 있다.<br>작성자는 강이안. 만든 날짜는 금요일 18시 10분.</p>
+ <p>월요일 오전 8시 40분. 강이안의 네트워크 폴더에 처음 보는 엑셀 파일이 있다.<br>작성자는 강이안. 만든 날짜는 금요일 18시 10분.<br>나는 이 파일을 만든 적이 없다.</p>
  <p>오늘 9시 30분에는 장비 정기 초기화가 예정되어 있다.</p>
  <p class="muted">이 게임에는 제한 시간이 없습니다. 조사하는 동안 게임 속 시각은 흐르지 않습니다. 진행 상황은 이 브라우저에 자동 저장됩니다.</p>
- <div class="btns">${has?'<button class="btn main" data-act="resume">이어서 하기</button><button class="btn" data-act="reset">처음부터</button>':'<button class="btn main" data-act="start">조사 시작</button>'}<button class="btn" data-act="replay">오프닝 보기</button><a class="btn" href="./" style="text-decoration:none;color:inherit">사이트로</a></div></div>`);}
+ <div class="btns">${has?'<button class="btn main" data-act="resume">이어서 하기</button><button class="btn" data-act="reset">처음부터</button>':'<button class="btn main" data-act="start">조사 시작</button>'}<button class="btn" data-act="brief">사건 개요</button><button class="btn" data-act="replay">오프닝 보기</button><a class="btn" href="./" style="text-decoration:none;color:inherit">사이트로</a></div></div>`);}
 
 /* ===== 오프닝 (4컷) ===== */
 const OP=[
@@ -512,8 +554,11 @@ document.addEventListener('click',e=>{
  const el=e.target.closest('[data-act]');if(!el)return;
  const act=el.dataset.act,id=el.dataset.id;
  switch(act){
-  case'start':S=fresh();S.opSeen=1;S.started=1;closeModal();$('#app').hidden=false;openWin('folder');save();render();
-   setTimeout(()=>toast('구재하','이안 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다.',1),700);return;
+  case'start':S=fresh();S.opSeen=1;S.started=1;$('#app').hidden=false;openWin('folder');save();render();modal(briefHTML(1));return;
+  case'bstart':closeModal();setTimeout(()=>toast('구재하','이안 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다.',1),700);return;
+  case'brief':modal(briefHTML(0));return;
+  case'goal':modal(goalHTML());return;
+  case'gdone':S.f.gdone=1;break;
   case'resume':closeModal();$('#app').hidden=false;render();return;
   case'reset':if(confirm('저장된 조사 기록과 메모를 지우고 처음부터 시작할까요?')){S=fresh();save();opStart();}return;
   case'replay':opStart();return;
@@ -544,7 +589,7 @@ document.addEventListener('click',e=>{
   case'ntab':S.ntab=id;save();modal(noteHTML());return;
   case'hint':modal(hintHTML());return;
   case'hopen':S.hints[+id]=Math.min(3,S.hints[+id]+1);save();modal(hintHTML());return;
-  case'mclose':closeModal();return;
+  case'mclose':closeModal();if(!S.started)titleScreen();return;
  }
  save();render();
 });

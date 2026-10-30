@@ -230,6 +230,13 @@
       test: ['./test.html']
     });
 
+    // 공개일이 정해진 게임: 공개 전에는 '공개 예정'으로 표시 (cases.js의 opensAt과 같은 날짜로 유지)
+    const openDates = Object.freeze({ case: '2026-11-02' });
+    function kstToday() {
+      try { const s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; } catch {}
+      return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+    }
+
     async function fileIsAvailable(relativePath) {
       // 같은 저장소 안의 실제 HTML 파일만 활성화: 존재하지 않는 게임의 죽은 링크 방지.
       try {
@@ -248,6 +255,14 @@
         card.setAttribute('href', path);
         card.classList.add('is-ready');
         card.setAttribute('aria-label', title + ' 플레이하기');
+        const opens = openDates[card.dataset.game];
+        if (opens && kstToday() < opens) {
+          const [, m, d] = opens.split('-').map(Number);
+          status.textContent = m + '월 ' + d + '일 공개';
+          action.textContent = '공개 예정 ↗';
+          card.setAttribute('aria-label', title + ', ' + m + '월 ' + d + '일 공개 예정');
+          return;
+        }
         status.textContent = '플레이 가능';
         action.textContent = '게임 시작 ↗';
       } else {
