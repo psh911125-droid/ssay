@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마지막 접속자 — 출근 5분 후 사건 파일</title>
+<style>
+:root{--desk:#3d5764;--desk2:#365060;--win:#fff;--chrome:#eef1f3;--line:#d3d9de;--ink:#1d252b;--sub:#5f6d77;--xl:#1f6b47;--xlbg:#e7f1eb;--sel:#cde5d6;--mail:#2a5d8f;--amber:#c9822b;--bad:#b23b3b;--info:#fdf6d8;--shadow:0 6px 24px rgba(10,25,35,.28);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--desk:#1f2d35;--desk2:#1a272e;--win:#1e2428;--chrome:#283035;--line:#3a454c;--ink:#e4e9ec;--sub:#9aa8b1;--xl:#4fb07f;--xlbg:#1f3329;--sel:#2c5a42;--mail:#7fb0e0;--bad:#e07a7a;--info:#3a3520;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:14px/1.55 "Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",system-ui,sans-serif;color:var(--ink);background:var(--desk)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+[hidden]{display:none!important}
+#app{height:100%;display:flex;flex-direction:column}
+#bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:6px 12px;background:var(--desk2);color:#e8eef1;border-bottom:1px solid rgba(255,255,255,.08)}
+#bar .who{font-weight:600;margin-right:auto}
+#bar button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:5px 11px;color:#e8eef1}
+#clock{padding:3px 12px;border-radius:6px;background:rgba(0,0,0,.22);font-variant-numeric:tabular-nums}
+#clock b{font-size:18px}
+#nav{flex:none;display:flex;gap:4px;padding:8px 12px 0;overflow-x:auto}
+#nav button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#eef3f5;border-radius:6px 6px 0 0;padding:6px 14px;white-space:nowrap}
+#nav button.on{background:var(--win);color:var(--ink);font-weight:600}
+#nav button.lock{opacity:.55}
+#main{flex:1;min-height:0;display:grid;grid-template-columns:128px 1fr;gap:10px;padding:10px 12px 12px}
+#icons{display:flex;flex-direction:column;gap:4px;overflow:auto}
+.ico{background:none;border:1px solid transparent;border-radius:6px;color:#f2f6f8;padding:6px 4px;text-align:center;font-size:12px;line-height:1.3}
+.ico span{display:block;font-size:26px;line-height:1.2}
+.ico:hover,.ico.on{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+.ico em{display:inline-block;margin-top:2px;font-style:normal;font-size:10.5px;background:var(--amber);color:#1b1205;border-radius:8px;padding:0 6px}
+#winwrap{min-width:0;min-height:0;display:flex}
+.empty{flex:1;display:grid;place-items:center;color:rgba(255,255,255,.6);text-align:center;padding:20px}
+.pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--win);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.tbar{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;background:var(--chrome);border-bottom:1px solid var(--line);font-size:13px}
+.tbar .t{margin-right:auto;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbar button{background:var(--win);border:1px solid var(--line);border-radius:5px;padding:2px 10px;font-size:12px}
+.pbody{flex:1;overflow:auto;padding:14px 16px}
+.pbody.flush{padding:0}
+h3{margin:0 0 8px;font-size:15px}
+p{margin:0 0 10px;max-width:72ch}
+.muted{color:var(--sub);font-size:12.5px}
+table.t{border-collapse:collapse;font-size:13px;margin:6px 0 10px}
+table.t th,table.t td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+table.t th{background:var(--chrome);font-weight:600;white-space:nowrap}
+.scroll{overflow-x:auto}
+.tool{display:flex;flex-wrap:wrap;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--xlbg);align-items:center;font-size:12.5px}
+.tool button{background:var(--win);border:1px solid var(--line);border-radius:4px;padding:2px 9px}
+.tool button.on{border-color:var(--xl);color:var(--xl);font-weight:600}
+.msgbar{padding:6px 10px;background:var(--info);border-bottom:1px solid var(--line);font-size:12.5px}
+.fbar{display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid var(--line);font-size:13px;font-family:Consolas,"D2Coding",monospace;min-height:30px}
+.fbar .addr{min-width:48px;padding:1px 6px;border:1px solid var(--line);border-radius:3px;text-align:center}
+.fbar i{color:var(--sub)}
+.cmt{margin:6px 10px;padding:6px 10px;background:#fff6c9;color:#3a3200;border:1px solid #e6d27a;border-radius:4px;font-size:13px;max-width:60ch}
+.gwrap{overflow:auto}
+table.grid{border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+table.grid th,table.grid td{border:1px solid var(--line);padding:3px 6px;height:26px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table.grid thead th,table.grid th.rh{background:var(--chrome);color:var(--sub);font-weight:400;text-align:center}
+table.grid th.rh{width:34px}
+table.grid td{cursor:cell}
+table.grid td.hd{font-weight:600;background:var(--xlbg)}
+table.grid td.sel{outline:2px solid var(--xl);outline-offset:-2px;background:var(--sel)}
+table.grid td.bad{color:var(--bad)}
+table.grid td.cm{position:relative}
+table.grid td.cm::after{content:"";position:absolute;top:0;right:0;border:5px solid transparent;border-top-color:#d23;border-right-color:#d23}
+table.grid .gapc{width:7px;min-width:7px;max-width:7px;padding:0;background:var(--chrome);border-left:3px double var(--sub);cursor:col-resize}
+tr.gapr td,tr.gapr th{height:7px;padding:0;background:var(--chrome);border-top:3px double var(--sub)}
+tr.gapr{cursor:row-resize}
+.props{margin:10px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--chrome);font-size:13px;max-width:460px}
+.props div{display:flex;gap:10px}.props div span:first-child{width:96px;flex:none;color:var(--sub)}
+.split2{display:grid;grid-template-columns:minmax(200px,34%) 1fr;height:100%}
+.list{border-right:1px solid var(--line);overflow:auto}
+.list button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 12px}
+.list button.on{background:var(--xlbg)}
+.list button.unread b{color:var(--mail)}
+.list small{display:block;color:var(--sub);font-size:11.5px}
+.mbody{overflow:auto;padding:14px 18px;white-space:pre-wrap}
+.mbody .mh{white-space:normal;border-bottom:1px solid var(--line);margin-bottom:10px;padding-bottom:8px}
+.chat{display:flex;flex-direction:column;gap:6px;padding:14px 16px;overflow:auto}
+.bub{max-width:80%;padding:7px 11px;border-radius:12px;background:var(--chrome)}
+.bub.me{align-self:flex-end;background:var(--xlbg)}
+.bub small{display:block;color:var(--sub);font-size:11px}
+.files button{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 14px}
+.files button:hover{background:var(--chrome)}
+.files small{color:var(--sub);font-size:12px}
+.tag{font-size:11px;background:var(--amber);color:#1b1205;border-radius:8px;padding:0 7px;white-space:nowrap}
+.pw{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pw input{padding:7px 9px;border:1px solid var(--line);border-radius:5px;background:var(--win);color:var(--ink);font:inherit;min-width:180px}
+.btn{background:var(--win);border:1px solid var(--line);border-radius:6px;padding:6px 12px}
+.btn:hover{border-color:var(--xl)}
+.btn.main{background:var(--xl);border-color:var(--xl);color:#fff}
+.err{color:var(--bad);font-size:13px}
+.screen{border-radius:6px;background:#12303a;color:#d9ecef;max-width:520px;overflow:hidden}
+.screen .sc{padding:14px 16px;min-height:180px}
+.screen .task{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#0b2028;font-size:12.5px}
+.screen .task b{font-size:13px;text-align:right;line-height:1.3;font-variant-numeric:tabular-nums}
+.screen .rf{margin-top:10px;font-size:13px}.screen .rf div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #24485a;padding:4px 0}
+.sticker{display:inline-block;margin:6px 0 12px;padding:6px 10px;background:#fbf3c4;color:#3a3200;border-radius:3px;font-size:12.5px;transform:rotate(-1deg)}
+.slide{border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:0 0 12px;max-width:560px;background:var(--win)}
+.slide h4{margin:0 0 8px;font-size:15px}
+.slide .no{float:right;color:var(--sub);font-size:12px}
+.slide ul{margin:0;padding-left:18px}
+.panel{max-width:520px;border-radius:8px;background:#1b2a31;color:#e3edf0;padding:16px}
+.panel .row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #2f444e}
+.panel .row b{min-width:118px;flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+.panel button{margin-top:10px;background:#2f444e;border:0;border-radius:5px;padding:5px 12px;color:#e3edf0}
+#toasts{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:8px;z-index:30;max-width:360px}
+.toast{background:var(--win);color:var(--ink);border-left:4px solid var(--xl);border-radius:6px;padding:9px 12px;box-shadow:var(--shadow);font-size:13.5px;animation:tin .25s ease-out}
+.toast.ev{border-left-color:var(--amber)}
+.toast b{display:block;font-size:12px;color:var(--sub)}
+@keyframes tin{from{transform:translateY(8px);opacity:0}}
+#modal{position:fixed;inset:0;background:rgba(8,18,24,.6);display:grid;place-items:center;z-index:40;padding:16px}
+.mbox{background:var(--win);color:var(--ink);border-radius:10px;box-shadow:var(--shadow);width:min(640px,100%);max-height:90vh;overflow:auto;padding:22px 24px}
+.mbox h2{margin:0 0 12px;font-size:20px}
+.mtabs{display:flex;gap:4px;margin-bottom:12px}
+.mtabs button{background:var(--chrome);border:1px solid var(--line);border-radius:5px;padding:4px 12px}
+.mtabs button.on{border-color:var(--xl);color:var(--xl);font-weight:600}
+.cards{margin:0;padding-left:18px}.cards li{margin:0 0 6px}
+textarea{width:100%;min-height:220px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--win);color:var(--ink);font:inherit;line-height:1.6}
+.hint{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:0 0 10px}
+.hint ol{margin:6px 0;padding-left:20px}
+.intro{width:min(560px,100%);background:var(--win);border-radius:10px;padding:30px 32px;box-shadow:var(--shadow)}
+.intro h1{margin:0 0 2px;font-size:30px;letter-spacing:-.5px}
+.intro .ep{color:var(--sub);margin-bottom:18px}
+.intro p{font-size:15px}
+.intro .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+/* 오프닝 */
+#op{position:fixed;inset:0;z-index:50;background:#060b0e;color:#cfd8dc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;cursor:pointer;user-select:none;padding:20px}
+#op .mon{width:min(300px,70vw);aspect-ratio:16/10;border:6px solid #1c2429;border-radius:6px;background:#0d1a20;position:relative;transition:background .6s,box-shadow .6s}
+#op .mon.lit{background:#9fc4d3;box-shadow:0 0 80px 10px rgba(120,180,205,.25)}
+#op .mon .cur{position:absolute;left:14%;top:30%;width:44%;height:8px;background:#38606f;box-shadow:0 18px 0 #38606f,0 36px 0 #38606f}
+#op .mon .cur::after{content:"";position:absolute;right:-12px;top:36px;width:8px;height:12px;background:#0d1a20;animation:blink 1s steps(1) infinite}
+#op .mon .file{position:absolute;inset:18% 10%;background:#f4f7f8;color:#1d252b;font-size:12px;padding:8px;border-radius:3px;line-height:1.5}
+#op .cap{max-width:30em;text-align:center;font-size:17px;line-height:1.7;min-height:3.4em}
+#op .time{font-size:32px;letter-spacing:2px;font-variant-numeric:tabular-nums}
+#op .ctl{position:absolute;bottom:18px;right:18px;display:flex;gap:8px}
+#op .ctl button{background:transparent;border:1px solid #4a5a62;color:#cfd8dc;border-radius:5px;padding:4px 12px}
+#op .step{position:absolute;bottom:22px;left:20px;font-size:12px;color:#6f8088}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}#op .mon{transition:none}#op .mon .cur::after{animation:none}}
+@media (max-width:760px){#main{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:8px}#icons{flex-direction:row;overflow-x:auto}.ico{min-width:78px}.split2{grid-template-columns:1fr;grid-template-rows:minmax(110px,38%) 1fr}.list{border-right:0;border-bottom:1px solid var(--line)}#bar .who{width:100%}table.grid .gapc{width:12px;min-width:12px;max-width:12px}tr.gapr td,tr.gapr th{height:12px}#toasts{left:10px;right:10px;max-width:none}}
+</style>
+</head>
+<body>
+<div id="op" hidden></div>
+<div id="app" hidden>
+  <header id="bar">
+    <span class="who">강이안 · 전략분석팀</span>
+    <div id="clock"></div>
+    <button data-act="note">수첩</button>
+    <button data-act="hint">힌트</button>
+    <button data-act="title">메뉴</button>
+  </header>
+  <nav id="nav"></nav>
+  <main id="main"><div id="icons"></div><div id="winwrap"></div></main>
+</div>
+<div id="modal" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<script>
+/* =========================================================
+   마지막 접속자 — 1화 프로토타입 (내 자리 · 회의실 2)
+   시간 원칙: 월요일 현재 시각은 08:40 고정. 조사 행동으로 시간이 흐르는 로직 없음.
+   금요일 기록 시각은 아래 데이터의 문자열로만 존재한다.
+   ========================================================= */
+const KEY='last_login_v1';
+const NOW={date:'10/26(월)',time:'08:40'};   // 상수. 어떤 행동도 바꾸지 않는다.
+
+/* ---- 사건 정답·전체 시간표 (다음 단계 확장용, 화면에 출력하지 않음) ----
+ 실제(서버) 시각 기준
+ 금 18:00~18:30 회의실2 회의 (강이안·차서윤·서민재·구재하), 화면 공유 강이안 → 로그아웃 안 함
+ 금 18:32 3F-12 사원증 잠금 해제(차서윤) / 18:33 3F-12 브라우저에 남은 하소은 로그인으로 회의실2 19:00~21:00 예약 / 18:35 3F-12→복합기 출력 대기(차서윤) / 18:36 3F-12 잠금
+ 금 18:40 강이안 퇴장, 18:50 임도건 퇴장 (유다빈 17:5x, 하소은 12:58 퇴장)
+ 금 19:04~19:21 복합기 출력(차서윤 사원증 해제) — 구재하 동석
+ 금 19:10~19:16 서민재: 회의실2 PC, 강이안 세션으로 zip(PC표시 18:14)·사본(PC표시 18:10/18:16) 저장
+ 금 19:31 서민재 퇴장
+ 금 20:02~20:27 구재하 로비 택배 수기 서명
+ 금 20:14 차서윤: 강이안 세션으로 대장 0917 사용→폐기 / 20:16 강이안 계정으로 구재하에게 승인 메시지 / 20:19 폐기 목록 최종 확인
+ 회의실2 PC: 사원증 리더 없음(접속 기록은 계정 기준), PC 시계 1시간 느림(10/22 교체 이후)
+ 정답: 경고 사본=서민재, 대장 조작=차서윤, 보존할 기기=EQ-0917
+------------------------------------------------------------- */
+const ANSWER={warn:'서민재',tamper:'차서윤',keep:'EQ-0917'};
+
+/* ===== 데이터 ===== */
+const ASSETS=[ // 공식 관리대장 현재 값: 자산번호,품목,사용 부서/사용자,상태,초기화 예정,최종 확인자,비고
+['EQ-0204','노트북','경영지원팀 구재하','사용','','구재하',''],
+['EQ-0311','모니터 27"','운영기획팀 공용','사용','','구재하',''],
+['EQ-0412','노트북','홍보팀 유다빈','사용','','구재하',''],
+['EQ-0533','태블릿','사업관리팀 하소은','사용','','구재하',''],
+['EQ-0618','데스크톱','품질관리팀 임도건','사용','','구재하',''],
+['EQ-0702','노트북(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-0788','데스크톱(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-0917','시연용 테스트 PC','운영기획팀 자동화 프로젝트','폐기','10/26 09:30','강이안','시연 원본 실행 로그 보관'],
+['EQ-0955','회의실2 PC','3층 공용','사용','','구재하','10/22 교체'],
+['EQ-1003','노트북','시스템운영팀 서민재','사용','','구재하',''],
+['EQ-1048','모니터 24"','홍보팀 공용','사용','','구재하',''],
+['EQ-1102','노트북','경영지원팀(교체 전)','폐기','10/26 09:30','구재하','교체 완료'],
+['EQ-1120','데스크톱','운영기획팀 차서윤','사용','','구재하',''],
+['EQ-1166','복합기','3층 복사실','사용','','구재하',''],
+['EQ-1189','태블릿','홍보팀 공용','사용','','구재하',''],
+['EQ-1217','노트북','전략분석팀 강이안','사용','','구재하',''],
+['EQ-1240','데스크톱(구형)','반납 보관','폐기','10/26 09:30','구재하','정기 교체'],
+['EQ-1302','노트북','사업관리팀 공용','사용','','구재하',''],
+['EQ-1355','모니터 27"','시스템운영팀','사용','','구재하','']];
+const LEDGER_LOG=[ // 서버 시각
+['10/20(화) 10:12','전체','4분기 정기 초기화 대상 등록','구재하','3F-07'],
+['10/22(목) 15:40','EQ-0917',"비고 '시연 원본 실행 로그 보관' 추가",'서민재','3F-21'],
+['10/23(금) 17:05','EQ-1102','상태 사용 → 폐기, 초기화 예정 10/26 09:30','구재하','3F-07'],
+['10/23(금) 20:14','EQ-0917','상태 사용 → 폐기, 초기화 예정 10/26 09:30','강이안','3F-회의실2'],
+['10/23(금) 20:14','EQ-0917','최종 확인자 구재하 → 강이안','강이안','3F-회의실2'],
+['10/23(금) 20:19','전체','폐기 목록 최종 확인','강이안','3F-회의실2']];
+const RUNS='PPFPPPFPFPPFPPFPPPFFPFPPFPFPFF'; // 원본 로그 결과 (PASS 18 / 30)
+const SCN=['A 결재 상신','B 정산 집계','C 메일 분류'];
+const ERR=['E-204 응답 시간 초과','E-311 데이터 불일치','E-118 실행 중단'];
+
+const MEM=[ // 강이안 본인이 알고 있는 사실
+ '금요일 18:00~18:30 회의실 2에서 4분기 장비 정리 회의에 참석했다. 화면 공유는 내가 했다.',
+ '회의가 끝난 뒤 회의실 2 공용 PC에서 로그아웃하지 않았다.',
+ '금요일 18시 40분쯤 퇴근했고, 주말 동안 회사에 오지 않았다.',
+ '오늘 10시에 성과 평가 회의가 있다. 나는 평가 자료의 숫자를 확인하는 담당이다.'];
+
+const CARD={
+ sticker:'내 노트북 자산번호: EQ-1217',
+ newfile:'내 네트워크 폴더에 새로 동기화된 파일 2개: 이관대상_목록_확인용.xlsx, 0917_원본로그.zip',
+ props:'사본 파일 정보: 작성자 강이안 / 만든 날짜 10/23(금) 18:10 / 수정한 날짜 18:16 / 저장한 PC 3F-회의실2',
+ link:'사본 연결 정보: 원본 공식 관리대장(상태·초기화 예정·최종 확인자) / 파일을 열 때 자동 업데이트 / 마지막 업데이트 10/26(월) 08:40',
+ fx:'사본의 상태(D)·초기화 예정(E)·최종 확인자(H) 칸 수식 예: =공식관리대장!D9',
+ row17:"사본 17행(숨겨져 있었음): EQ-1217 / 노트북 / 전략분석팀 강이안 / 폐기 / 10/26 09:30 / 확인 메모 '09:30 전에 확인할 것'",
+ fx17:'사본 D17 칸: 수식 없이 값 "폐기"가 입력되어 있음',
+ cmt17:"사본 A17 메모: 열쇠는 금요일에 '보존'하기로 한 것의 번호.",
+ g9:"사본 G9 확인 메모(G열은 숨겨져 있었음): 0917. 회의자료와 원본 검증 로그를 비교할 것.",
+ zipprops:'0917_원본로그.zip 파일 정보: 작성자 강이안 / 만든 날짜 10/23(금) 18:14 / 저장한 PC 3F-회의실2',
+ log:'0917_원본로그.zip 안의 기록: EQ-0917 시연 실행 로그 30회분(10/19~10/21), 결과 열 PASS/FAIL. 원본 위치는 EQ-0917 로컬 저장소',
+ ledger:'공식 관리대장(현재): EQ-0917 폐기, 초기화 예정 10/26 09:30, 최종 확인자 강이안 / EQ-1217 사용',
+ ledgerlog:'관리대장 변경 이력(서버 시각): 10/23 20:14 EQ-0917 사용→폐기·최종 확인자→강이안, 20:19 폐기 목록 최종 확인 — 변경자 강이안, 단말 3F-회의실2',
+ it:"IT 공지(월 07:20): 회의실2 PC(10/22 교체)는 시계가 정확히 1시간 느림. 그 PC에 저장한 파일의 만든·수정한 날짜도 1시간 느리게 기록됨. 웹 시스템(관리대장·예약·메신저)·게이트·복합기는 서버 시각",
+ sync:'IT 공지: 개인 네트워크 폴더 동기화가 10/26(월) 07:12에 일괄 완료됨',
+ meeting:"회의록(금 18:35, 구재하): 18:00~18:30 회의실 2, 참석 차서윤·서민재·구재하·강이안 / EQ-0917은 성과 평가 종료 시까지 보존(상태 '사용' 유지) / 대장 상태를 바꾸면 구재하에게 승인 메시지",
+ msg:'내 계정이 보낸 메신저(금 20:16, 받는 사람 구재하): "0917 대장 상태 변경 확인했습니다. 월요일 그대로 진행해 주세요."',
+ seat:'좌석 변경 안내(10/23 금부터): 12번 하소은 → 차서윤, 15번 → 하소은 / PC는 자리에 고정, 단말명 3F-자리번호',
+ att:'금요일 근태: 하소은 부장 오후 반차(13:00~)',
+ rule:'이상 신고 절차: 신고는 프로젝트 책임자에게 자동 전달, 신고자 정보도 표시 / 업무 자동화 프로젝트 책임자 차서윤',
+ dabin:'유다빈 메일(금 15:40): 성과 발표 이미지에 "30건 중 29건 성공, 97%"',
+ soeun:'하소은 메신저(월 08:38): 금요일 저녁 회의실 예약 알림이 자기 이름으로 와 있음. 금요일 1시에 퇴근했다고 함',
+ roomsess:'회의실2 공용 PC: 금요일부터 강이안 계정 로그인 상태 그대로. 사원증 잠금 미지원 PC',
+ roomclk:'회의실2 공용 PC 작업 표시줄 시계: 오전 7:40, 2026-10-26',
+ recent:'회의실2 PC 최근 파일(그 PC 표시 시각, 10/23): 회의자료.pptx 16:58 / 0917_원본로그.zip 18:14 / 이관대상_목록_확인용.xlsx 18:16',
+ slide:'회의자료(4분기 장비 정리): EQ-0917 시연 결과 "30회 중 29회 성공(97%)" — 출처 자동화 프로젝트 성과 보고(운영기획팀 제출본)',
+ resv:'회의실2 지난 예약: 금 19:00~21:00 (제목 없음) 예약자 하소은, 등록 10/23 18:33, 등록 단말 3F-12'
+};
+
+const MAILS=[
+ {id:'it',from:'IT운영팀',subj:'[공지] 주말 서버 점검 결과 및 유의사항',time:'월 07:20',cards:['it','sync'],body:`안녕하세요, IT운영팀입니다.
+주말(10/24~25) 서버 점검이 끝나 아래 사항을 안내드립니다.
+
+1. 그룹웨어 보안 패치 적용
+   첫 로그인 때 비밀번호를 다시 입력해야 할 수 있습니다.
+
+2. 개인 네트워크 폴더 동기화
+   점검 기간에 멈췄던 동기화가 10/26(월) 07:12에 일괄 완료되었습니다.
+   금요일 이후 저장된 파일이 오늘 아침 PC에 새로 나타날 수 있습니다.
+
+3. VPN 접속 주소는 바뀌지 않았습니다.
+
+4. 접수된 장애 처리 현황
+   - 3층 복합기 용지 걸림(10/23 접수): 조치 완료
+   - 3층 회의실2 PC(10/22 교체): 시간대 설정 오류로 PC 시계가 정확히 1시간 느리게 표시됩니다.
+     이 PC에 저장한 파일의 '만든 날짜/수정한 날짜'도 1시간 느리게 기록됩니다.
+     사내 웹 시스템(관리대장·예약·메신저)과 게이트·복합기 기록은 서버 시각을 쓰므로 영향이 없습니다.
+     이번 주 안에 조치하겠습니다.
+
+5. 비밀번호 변경 주기: 90일
+
+문의: 내선 2200`},
+ {id:'menu',from:'총무팀',subj:'10월 4주 식단표',time:'월 07:00',body:`월: 김치볶음밥, 계란국
+화: 돈가스, 우동
+수: 비빔밥
+목: 닭갈비
+금: 짜장면, 탕수육`},
+ {id:'meet',from:'구재하',subj:'[회의록] 10/23(금) 4분기 장비 정리 회의',time:'금 18:35',cards:['meeting'],body:`일시: 10/23(금) 18:00~18:30, 회의실 2
+참석: 차서윤, 서민재, 구재하, 강이안 (화면 공유: 강이안)
+
+1. 4분기 정기 초기화
+   10/26(월) 09:30 일괄 실행. 대상은 공식 관리대장 상태가 '폐기'인 장비.
+
+2. 시연용 테스트 PC(EQ-0917)
+   - 차서윤: 시연이 끝났으니 이번 정리 대상에 포함하자.
+   - 서민재: 원본 실행 로그가 보관되어 있음. 성과 평가가 끝날 때까지 보존해야 함.
+   - 결정: EQ-0917은 성과 평가 종료 시까지 보존(상태 '사용' 유지).
+
+3. 대장 상태를 바꾸면 담당자(구재하)에게 승인 메시지를 보낼 것.
+
+4. 월요일 성과 평가 자료는 금일 18:00 제출 마감(제출 완료).
+
+회의록은 규정상 회의 후 30분 안에 공유합니다.
+- 구재하`},
+ {id:'dogeon',from:'임도건',subj:'RE: 보고서 파일 정리 건',time:'금 16:22',body:`품질관리팀 여러분,
+
+원본은 보존해야 합니다. 잘못된 파일은 정리 대상입니다.
+같은 보고서가 이름만 바뀌어 세 번 저장되어 있습니다. 파일명 규칙을 지켜 주십시오.
+
+첨부: QC_점검보고서_중복본.xlsx
+- 임도건`},
+ {id:'dabin',from:'유다빈',subj:'성과 발표 이미지 공유드려요',time:'금 15:40',cards:['dabin'],body:`차 팀장님, 강이안 씨,
+월요일 성과 발표용 이미지를 공유 폴더에 올렸어요.
+파일명: N_시연결과_홍보이미지.pptx
+
+숫자는 제출된 성과 보고에서 그대로 가져왔어요. "30건 중 29건 성공, 97%"를 크게 넣었습니다.
+이안 씨, 평가 전에 숫자 한 번만 봐 주세요.`},
+ {id:'sec',from:'보안팀',subj:'[필수] 자리 비울 때 화면 잠금 생활화',time:'금 10:00',body:`자리를 비울 때는 반드시 화면을 잠가 주세요. 자리 PC는 사원증을 대면 잠금이 풀립니다.
+회의실 공용 PC는 사원증 잠금을 지원하지 않으니 사용 후 꼭 로그아웃해 주세요.
+로그아웃하지 않은 계정으로 생긴 일은 계정 주인의 책임이 될 수 있습니다.`},
+ {id:'att',from:'인사팀',subj:'[근태] 10/23(금) 부서별 근태 현황',time:'금 09:05',cards:['att'],body:`전략분석팀: 전원 정상 근무
+운영기획팀: 전원 정상 근무
+시스템운영팀: 전원 정상 근무
+경영지원팀: 전원 정상 근무
+사업관리팀: 하소은 부장 오후 반차(13:00~)
+홍보팀·품질관리팀: 전원 정상 근무`},
+ {id:'seat',from:'총무팀',subj:'3층 좌석 변경 안내 (10/23 금요일부터 적용)',time:'목 16:10',cards:['seat'],body:`3층 좌석이 아래와 같이 바뀝니다. 10/23(금) 출근 때부터 적용됩니다.
+
+  05번: 차서윤 → (공석)
+  12번: 하소은 → 차서윤
+  15번: (공석) → 하소은
+  그 밖의 자리는 그대로입니다.
+
+※ 각 자리의 PC 단말명은 '3F-자리번호'입니다. PC는 자리에 고정되어 있습니다.
+※ 이전 사용자의 웹 로그인 정보가 남아 있을 수 있으니, 자리를 옮기기 전에 반드시 로그아웃해 주세요.`},
+ {id:'rule',from:'시스템운영팀',subj:'시스템 이상 신고 처리 절차 안내',time:'10/12',cards:['rule'],body:`시스템 이상 신고는 그룹웨어 [이상 신고] 메뉴에서 접수합니다.
+
+- 접수된 신고는 해당 시스템·프로젝트 책임자에게 자동으로 전달됩니다.
+- 신고자 정보도 책임자에게 함께 표시됩니다.
+
+책임자 현황
+  업무 자동화 프로젝트: 운영기획팀 차서윤 팀장
+  장비 관리대장: 경영지원팀 구재하 과장
+  그룹웨어: 시스템운영팀 서민재 차장`}
+];
+
+const CHATS={
+ jaeha:{name:'구재하',role:'경영지원팀 과장',msgs:[{d:'금 20:16',me:1,t:'0917 대장 상태 변경 확인했습니다. 월요일 그대로 진행해 주세요.'},{d:'금 20:22',t:'넵. 근데 0917은 보존 아니었어요? 뭐 이안 씨가 확인했으면…'},{d:'월 08:31',t:'이안 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다.'}],card:'msg'},
+ soeun:{name:'하소은',role:'사업관리팀 부장',msgs:[{d:'월 08:38',t:'이안 씨, 혹시 이거 뭔지 알아요? 금요일 저녁 회의실 2 예약 알림이 제 이름으로 와 있어요. 저 그날 1시에 퇴근했는데요.'}],card:'soeun'},
+ seoyun:{name:'차서윤',role:'운영기획팀 팀장',msgs:[{d:'월 08:40',t:'이안 씨, 10시 평가 자료 숫자 확인 잘 부탁해요. 끝나면 점심 살게요.'}]},
+ minjae:{name:'서민재',role:'시스템운영팀 차장',msgs:[{d:'금 17:52',t:'회의 때 화면 공유 부탁합니다.'},{d:'금 17:53',me:1,t:'네.'}]}
+};
+
+const PLACES={
+ desk:{name:'내 자리',items:['mail','chat','folder','ledger','sticker']},
+ room:{name:'회의실 2',items:['roompc','handout','resv']},
+ copier:{name:'복사실',locked:1},
+ lobby:{name:'로비',locked:1}};
+const ITEMS={
+ mail:{icon:'✉️',label:'메일'},chat:{icon:'💬',label:'메신저'},folder:{icon:'📁',label:'내 네트워크 폴더'},
+ ledger:{icon:'🗂️',label:'공식 관리대장'},sticker:{icon:'💻',label:'내 노트북'},
+ roompc:{icon:'🖥️',label:'공용 PC'},handout:{icon:'📄',label:'회의자료 출력물'},resv:{icon:'📟',label:'예약 패널'},
+ copyx:{label:'이관대상_목록_확인용.xlsx'},zip:{label:'0917_원본로그.zip'}};
+
+const HINTS=[
+ {q:'사본에 숨겨진 부분이 있나요?',l:['이 표가 처음부터 끝까지 다 보이고 있는지 의심해 보세요.','사본 파일의 행 번호와 열 문자가 빠짐없이 이어지는지 확인하세요.','16행과 18행 사이, F열과 H열 사이에 있는 이중선을 눌러 보세요.']},
+ {q:'잠긴 압축 파일의 비밀번호는?',l:['비밀번호를 알려 주는 말이 사본 어딘가에 남아 있습니다.','숨겨진 행 첫 칸의 메모를 읽고, 금요일에 무엇을 보존하기로 했는지 찾아보세요.','메일함의 금요일 회의록에서 보존하기로 한 장비 번호를 확인하세요.']},
+ {q:'파일에 찍힌 18:10은 믿을 수 있나요?',l:['파일에 찍힌 시각이 어떤 시계로 기록된 것인지 생각해 보세요.','그 파일이 저장된 PC, 그리고 그 PC에 관한 공지를 찾아보세요.','회의실 2 공용 PC 화면의 시계를 화면 위쪽 현재 시각과 비교하고, 메일함 IT운영팀 공지의 4번 항목을 읽어 보세요.']},
+ {q:'사본 속 0917의 상태는 언제의 값인가요?',l:['사본에 보이는 값이 저장할 때 입력된 값인지 생각해 보세요.','사본의 상태 칸을 눌러 수식 표시줄을 보고, 공식 관리대장과 비교하세요.','사본의 [연결 정보]와 공식 관리대장 [변경 이력] 탭의 시각을, 사본의 파일 정보와 함께 확인하세요.']},
+ {q:'회의자료와 원본 로그는 무엇이 다른가요?',l:['숨겨진 메모가 비교하라고 한 두 자료가 무엇인지 확인하세요.','회의실 2의 회의자료와 압축 파일 안의 기록이 각각 무엇을 말하는지 보세요.','원본 로그의 결과 열에서 PASS가 몇 번인지 직접 세어 보세요.']}];
+
+/* ===== 상태 ===== */
+function fresh(){return{v:1,started:0,opSeen:0,place:'desk',win:null,f:{},cards:[],memo:'',hints:[0,0,0,0,0],read:[],sel:{},mail:null,chat:'jaeha',ltab:'main',ntab:'cards'};}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.v===1){const b=fresh();return Object.assign(b,s,{f:s.f||{},sel:s.sel||{}});}}catch(e){}return null;}
+let S=load()||fresh();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+window.LL={get S(){return S},NOW};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(who,t,ev){const box=$('#toasts'),d=document.createElement('div');d.className='toast'+(ev?' ev':'');d.innerHTML=`<b>${esc(who)}</b>${esc(t)}`;box.appendChild(d);while(box.children.length>3)box.firstChild.remove();setTimeout(()=>d.remove(),6000);}
+const say=t=>toast('강이안',t);
+function card(id){if(!S.cards.includes(id)){S.cards.push(id);toast('수첩에 기록',CARD[id],1);}}
+function once(k,fn){if(!S.f['o_'+k]){S.f['o_'+k]=1;fn();}}
+
+/* ===== 시트 ===== */
+function copyCell(r,c){
+ const H={A:'자산번호',B:'품목',C:'사용 부서/사용자',D:'상태',E:'초기화 예정',F:'비고',G:'확인 메모',H:'최종 확인자'};
+ if(r===1)return{v:H[c],hd:1};
+ if(r===17)return({A:{v:'EQ-1217',cm:"열쇠는 금요일에 '보존'하기로 한 것의 번호."},B:{v:'노트북'},C:{v:'전략분석팀 강이안'},D:{v:'폐기'},E:{v:'10/26 09:30'},F:{v:''},G:{v:'09:30 전에 확인할 것'},H:{v:'강이안'}})[c];
+ const i=r<17?r-2:r-3,a=ASSETS[i],lr=i+2;if(!a)return null;
+ return({A:{v:a[0]},B:{v:a[1]},C:{v:a[2]},D:{v:a[3],f:'=공식관리대장!D'+lr},E:{v:a[4],f:'=공식관리대장!E'+lr},F:{v:a[6]},G:{v:r===9?'0917. 회의자료와 원본 검증 로그를 비교할 것.':''},H:{v:a[5],f:'=공식관리대장!F'+lr}})[c];}
+function grid(doc,cols,max,fn,hidR,hidC){
+ const sel=S.sel[doc];let fv='',cm='';
+ if(sel){const m=sel.match(/^([A-Z])(\d+)$/);const c=fn(+m[2],m[1])||{};fv=c.f||c.v||'';cm=c.cm||'';}
+ let h=`<div class="fbar"><span class="addr">${sel||''}</span><i>fx</i><span>${esc(fv)}</span></div>`;
+ if(cm)h+=`<div class="cmt">메모: ${esc(cm)}</div>`;
+ h+='<div class="gwrap"><table class="grid"><thead><tr><th class="rh"></th>';
+ cols.forEach(([k,w])=>{h+=hidC.includes(k)?`<th class="gapc" data-act="uncol" title="열 숨기기 취소"></th>`:`<th style="width:${w}px">${k}</th>`;});
+ h+='</tr></thead><tbody>';
+ for(let r=1;r<=max;r++){
+  if(hidR.includes(r)){h+=`<tr class="gapr" data-act="unrow" title="행 숨기기 취소"><th></th>${cols.map(()=>'<td></td>').join('')}</tr>`;continue;}
+  h+=`<tr><th class="rh">${r}</th>`;
+  cols.forEach(([k])=>{if(hidC.includes(k)){h+='<td class="gapc"></td>';return;}const c=fn(r,k)||{v:''},a=k+r;
+   h+=`<td data-act="cell" data-doc="${doc}" data-a="${a}" class="${c.hd?'hd':''}${sel===a?' sel':''}${c.cm?' cm':''}${c.v==='폐기'?' bad':''}">${esc(c.v)}</td>`;});
+  h+='</tr>';}
+ return h+'</tbody></table></div>';}
+
+/* ===== 창 ===== */
+const PROP=(rows)=>`<div class="props">${rows.map(([a,b])=>`<div><span>${a}</span><span>${b}</span></div>`).join('')}</div>`;
+const WIN={
+ mail:{t:'메일',flush:1,r(){const m=MAILS.find(x=>x.id===S.mail);
+  return `<div class="split2"><div class="list">${MAILS.map(x=>`<button data-act="mail" data-id="${x.id}" class="${S.mail===x.id?'on':''} ${S.read.includes(x.id)?'':'unread'}"><b>${esc(x.subj)}</b><small>${esc(x.from)} · ${x.time}</small></button>`).join('')}</div>
+  <div class="mbody">${m?`<div class="mh"><b>${esc(m.subj)}</b><div class="muted">보낸 사람 ${esc(m.from)} · ${m.time}</div></div>${esc(m.body)}`:'<span class="muted">메일을 선택하세요.</span>'}</div></div>`;}},
+ chat:{t:'메신저',flush:1,r(){const c=CHATS[S.chat];
+  return `<div class="split2"><div class="list">${Object.entries(CHATS).map(([k,x])=>`<button data-act="chat" data-id="${k}" class="${S.chat===k?'on':''}"><b>${x.name}</b><small>${x.role}</small></button>`).join('')}</div>
+  <div class="chat">${c.msgs.map(m=>`<div class="bub ${m.me?'me':''}"><small>${m.me?'나 (강이안 계정)':c.name} · ${m.d}</small>${esc(m.t)}</div>`).join('')}<p class="muted" style="margin-top:10px">직접 묻고 확인하는 대화는 다음 업데이트에서 열립니다.</p></div></div>`;}},
+ folder:{t:'강이안 네트워크 폴더',flush:1,r(){
+  return `<div class="msgbar">IT 동기화: 10/26(월) 07:12 완료</div><div class="files">
+  <button data-act="open" data-id="copyx"><span>📗</span><span>이관대상_목록_확인용.xlsx<br><small>수정한 날짜 10/23(금) 18:16</small></span><span class="tag">새로 동기화됨</span></button>
+  <button data-act="open" data-id="zip"><span>${S.f.zip?'🗜️':'🔒'}</span><span>0917_원본로그.zip<br><small>수정한 날짜 10/23(금) 18:14</small></span><span class="tag">새로 동기화됨</span></button>
+  <button data-act="oldfile"><span>📗</span><span>9월_운영지표_분석.xlsx<br><small>수정한 날짜 10/16(금) 17:20</small></span><span></span></button></div>`;}},
+ copyx:{t:'이관대상_목록_확인용.xlsx',flush:1,back:'folder',r(){
+  const cols=[['A',78],['B',118],['C',170],['D',52],['E',96],['F',160],['G',250],['H',84]];
+  let h=`<div class="msgbar">ⓘ 이 통합 문서에는 다른 문서에 대한 연결이 있습니다. 파일을 열 때 연결된 값을 최신으로 업데이트했습니다.</div>
+  <div class="tool"><button data-act="props" class="${S.f.showProps?'on':''}">파일 정보</button><button data-act="links" class="${S.f.showLinks?'on':''}">연결 정보</button><span class="muted">작성자: 강이안</span></div>`;
+  if(S.f.showProps)h+=PROP([['파일 이름','이관대상_목록_확인용.xlsx'],['작성자','강이안'],['만든 날짜','2026-10-23(금) 18:10'],['수정한 날짜','2026-10-23(금) 18:16'],['저장한 PC','3F-회의실2'],['위치','강이안 네트워크 폴더 (동기화 10/26 07:12)']]);
+  if(S.f.showLinks)h+=PROP([['연결 원본','공식 관리대장 (그룹웨어 › 장비 관리대장)'],['연결된 칸','상태(D), 초기화 예정(E), 최종 확인자(H)'],['업데이트','파일을 열 때 자동'],['마지막 업데이트','2026-10-26(월) 08:40']]);
+  return h+grid('copy',cols,21,copyCell,S.f.row17?[]:[17],S.f.colG?[]:['G']);}},
+ zip:{t:'0917_원본로그.zip',back:'folder',r(){
+  let h=`<div class="tool" style="margin:-14px -16px 12px"><button data-act="zipprops" class="${S.f.zipProps?'on':''}">파일 정보</button></div>`;
+  if(S.f.zipProps)h+=PROP([['파일 이름','0917_원본로그.zip'],['작성자','강이안'],['만든 날짜','2026-10-23(금) 18:14'],['수정한 날짜','2026-10-23(금) 18:14'],['저장한 PC','3F-회의실2']]);
+  if(!S.f.zip)return h+`<p>암호로 보호된 압축 파일입니다.</p><div class="pw"><input id="pwin" placeholder="비밀번호" autocomplete="off" aria-label="비밀번호"><button class="btn main" data-act="pw">열기</button></div><div id="pwerr" class="err"></div>`;
+  let rows='';for(let i=0;i<30;i++){const d=19+Math.floor(i/10),ok=RUNS[i]==='P';
+   rows+=`<tr><td>${i+1}</td><td>10/${d} ${String(9+i%10).padStart(2,'0')}:${['05','20','40'][i%3]}</td><td>${SCN[i%3]}</td><td>${ok?'PASS':'FAIL'}</td><td>${ok?'':ERR[i%3]}</td></tr>`;}
+  return h+`<h3>demo_run_export.csv</h3><p class="muted">EQ-0917 시연 실행 로그 (내보낸 사본)<br>원본 위치: EQ-0917 로컬 저장소 \\logs\\demo_run.log<br>기간: 10/19(월)~10/21(수)</p><div class="scroll"><table class="t"><tr><th>회차</th><th>실행 일시</th><th>시나리오</th><th>결과</th><th>오류</th></tr>${rows}</table></div>`;}},
+ ledger:{t:'그룹웨어 › 장비 관리대장 (읽기 전용)',r(){
+  const tab=S.ltab;let h=`<div class="tool" style="margin:-14px -16px 12px"><button data-act="ltab" data-id="main" class="${tab==='main'?'on':''}">장비 목록</button><button data-act="ltab" data-id="log" class="${tab==='log'?'on':''}">변경 이력</button><span class="muted">서버 시각 기준</span></div>`;
+  if(tab==='main')return h+`<div class="scroll"><table class="t"><tr><th>행</th><th>자산번호</th><th>품목</th><th>사용 부서/사용자</th><th>상태</th><th>초기화 예정</th><th>최종 확인자</th><th>비고</th></tr>${ASSETS.map((a,i)=>`<tr><td class="muted">${i+2}</td><td>${a[0]}</td><td>${esc(a[1])}</td><td>${a[2]}</td><td${a[3]==='폐기'?' style="color:var(--bad)"':''}>${a[3]}</td><td>${a[4]}</td><td>${a[5]}</td><td>${a[6]}</td></tr>`).join('')}</table></div>`;
+  return h+`<div class="scroll"><table class="t"><tr><th>일시(서버)</th><th>자산번호</th><th>변경 내용</th><th>변경자</th><th>접속 단말</th></tr>${LEDGER_LOG.map(x=>`<tr>${x.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;}},
+ sticker:{t:'내 노트북',r(){return `<p>책상 위 업무용 노트북. 바닥에 자산 스티커가 붙어 있다.</p><div class="sticker">자산번호 EQ-1217<br>노트북 · 전략분석팀 강이안</div>`;}},
+ roompc:{t:'회의실 2 공용 PC (3F-회의실2)',r(){
+  return `<div class="screen"><div class="sc"><div class="muted" style="color:#9fbfca">로그인 사용자: 강이안 (전략분석팀)</div><div class="rf"><b>최근 파일</b>
+  <div><span>0917_원본로그.zip</span><span>2026-10-23 18:14</span></div>
+  <div><span>이관대상_목록_확인용.xlsx</span><span>2026-10-23 18:16</span></div>
+  <div><span>4분기_장비정리_회의자료.pptx</span><span>2026-10-23 16:58</span></div></div></div>
+  <div class="task"><span>🪟 3F-회의실2</span><b>오전 7:40<br>2026-10-26</b></div></div>
+  <div class="sticker" style="margin-top:12px">공용 PC · 사원증 잠금 미지원 · 사용 후 반드시 로그아웃</div>`;}},
+ handout:{t:'회의자료 출력물 (테이블 위)',r(){
+  return `<p class="muted">금요일 회의 때 나눠 준 출력물이 테이블에 남아 있다.</p>
+  <div class="slide"><span class="no">1</span><h4>4분기 장비 정리 회의</h4>10/23(금) 18:00, 회의실 2<br>작성: 경영지원팀</div>
+  <div class="slide"><span class="no">2</span><h4>정기 초기화 일정</h4><ul><li>10/26(월) 09:30 일괄 실행</li><li>대상: 공식 관리대장 상태가 '폐기'인 장비</li></ul></div>
+  <div class="slide"><span class="no">3</span><h4>EQ-0917 시연용 테스트 PC</h4><ul><li>업무 자동화 프로젝트 시연 완료 (10/19~10/21)</li><li>시연 결과: 30회 중 29회 성공 (97%)</li><li>출처: 자동화 프로젝트 성과 보고 (운영기획팀 제출본)</li><li>안건: 이번 정리 대상 포함 여부</li></ul></div>`;}},
+ resv:{t:'회의실 2 예약 패널 (문 옆)',r(){
+  let h=`<div class="panel"><b>회의실 2</b> · 오늘 ${NOW.date}<div class="row"><b>10:00~11:00</b><span>성과 평가 (예약자 차서윤)</span></div>`;
+  if(!S.f.past)return h+`<button data-act="past">지난 예약 보기</button></div>`;
+  return h+`<div style="margin-top:14px"><b>지난 예약</b></div>
+  <div class="row"><b>금 14:00~15:00</b><span>홍보팀 주간회의 · 예약자 유다빈 · 등록 10/20 09:12 · 단말 3F-31</span></div>
+  <div class="row"><b>금 18:00~18:30</b><span>4분기 장비 정리 회의 · 예약자 구재하 · 등록 10/21 11:02 · 단말 3F-07</span></div>
+  <div class="row"><b>금 19:00~21:00</b><span>(제목 없음) · 예약자 하소은 · 등록 10/23 18:33 · 단말 3F-12</span></div></div>`;}}
+};
+
+/* ===== 화면 ===== */
+function render(){
+ $('#clock').innerHTML=`${NOW.date} <b>${NOW.time}</b>`;
+ $('#nav').innerHTML=Object.entries(PLACES).map(([k,p])=>`<button data-act="go" data-id="${k}" class="${S.place===k?'on':''}${p.locked?' lock':''}">${p.name}${p.locked?' 🔒':''}</button>`).join('');
+ const P=PLACES[S.place];
+ if(P.locked){$('#icons').innerHTML='';$('#winwrap').innerHTML=`<div class="empty">${P.name}은(는) 다음 업데이트에서 열립니다.<br>지금은 내 자리와 회의실 2를 조사할 수 있습니다.</div>`;return;}
+ $('#icons').innerHTML=P.items.map(id=>{const it=ITEMS[id];const nw=id==='folder'&&!S.f.seenFolder?'<em>새 파일</em>':id==='mail'&&MAILS.some(m=>!S.read.includes(m.id))?'<em>안 읽음</em>':'';
+  const on=S.win===id||(WIN[S.win]&&WIN[S.win].back===id);return `<button class="ico${on?' on':''}" data-act="open" data-id="${id}"><span>${it.icon}</span>${it.label}${nw?'<br>'+nw:''}</button>`;}).join('');
+ const W=WIN[S.win];
+ if(!W||!(P.items.includes(S.win)||P.items.includes(W.back))){$('#winwrap').innerHTML=`<div class="empty">${S.place==='desk'?'왼쪽에서 조사할 것을 고르세요.':'회의실 2. 주말 동안 아무도 쓰지 않은 듯 조용하다.'}<br><span style="font-size:12.5px">시간 제한은 없습니다. 천천히 살펴보세요.</span></div>`;return;}
+ $('#winwrap').innerHTML=`<div class="pane"><div class="tbar"><span class="t">${esc(W.t)}</span>${W.back?`<button data-act="open" data-id="${W.back}">← 폴더</button>`:''}<button data-act="close">닫기</button></div><div class="pbody${W.flush?' flush':''}">${W.r()}</div></div>`;}
+
+function modal(html){const m=$('#modal');m.innerHTML=`<div class="mbox" role="dialog" aria-modal="true">${html}</div>`;m.hidden=false;}
+function closeModal(){$('#modal').hidden=true;$('#modal').innerHTML='';}
+
+function noteHTML(){const t=S.ntab;
+ let b=`<h2>수첩</h2><div class="mtabs"><button data-act="ntab" data-id="cards" class="${t==='cards'?'on':''}">기록 ${S.cards.length}</button><button data-act="ntab" data-id="mem" class="${t==='mem'?'on':''}">내 기억</button><button data-act="ntab" data-id="memo" class="${t==='memo'?'on':''}">자유 메모</button></div>`;
+ if(t==='cards')b+=S.cards.length?`<ol class="cards">${S.cards.map(c=>`<li>${esc(CARD[c])}</li>`).join('')}</ol>`:'<p class="muted">아직 기록이 없습니다. 자료를 열면 확인한 사실이 여기에 남습니다.</p>';
+ if(t==='mem')b+=`<ul class="cards">${MEM.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+ if(t==='memo')b+=`<textarea id="memo" placeholder="생각한 것을 자유롭게 적어 두세요. 자동 저장됩니다.">${esc(S.memo)}</textarea>`;
+ return b+`<p style="margin-top:14px"><button class="btn" data-act="mclose">닫기</button></p>`;}
+function hintHTML(){const tot=S.hints.reduce((a,b)=>a+b,0);
+ return `<h2>힌트</h2><p class="muted">필요한 질문만 여세요. 단계마다 조금씩 구체적입니다. 지금까지 연 힌트: ${tot}개</p>`+HINTS.map((h,i)=>`<div class="hint"><b>${h.q}</b>${S.hints[i]?`<ol>${h.l.slice(0,S.hints[i]).map(x=>`<li>${x}</li>`).join('')}</ol>`:''}${S.hints[i]<3?`<button class="btn" data-act="hopen" data-id="${i}">${S.hints[i]+1}단계 보기</button>`:''}</div>`).join('')+`<p><button class="btn" data-act="mclose">닫기</button></p>`;}
+
+function titleScreen(){const has=S.started;
+ $('#app').hidden=!has;
+ modal(`<div class="intro" style="padding:0;box-shadow:none"><h1>마지막 접속자</h1><div class="ep">출근 5분 후 사건 파일 · 1화 프로토타입</div>
+ <p>월요일 오전 8시 40분. 강이안의 네트워크 폴더에 처음 보는 엑셀 파일이 있다.<br>작성자는 강이안. 만든 날짜는 금요일 18시 10분.</p>
+ <p>오늘 9시 30분에는 장비 정기 초기화가 예정되어 있다.</p>
+ <p class="muted">이 게임에는 제한 시간이 없습니다. 조사하는 동안 게임 속 시각은 흐르지 않습니다. 진행 상황은 이 브라우저에 자동 저장됩니다.</p>
+ <div class="btns">${has?'<button class="btn main" data-act="resume">이어서 하기</button><button class="btn" data-act="reset">처음부터</button>':'<button class="btn main" data-act="start">조사 시작</button>'}<button class="btn" data-act="replay">오프닝 보기</button><a class="btn" href="./" style="text-decoration:none;color:inherit">사이트로</a></div></div>`);}
+
+/* ===== 오프닝 (4컷) ===== */
+const OP=[
+ {mon:'lit',cap:'금요일 밤, 회의실 2.<br>모두 퇴근한 방에 화면 하나가 켜져 있다.'},
+ {mon:'lit cur',cap:'자판 소리가 났다가 멎는다.<br>얼마 뒤, 다시.'},
+ {mon:'',time:'월요일 오전 8:40',cap:''},
+ {mon:'file',cap:'내 이름으로 저장된,<br>내가 만든 적 없는 파일.'}];
+let opi=0;
+function opRender(){const o=OP[opi],el=$('#op');
+ const inner=o.mon.includes('file')?'<div class="file">이관대상_목록_확인용.xlsx<br>작성자: 강이안<br>만든 날짜: 2026-10-23(금) 18:10</div>':o.mon.includes('cur')?'<div class="cur"></div>':'';
+ el.innerHTML=(o.time?`<div class="time">${o.time}</div>`:`<div class="mon ${o.mon.includes('lit')||o.mon.includes('file')?'lit':''}">${inner}</div>`)+`<div class="cap">${o.cap}</div><div class="step">${opi+1} / ${OP.length} · 화면을 누르면 넘어갑니다</div><div class="ctl"><button data-op="skip">건너뛰기</button></div>`;}
+function opStart(){opi=0;$('#op').hidden=false;closeModal();opRender();}
+function opEnd(){$('#op').hidden=true;S.opSeen=1;save();titleScreen();}
+$('#op').addEventListener('click',e=>{if(e.target.closest('[data-op="skip"]'))return opEnd();opi++;opi>=OP.length?opEnd():opRender();});
+
+/* ===== 행동 ===== */
+function openWin(id){
+ S.win=id;
+ if(id==='folder'&&!S.f.seenFolder){S.f.seenFolder=1;card('newfile');}
+ if(id==='copyx')once('copy',()=>say('작성자 강이안. 하지만 나는 이 파일을 만든 적이 없다.'));
+ if(id==='ledger'){S.ltab=S.ltab||'main';if(S.ltab==='main')card('ledger');}
+ if(id==='sticker')card('sticker');
+ if(id==='roompc'){card('roomsess');card('roomclk');card('recent');once('roompc',()=>say('주말 내내 내 계정이 이 PC에 열려 있었다.'));}
+ if(id==='handout')card('slide');
+ if(id==='chat'&&S.chat){const c=CHATS[S.chat];if(c.card)card(c.card);}
+}
+document.addEventListener('click',e=>{
+ const el=e.target.closest('[data-act]');if(!el)return;
+ const act=el.dataset.act,id=el.dataset.id;
+ switch(act){
+  case'start':S=fresh();S.opSeen=1;S.started=1;closeModal();$('#app').hidden=false;openWin('folder');save();render();
+   setTimeout(()=>toast('구재하','이안 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다.',1),700);return;
+  case'resume':closeModal();$('#app').hidden=false;render();return;
+  case'reset':if(confirm('저장된 조사 기록과 메모를 지우고 처음부터 시작할까요?')){S=fresh();save();opStart();}return;
+  case'replay':opStart();return;
+  case'title':titleScreen();return;
+  case'go':S.place=id;if(id==='room')once('room',()=>say('회의실 2. 금요일에 내가 앉았던 자리다.'));break;
+  case'open':openWin(id);break;
+  case'close':S.win=null;break;
+  case'oldfile':say('지난달 분석 보고서다. 금요일 이후로 바뀐 것은 없다.');return;
+  case'mail':{S.mail=id;if(!S.read.includes(id))S.read.push(id);const m=MAILS.find(x=>x.id===id);(m.cards||[]).forEach(card);break;}
+  case'chat':S.chat=id;if(CHATS[id].card)card(CHATS[id].card);break;
+  case'props':S.f.showProps=!S.f.showProps;if(S.f.showProps){card('props');once('props',()=>say('금요일 18시 10분. 그때 나는 이 회의실 2 PC로 화면을 공유하고 있었다.'));}break;
+  case'links':S.f.showLinks=!S.f.showLinks;if(S.f.showLinks)card('link');break;
+  case'zipprops':S.f.zipProps=!S.f.zipProps;if(S.f.zipProps)card('zipprops');break;
+  case'unrow':S.f.row17=1;card('row17');once('row17',()=>say('EQ-1217. 내 노트북이다. 오늘 9시 30분에 초기화?'));break;
+  case'uncol':S.f.colG=1;once('colg',()=>say('숨겨진 열이 있었다. "확인 메모".'));break;
+  case'cell':{const d=el.dataset.doc,a=el.dataset.a;S.sel[d]=a;
+   if(d==='copy'){const m=a.match(/^([A-Z])(\d+)$/),c=m[1],r=+m[2];
+    if(a==='A17')card('cmt17');
+    if(a==='D17')card('fx17');
+    if(a==='G9')card('g9');
+    if('DEH'.includes(c)&&r>1&&r!==17)card('fx');}
+   break;}
+  case'pw':{const v=($('#pwin').value||'').toUpperCase().replace(/[\s-]/g,'');
+   if(v==='EQ0917'||v==='0917'){S.f.zip=1;card('log');say('시연 기록이다. 서른 줄.');}else{$('#pwerr').textContent='비밀번호가 올바르지 않습니다. 횟수 제한은 없습니다.';return;}break;}
+  case'ltab':S.ltab=id;if(id==='log'){card('ledgerlog');once('llog',()=>say('금요일 20시 14분, 변경자 강이안. 그 시간에 나는 집에 있었다.'));}else card('ledger');break;
+  case'past':S.f.past=1;card('resv');break;
+  case'note':modal(noteHTML());return;
+  case'ntab':S.ntab=id;save();modal(noteHTML());return;
+  case'hint':modal(hintHTML());return;
+  case'hopen':S.hints[+id]=Math.min(3,S.hints[+id]+1);save();modal(hintHTML());return;
+  case'mclose':closeModal();return;
+ }
+ save();render();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pwin'){e.preventDefault();$('[data-act="pw"]').click();}if(e.key==='Escape'&&!$('#modal').hidden&&S.started)closeModal();});
+document.addEventListener('input',e=>{if(e.target.id==='memo'){S.memo=e.target.value;save();}});
+
+/* ===== 시작 ===== */
+if(!S.opSeen)opStart();else titleScreen();
+</script>
+</body>
+</html>
