@@ -53,6 +53,15 @@ table.lg th.hl{background:var(--lamp)!important;color:#22190a}
 .cell.x{color:var(--x)}.cell.xa{opacity:.5}.cell.o{color:var(--o);font-weight:700;background:#e3ecdf}
 .bl{border-left:2px solid #6d6150!important}.bt{border-top:2px solid #6d6150!important}
 td.void{background:var(--paper)}
+.memos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.memo{display:flex;flex-direction:column;gap:4px;font-size:13.5px;font-weight:600;color:var(--sub)}
+.memo textarea{width:100%;min-height:92px;resize:vertical;border:1px solid var(--rule);border-radius:4px;background:#f6f1e6;color:var(--ink);padding:8px 10px;font:inherit;font-size:16px;font-weight:400;line-height:1.5}
+.memo textarea:focus{outline:2px solid var(--lamp);outline-offset:0;background:#fffaf0}
+.help{margin:0 0 8px}.help p{margin:6px 0 0}
+.gridbox>summary{color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;list-style:none;cursor:pointer}
+.gridbox>summary::-webkit-details-marker{display:none}.gridbox>summary h2{margin:0}.gridbox[open]>summary{margin-bottom:10px}
+@media (max-width:760px){.memos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.memos{grid-template-columns:1fr}}
 .tale>summary{color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;list-style:none;cursor:pointer}
 .tale summary::-webkit-details-marker{display:none}
 .tale summary h2{margin:0}
@@ -190,6 +199,10 @@ function getEntry(ds,lv){const s=loadAll();return(s.days[ds]&&s.days[ds][lv])||f
 function putEntry(ds,lv,e){try{const s=loadAll();(s.days[ds]=s.days[ds]||{})[lv]=e;localStorage.setItem(KEY,JSON.stringify(s));}catch(x){}}
 function statusOf(e){if(!e)return'new';if(e.rec||e.solved)return'done';
  if(Object.keys(e.marks||{}).length||Object.values(e.ans||{}).some(v=>v!==''&&v!=null)||Object.values(e.done||{}).some(Boolean)||e.tries)return'going';return'new';}
+/* 추리 메모: 정답·추리표와 완전히 별개. inn_memo_v1 = {날짜:{난이도:{PR,PT,PI,RT,RI,TI}}} */
+const MEMOKEY='inn_memo_v1',MEMOS=[['PR','직원 × 객실'],['PT','직원 × 시간'],['PI','직원 × 분실물'],['RT','객실 × 시간'],['RI','객실 × 분실물'],['TI','시간 × 분실물']];
+function memoLoad(ds,lv){try{const m=JSON.parse(localStorage.getItem(MEMOKEY))||{};return Object.assign({},(m[ds]||{})[lv]||{});}catch(e){return{};}}
+function memoSave(){if(ST.mode!=='daily'||!ST.P)return;try{const m=JSON.parse(localStorage.getItem(MEMOKEY))||{};(m[ST.date]=m[ST.date]||{})[ST.lv]=ST.memo;localStorage.setItem(MEMOKEY,JSON.stringify(m));}catch(e){}}
 function uiLoad(){try{return JSON.parse(localStorage.getItem(UI))||{};}catch(e){return{};}}
 function uiSave(o){try{localStorage.setItem(UI,JSON.stringify(Object.assign(uiLoad(),o)));}catch(e){}}
 function save(){if(ST.mode!=='daily'||!ST.P)return;const e={marks:ST.marks,done:ST.done,ans:ST.ans,tries:ST.tries,solved:ST.solved,ms:elapsed(),intro:ST.intro};if(ST.rec)e.rec=ST.rec;putEntry(ST.date,ST.lv,e);}
@@ -201,7 +214,7 @@ function genCached(seed,lv,ds){let c=null;try{c=JSON.parse(localStorage.getItem(
  const P=generate(seed,lv);if(P){c.p[seed]=P;try{localStorage.setItem(CACHE,JSON.stringify(c));}catch(e){}}return P;}
 
 /* ===== 상태 ===== */
-const ST={mode:PREVIEW?'preview':'daily',view:'select',date:TODAY,lv:1,P:null,seed:'',marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:'',rec:null,intro:true,pen:uiLoad().pen==='o'?'o':'x',hl:null,newDay:false};
+const ST={mode:PREVIEW?'preview':'daily',view:'select',date:TODAY,lv:1,P:null,seed:'',marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:'',rec:null,intro:true,memo:{},gridOpen:false,pen:uiLoad().pen==='o'?'o':'x',hl:null,newDay:false};
 const elapsed=()=>ST.ms+(ST.t0&&!ST.solved?Date.now()-ST.t0:0);
 const startClock=()=>{if(!ST.t0&&!ST.solved)ST.t0=Date.now();};
 const BLANK=()=>({marks:{},done:{},ans:{},tries:0,solved:false,ms:0,t0:null,msg:'',rec:null,hl:null});
@@ -212,10 +225,10 @@ function openLevel(lv){ST.lv=lv;ST.date=TODAY;ST.mode=PREVIEW?'preview':'daily';
   if(!ST.P){document.getElementById('app').innerHTML='<div class="card"><p>장부를 만들지 못했습니다. 새로고침해 주세요.</p></div>';return;}
   const e=getEntry(ST.date,lv);Object.assign(ST,BLANK());
   if(e)Object.assign(ST,{marks:e.marks||{},done:e.done||{},ans:e.ans||{},tries:e.tries||0,solved:!!e.solved,ms:e.ms||0,rec:e.rec||null});
-  ST.intro=e&&'intro' in e?!!e.intro:statusOf(e)==='new';
+  ST.intro=e&&'intro' in e?!!e.intro:statusOf(e)==='new';ST.memo=memoLoad(ST.date,lv);ST.gridOpen=uiLoad().grid===true||Object.keys(ST.marks).length>0;
   ST.view='play';if(e&&e.from==='v1')save();render();},40);}
 function startPractice(){if(ST.view==='play')save();ST.mode='practice';ST.lv=3;loading();scrollTo({top:0});
- setTimeout(()=>{ST.seed='practice-'+Date.now();ST.P=generate(ST.seed,3);Object.assign(ST,BLANK());ST.intro=true;ST.view='play';render();},40);}
+ setTimeout(()=>{ST.seed='practice-'+Date.now();ST.P=generate(ST.seed,3);Object.assign(ST,BLANK());ST.intro=true;ST.memo={};ST.gridOpen=uiLoad().grid===true;ST.view='play';render();},40);}
 function replay(){if(!confirm('표와 장부를 비우고 다시 풀까요?\n처음 완료한 기록은 그대로 남습니다.'))return;const rec=ST.rec;Object.assign(ST,BLANK());ST.rec=rec;save();render();scrollTo({top:0});}
 
 /* ===== 도입부 이야기 ===== */
@@ -224,7 +237,7 @@ function storyHTML(P){const S=D.story;if(!S)return`<p>${esc(D.intro)}</p>`;const
  const facts=S.facts.replace(/\{NAMES\}/g,names.join(', ')).replace(/\{N\}/g,KN[n]||n).replace('{F}',label('T',0,P)).replace('{L}',label('T',n-1,P))
   .replace('{R1}',label('R',0,P)).replace('{R2}',label('R',n-1,P)).replace('{ITEMS}',items.slice(0,-1).join(', ')+', '+fmt('{I:이}',{I:items[n-1]}));
  const who=shuffle(range(n),r).slice(0,2).map(p=>{const v=D.people[P.people[p]].voices;return v?fmt(pick(v,r),{P:names[p]}):'';}).filter(Boolean);
- const ps=[pick(S.scene,r)+' '+pick(S.incident,r),facts,who.join(' '),pick(S.request,r)];
+ const ps=[pick(S.scene,r)+' '+pick(S.incident,r),facts,(S.testimony?pick(S.testimony,r)+' ':'')+who.join(' '),pick(S.request,r)];
  return ps.map(t=>`<p>${esc(t)}</p>`).join('')+`<p class="lead">${esc(pick(S.lead,r))}</p>`;}
 
 /* ===== 추리 표 ===== */
@@ -274,9 +287,13 @@ function playHTML(){const P=ST.P,no=dayNo(ST.date);
  h+=headerHTML(meta);
  h+=`<details class="card tale" ${ST.intro?'open':''}><summary><h2>오늘 밤의 사건</h2><span class="muted tg">${ST.intro?'접기':'펼치기'}</span></summary><div class="tale-b">${storyHTML(P)}</div>
   <p class="muted rule">${esc(D.rule)}</p>
-  <details class="how"><summary>푸는 방법</summary><p class="muted">직원마다 객실 하나, 점검 시작 시각 하나, 분실물 하나가 짝지어집니다. 같은 항목을 두 사람이 나눠 갖지 않습니다.<br>추리 표 위에서 ✕(아님) 또는 ○(맞음)를 고른 뒤 칸을 누르세요. 같은 칸을 다시 누르면 지워집니다. ○를 표시하면 같은 줄의 빈칸에 ✕가 흐리게 채워지고, 그 ○를 지우면 함께 사라집니다.<br>다 쓴 메모는 눌러서 지워 둘 수 있습니다. 답이 정해지면 맨 아래 장부를 채워 제출합니다.</p></details></details>`;
- h+=`<div class="card"><h2>직원들의 메모</h2><ol class="clues">${P.clues.map((k,i)=>`<li class="${ST.done[i]?'done':''}" data-c="${i}">${esc(clueText(k,P))}</li>`).join('')}</ol></div>`;
- h+=`<div class="card"><h2>추리 표</h2>${gridHTML(P)}<div class="btns"><button class="btn" data-act="clear" ${ST.solved?'disabled':''}>표 지우기</button></div></div>`;
+  <details class="how"><summary>푸는 방법</summary><p class="muted">직원마다 객실 하나, 점검 시작 시각 하나, 분실물 하나가 짝지어집니다. 같은 항목을 두 사람이 나눠 갖지 않습니다.<br>직원들의 증언을 대조하며 생각한 것을 추리 메모에 자유롭게 적어 보세요. 칸을 채우듯 정리하고 싶다면 상세 추리표를 열어 ✕와 ○로 표시할 수도 있습니다.<br>다 확인한 증언은 눌러서 지워 둘 수 있습니다. 답이 정해지면 맨 아래 장부를 채워 제출합니다.</p></details></details>`;
+ h+=`<div class="card"><h2>직원들의 증언</h2><ol class="clues">${P.clues.map((k,i)=>`<li class="${ST.done[i]?'done':''}" data-c="${i}">${esc(clueText(k,P))}</li>`).join('')}</ol></div>`;
+ h+=`<div class="card"><h2>추리 메모</h2><details class="help"><summary>추리 메모란?</summary><p class="muted">사건의 단서를 자유롭게 정리하는 공간입니다.<br>메모는 정답에 자동으로 반영되지 않습니다. 쓰는 즉시 이 브라우저에 저장되어, 새로고침하거나 다시 와도 남아 있습니다.</p></details>
+  <div class="memos">${MEMOS.map(([k,t])=>`<label class="memo"><span>${t}</span><textarea data-memo="${k}" rows="4" placeholder="${k==='PR'?'예: '+esc(fmt('{P:은}',{P:label('P',0,P)}))+' '+esc(label('R',0,P))+'가 아님':'자유롭게 적어 두세요'}">${esc(ST.memo[k]||'')}</textarea></label>`).join('')}</div>${ST.mode==='daily'?'':'<p class="muted">연습 장부의 메모는 저장되지 않습니다.</p>'}</div>`;
+ h+=`<details class="card gridbox" ${ST.gridOpen?'open':''}><summary><h2>상세 추리표</h2><span class="muted">${ST.gridOpen?'접기':'필요할 때 열기'}</span></summary>
+  <details class="help"><summary>표 읽는 법</summary><p class="muted">✕는 불가능, ○는 확정, 빈칸은 아직 모르는 관계입니다. 위에서 ✕ 또는 ○를 고르고 칸을 누르세요. 같은 칸을 다시 누르면 표시가 지워집니다. ○를 표시하면 같은 줄의 빈칸에 ✕가 흐리게 채워지고, 그 ○를 지우면 함께 사라집니다.</p></details>
+  ${gridHTML(P)}<div class="btns"><button class="btn" data-act="clear" ${ST.solved?'disabled':''}>표 지우기</button></div></details>`;
  if(ST.solved){const first=ST.rec&&(ST.rec.ms!==ST.ms||ST.rec.tries!==ST.tries)?ST.rec:null;
   h+=`<div class="card solved"><h2>장부 복원 완료</h2><p class="end">${esc(ending(P))}</p><div class="row"><div><b>${mmss(ST.ms)}</b>${first?'이번 풀이':'걸린 시간'}</div><div><b>${ST.tries}번</b>제출</div>${first?`<div><b>${mmss(first.ms)} · ${first.tries}번</b>처음 완료 기록</div>`:''}</div>
    <div class="btns">${ST.mode==='daily'?'<button class="btn lamp" data-act="share">결과 복사</button><button class="btn" data-act="replay">다시 풀기</button><button class="btn" data-act="back">다른 난이도</button>':''}<button class="btn" data-act="practice">연습 장부 한 판 더</button></div><p class="muted" id="sharemsg">${ST.mode==='daily'?'내일 0시(한국 시각)에 새 장부가 열립니다.':''}</p></div>`;}
@@ -310,14 +327,15 @@ document.addEventListener('click',e=>{const t=e.target;
   case'replay':replay();break;
   case'back':toSelect();break;
   case'practice':startPractice();break;}});
-document.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('tale')){ST.intro=d.open;const tg=d.querySelector('.tg');if(tg)tg.textContent=d.open?'접기':'펼치기';save();}},true);
+document.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('gridbox')){ST.gridOpen=d.open;uiSave({grid:d.open});const tg=d.querySelector(':scope>summary .muted');if(tg)tg.textContent=d.open?'접기':'필요할 때 열기';return;}if(d.classList&&d.classList.contains('tale')){ST.intro=d.open;const tg=d.querySelector('.tg');if(tg)tg.textContent=d.open?'접기':'펼치기';save();}},true);
 document.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});
 document.addEventListener('mouseleave',()=>hilite(ST.hl));
 document.addEventListener('focusin',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});
 document.addEventListener('keydown',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();c.click();return;}
  if(ST.view==='play'&&!/SELECT|INPUT|TEXTAREA/.test(e.target.tagName)&&(e.key==='x'||e.key==='X'||e.key==='o'||e.key==='O')){ST.pen=e.key.toLowerCase();uiSave({pen:ST.pen});render();}});
+document.addEventListener('input',e=>{const t=e.target.closest&&e.target.closest('textarea[data-memo]');if(t){ST.memo[t.dataset.memo]=t.value;memoSave();}});
 document.addEventListener('change',e=>{const s=e.target.closest('select[data-a]');if(s){startClock();ST.ans[s.dataset.a]=s.value;ST.msg='';save();}});
-window.addEventListener('beforeunload',save);
+window.addEventListener('beforeunload',()=>{save();memoSave();});
 /* 한국 시각 자정이 지나면 새 날짜로 */
 function checkDay(){if(PREVIEW)return;const d=kstDate();if(d===TODAY)return;TODAY=d;
  if(ST.view==='select'){ST.date=d;render();}else{if(ST.mode==='daily'){ST.newDay=true;save();}render();}}

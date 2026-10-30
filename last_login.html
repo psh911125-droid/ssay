@@ -137,8 +137,18 @@ textarea{width:100%;min-height:220px;padding:10px;border:1px solid var(--line);b
 #op .mon .cur{position:absolute;left:14%;top:30%;width:44%;height:8px;background:#38606f;box-shadow:0 18px 0 #38606f,0 36px 0 #38606f}
 #op .mon .cur::after{content:"";position:absolute;right:-12px;top:36px;width:8px;height:12px;background:#0d1a20;animation:blink 1s steps(1) infinite}
 #op .mon .file{position:absolute;inset:18% 10%;background:#f4f7f8;color:#1d252b;font-size:12px;padding:8px;border-radius:3px;line-height:1.5}
-#op .cap{max-width:30em;text-align:center;font-size:17px;line-height:1.7;min-height:3.4em}
-#op .time{font-size:32px;letter-spacing:2px;font-variant-numeric:tabular-nums}
+#op .cap{max-width:30em;text-align:center;font-size:16px;line-height:1.7;min-height:3.4em;word-break:keep-all}
+#op .panel4{width:min(520px,100%);border:2px solid #2c3b43;border-radius:10px;background:#0a1216;padding:14px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:16px}
+#op .lab{align-self:flex-start;font-size:12px;letter-spacing:.08em;color:#8fa6af;border:1px solid #2c3b43;border-radius:99px;padding:1px 10px}
+#op .scn{position:relative;min-height:200px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#op .office{display:flex;align-items:flex-end;gap:10px}
+#op .office .dm{width:46px;height:32px;border:4px solid #1c2429;border-radius:3px;background:#0d1a20}
+#op .office .room{border:2px dashed #34474f;border-radius:6px;padding:8px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#8fa6af}
+#op .mon.sm{width:90px;border-width:4px}
+#op .sil{position:absolute;bottom:-6px;left:50%;width:150px;height:96px;transform:translateX(-50%);background:radial-gradient(circle at 50% 30%,#05090b 0 26px,transparent 27px),radial-gradient(ellipse 75px 46px at 50% 100%,#05090b 98%,transparent 100%);filter:blur(1.5px)}
+#op .list{position:absolute;inset:12% 7%;background:#f4f7f8;color:#1d252b;border-radius:3px;padding:6px 8px;font-size:11px;line-height:1.6;display:flex;flex-direction:column;text-align:left}
+#op .list em{font-style:normal;font-size:9.5px;background:#c9822b;color:#1b1205;border-radius:6px;padding:0 4px}
+#op .time{font-size:26px;letter-spacing:2px;font-variant-numeric:tabular-nums}
 #op .ctl{position:absolute;bottom:18px;right:18px;display:flex;gap:8px}
 #op .ctl button{background:transparent;border:1px solid #4a5a62;color:#cfd8dc;border-radius:5px;padding:4px 12px}
 #op .step{position:absolute;bottom:22px;left:20px;font-size:12px;color:#6f8088}
@@ -523,20 +533,24 @@ function titleScreen(){const has=S.started;
  <p>월요일 오전 8시 40분. 강이안의 네트워크 폴더에 처음 보는 엑셀 파일이 있다.<br>작성자는 강이안. 만든 날짜는 금요일 18시 10분.<br>나는 이 파일을 만든 적이 없다.</p>
  <p>오늘 9시 30분에는 장비 정기 초기화가 예정되어 있다.</p>
  <p class="muted">이 게임에는 제한 시간이 없습니다. 조사하는 동안 게임 속 시각은 흐르지 않습니다. 진행 상황은 이 브라우저에 자동 저장됩니다.</p>
- <div class="btns">${has?'<button class="btn main" data-act="resume">이어서 하기</button><button class="btn" data-act="reset">처음부터</button>':'<button class="btn main" data-act="start">조사 시작</button>'}<button class="btn" data-act="brief">사건 개요</button><button class="btn" data-act="replay">오프닝 보기</button><a class="btn" href="./" style="text-decoration:none;color:inherit">사이트로</a></div></div>`);}
+ <div class="btns">${has?'<button class="btn main" data-act="resume">이어서 하기</button><button class="btn" data-act="reset">처음부터</button>':'<button class="btn main" data-act="start">조사 시작</button>'}<button class="btn" data-act="brief">사건 개요</button><button class="btn" data-act="replay">컷툰 다시 보기</button><a class="btn" href="./" style="text-decoration:none;color:inherit">사이트로</a></div></div>`);}
 
-/* ===== 오프닝 (4컷) ===== */
+/* ===== 오프닝 (4컷 컷툰) — 범인·실제 생성 시각은 보여 주지 않는다 ===== */
 const OP=[
- {mon:'lit',cap:'금요일 밤, 회의실 2.<br>모두 퇴근한 방에 화면 하나가 켜져 있다.'},
- {mon:'lit cur',cap:'자판 소리가 났다가 멎는다.<br>얼마 뒤, 다시.'},
- {mon:'',time:'월요일 오전 8:40',cap:''},
- {mon:'file',cap:'내 이름으로 저장된,<br>내가 만든 적 없는 파일.'}];
+ {lab:'#1 금요일 밤',sc:'<div class="office"><i class="dm"></i><i class="dm"></i><i class="dm"></i><div class="room"><span>회의실 2</span><div class="mon lit sm"></div></div></div>',
+  cap:'금요일 밤. 사람이 거의 남지 않은 사무실.<br>회의실 2의 공용 컴퓨터만 아직 켜져 있다.'},
+ {lab:'#2 의문의 조작',sc:'<div class="mon lit"><div class="cur"></div></div><div class="sil" aria-hidden="true"></div>',
+  cap:'누군가 그 컴퓨터 앞에 앉는다.<br>자판 소리가 났다가 멎고, 얼마 뒤 다시 이어진다.'},
+ {lab:'#3 월요일 오전',sc:'<div class="time">월요일 오전 08:40</div><div class="mon lit"><div class="list"><b>📁 강이안 네트워크 폴더</b><span>📗 이관대상_목록_확인용.xlsx <em>새로 동기화됨</em></span><span>🔒 0917_원본로그.zip <em>새로 동기화됨</em></span></div></div>',
+  cap:'출근한 강이안이 PC를 켠다.<br>내 폴더에 처음 보는 파일이 들어와 있다.'},
+ {lab:'#4 사건의 시작',sc:'<div class="mon lit"><div class="file">이관대상_목록_확인용.xlsx<br>작성자: 강이안<br>만든 날짜: 2026-10-23(금) 18:10</div></div>',
+  cap:'작성자는 내 계정, 만든 시각은 금요일 18:10.<br>나는 이 파일을 만든 기억이 없다. 이 파일의 정체를 조사하기로 한다.'}];
 let opi=0;
-function opRender(){const o=OP[opi],el=$('#op');
- const inner=o.mon.includes('file')?'<div class="file">이관대상_목록_확인용.xlsx<br>작성자: 강이안<br>만든 날짜: 2026-10-23(금) 18:10</div>':o.mon.includes('cur')?'<div class="cur"></div>':'';
- el.innerHTML=(o.time?`<div class="time">${o.time}</div>`:`<div class="mon ${o.mon.includes('lit')||o.mon.includes('file')?'lit':''}">${inner}</div>`)+`<div class="cap">${o.cap}</div><div class="step">${opi+1} / ${OP.length} · 화면을 누르면 넘어갑니다</div><div class="ctl"><button data-op="skip">건너뛰기</button></div>`;}
+function opRender(){const o=OP[opi],el=$('#op'),last=opi===OP.length-1;
+ el.innerHTML=`<div class="panel4"><div class="lab">${o.lab}</div><div class="scn">${o.sc}</div><div class="cap">${o.cap}</div></div><div class="step">${opi+1} / ${OP.length} · ${last&&!S.started?'누르면 조사를 시작합니다':'화면을 누르면 다음 컷'}</div><div class="ctl"><button data-op="skip">건너뛰기</button></div>`;}
 function opStart(){opi=0;$('#op').hidden=false;closeModal();opRender();}
-function opEnd(){$('#op').hidden=true;S.opSeen=1;save();titleScreen();}
+function beginGame(){S=fresh();S.opSeen=1;S.started=1;$('#app').hidden=false;openWin('folder');save();render();modal(briefHTML(1));}
+function opEnd(){$('#op').hidden=true;if(!S.started){beginGame();return;}S.opSeen=1;save();titleScreen();}
 $('#op').addEventListener('click',e=>{if(e.target.closest('[data-op="skip"]'))return opEnd();opi++;opi>=OP.length?opEnd():opRender();});
 
 /* ===== 행동 ===== */
@@ -554,7 +568,7 @@ document.addEventListener('click',e=>{
  const el=e.target.closest('[data-act]');if(!el)return;
  const act=el.dataset.act,id=el.dataset.id;
  switch(act){
-  case'start':S=fresh();S.opSeen=1;S.started=1;$('#app').hidden=false;openWin('folder');save();render();modal(briefHTML(1));return;
+  case'start':beginGame();return;
   case'bstart':closeModal();setTimeout(()=>toast('구재하','이안 씨, 금요일에 확인해 주신 대로 9시 반에 초기화 진행합니다.',1),700);return;
   case'brief':modal(briefHTML(0));return;
   case'goal':modal(goalHTML());return;

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f7f2">
-  <meta name="description" content="출근하자마자 일하기 싫으니깐.. 한 판 해... 직장인 미니게임, 추리 퍼즐, 성향 테스트를 모아둔 작은 게임 서랍.">
+  <meta name="description" content="출근하자마자 일하기 싫으니깐 한 판 해 — 직장인 미니게임과 추리 퍼즐을 모아둔 작은 게임 서랍">
   <title>출근 5분 후 | 작은 게임 서랍</title>
   <style>
     :root {
@@ -67,7 +67,15 @@
     .card-art.inn { background: #e9e9f5; }
     .card-art.login { background: #202934; }
     .card-art.case { background: #fae5db; }
-    .card-art.test { background: #e3eefa; }
+.card-art.test { background: #e3eefa; }
+    .card-art.lupin { background: #fbefd6; }
+    .lupin-graphic { position: absolute; right: 40px; top: 0; width: 190px; height: 100%; }
+    .lupin-graphic i { position: absolute; width: 26px; height: 32px; background: #fff; border: 2px solid #d9c6a0; border-radius: 3px; box-shadow: 0 -14px 0 -10px rgba(200,70,59,.0); }
+    .lupin-graphic i:nth-child(1) { left: 10px; top: 18px; transform: rotate(-8deg); }
+    .lupin-graphic i:nth-child(2) { left: 84px; top: 46px; border-color: #c8463b; }
+    .lupin-graphic i:nth-child(3) { left: 146px; top: 8px; transform: rotate(6deg); }
+    .lupin-graphic b { position: absolute; left: 112px; bottom: 14px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #1f2a22; background: #fff; }
+    .lupin-graphic b::after { content: ''; position: absolute; left: 1px; top: 17px; width: 13px; height: 22px; background: #2b3a55; border-radius: 2px 2px 0 0; }
     .art-tag { position: relative; z-index: 1; font-size: 10px; letter-spacing: .14em; font-weight: 850; color: rgba(39,55,39,.6); }
     .login .art-tag { color: #a5c2c1; }
     .clock-graphic { position: absolute; right: 32px; top: 23px; width: 120px; height: 120px; border-radius: 50%; border: 9px solid #c3dba6; background: #faffec; box-shadow: 11px 16px 0 rgba(68,89,45,.065); display: grid; place-items: center; font-size: 24px; font-weight: 850; letter-spacing: -1px; color: #526d38; transform: rotate(7deg); }
@@ -96,7 +104,7 @@
     .single-card { max-width: 100%; min-height: 0; }
     .single-card .card-art { height: 125px; }
     .single-card .card-body { min-height: 178px; }
-    .footer { border-top: 1px solid var(--border); padding: 28px 0 36px; }
+    .footer { border-top: 1px solid var(--border); height: 56px; }
     .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 25px; align-items: center; }
     .footer strong { font-size: 13px; }
     .footer p { margin: 3px 0 0; color: #798179; font-size: 12px; }
@@ -144,6 +152,7 @@
       <nav class="top-nav" aria-label="게임 메뉴">
         <a href="#today">오늘의 게임</a>
         <a href="#mystery">추리·방탈출</a>
+        <a href="#record">기록 도전</a>
         <a href="#break">잠깐 쉬어가기</a>
       </nav>
     </div>
@@ -153,13 +162,13 @@
     <section class="hero" aria-labelledby="hero-title">
       <div>
         <div class="eyebrow">FIVE MINUTES AFTER WORK STARTS</div>
-        <h1 id="hero-title">출근 5분 후<span style="color:#769c48">.</span></h1>
-        <p class="hero-text">출근하자마자 일하기 싫으니깐..<br>한 판 해...</p>
-        <div class="hero-note"><span class="spark" aria-hidden="true">✳</span> 짧은 게임부터 깊은 추리까지, 취향대로 골라보세요.</div>
+        <h1 id="hero-title">출근 5분 후</h1>
+        <p class="hero-text">출근하자마자 일하기 싫으니깐<br>한 판 해</p>
+        <div class="hero-note"><span class="spark" aria-hidden="true">✳</span> 짧은 게임부터 깊은 추리까지, 취향대로 골라보세요</div>
       </div>
       <div class="hero-visual" aria-hidden="true">
-        <div class="visual-top">OFFICE ESCAPE · MINI GAME ROOM</div>
-        <div class="visual-label">딱 한 판만.<br>아마도...?</div>
+        <div class="visual-top">OFFICE ESCAPE &amp; MINI GAME ROOM</div>
+        <div class="visual-label">딱 한 판만<br>아마도?</div>
         <div class="visual-window">
           <div class="visual-dots"><i></i><i></i><i></i></div>
           <strong>오늘의 작은 일탈</strong>
@@ -176,7 +185,7 @@
       <div class="games-grid one">
         <a class="game-card featured" href="./inn.html" data-game="inn">
           <div class="card-art inn"><span class="art-tag">DAILY · LOGIC</span><div class="inn-graphic" aria-hidden="true"></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">논리 퍼즐</span></div><h3>안개등 여관</h3><p>누가 어느 방을 찾았을까?<br>흩어진 기록을 맞춰 매일 새로운 수수께끼를 풀어보세요.</p><div class="card-bottom"><span class="duration">매일 새로운 퍼즐</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">논리 퍼즐</span></div><h3>안개등 여관</h3><p>누가 어느 방을 찾았을까?<br>흩어진 기록을 맞춰 매일 새로운 수수께끼를 풀어보세요</p><div class="card-bottom"><span class="duration">매일 새로운 퍼즐</span></div></div>
         </a>
       </div>
     </section>
@@ -186,31 +195,41 @@
       <div class="games-grid">
         <a class="game-card" href="./last_login.html" data-game="login">
           <div class="card-art login"><span class="art-tag">EPISODE 01 · THRILLER</span><div class="screen-graphic" aria-hidden="true"><span>SESSION_?</span></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">심리 미스터리</span></div><h3>마지막 접속자</h3><p>내가 퇴근한 뒤, 누군가 내 이름으로 접속했다. 기록과 진술을 따라가는 자유 추리 스릴러.</p><div class="card-bottom"><span class="duration">첫 번째 정식 에피소드</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">심리 미스터리</span></div><h3>마지막 접속자</h3><p>내가 퇴근한 뒤, 누군가 내 이름으로 접속했다<br>기록과 진술을 따라가는 자유 추리 스릴러</p><div class="card-bottom"><span class="duration">첫 번째 정식 에피소드</span></div></div>
         </a>
         <a class="game-card" href="./case.html" data-game="case" hidden>
           <div class="card-art case"><span class="art-tag">CASE FILE · 001</span><div class="cake-graphic" aria-hidden="true"></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">가벼운 사건 추리</span></div><h3>생일 케이크 실종</h3><p>누가 케이크를 가져갔을까? 단서를 모아 범인을 찾아보는 짧은 추리 시제품.</p><div class="card-bottom"><span class="duration">사건 파일 #001</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">가벼운 사건 추리</span></div><h3>생일 케이크 실종</h3><p>누가 케이크를 가져갔을까?<br>단서를 모아 범인을 찾아보는 짧은 사내 추리</p><div class="card-bottom"><span class="duration">사건 파일 #001</span></div></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="record" aria-labelledby="record-title">
+      <div class="section-head"><h2 id="record-title">기록 도전</h2></div>
+      <div class="games-grid one">
+        <a class="game-card" href="./lupin.html" data-game="lupin">
+          <div class="card-art lupin"><span class="art-tag">ARCADE · SURVIVAL</span><div class="lupin-graphic" aria-hidden="true"><i></i><i></i><i></i><b></b></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">기록형 회피 아케이드</span></div><h3>월급루팡 생존기</h3><p>오늘도 쏟아지는 업무를 피해 살아남아라<br>무한 생존과 매일 바뀌는 오늘의 도전</p><div class="card-bottom"><span class="duration">한 판 1분 남짓</span></div></div>
         </a>
       </div>
     </section>
 
     <section class="section" id="break" aria-labelledby="break-title">
-      <div class="section-head"><h2 id="break-title">잠깐 쉬어가기</h2><p>심심하다면 이런 것도 해보세요.</p></div>
+      <div class="section-head"><h2 id="break-title">잠깐 쉬어가기</h2><p>심심하다면 이런 것도 해보세요</p></div>
       <div class="games-grid">
         <a class="game-card" href="./daily.html" data-game="daily">
           <div class="card-art daily"><span class="art-tag">OFFICE · CHOICE</span><div class="clock-graphic" aria-hidden="true">17:55</div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">선택형 미니게임</span></div><h3>회사에서 나라면?</h3><p>퇴근 5분 전. 오늘도 무사히 집에 갈 수 있을까?<br>매일 찾아오는 직장인의 선택.</p><div class="card-bottom"><span class="duration">약 1~2분</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">선택형 미니게임</span></div><h3>회사에서 나라면?</h3><p>퇴근 5분 전, 오늘도 무사히 집에 갈 수 있을까?<br>매일 찾아오는 직장인의 선택</p><div class="card-bottom"><span class="duration">약 1~2분</span></div></div>
         </a>
         <a class="game-card" href="./test.html" data-game="test">
           <div class="card-art test"><span class="art-tag">PERSONALITY · TEST</span><div class="test-graphic" aria-hidden="true"><span></span><span></span><span></span></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">직장인 유형 테스트</span></div><h3>내 회사생활 등급은?</h3><p>퇴근 직전의 선택으로 알아보는 나의 직장생활 유형.</p><div class="card-bottom"><span class="duration">10가지 상황</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">직장인 유형 테스트</span></div><h3>내 회사생활 등급은?</h3><p>회사에서의 선택으로 알아보는<br>나의 직장인 유형과 등급</p><div class="card-bottom"><span class="duration">10가지 상황</span></div></div>
         </a>
       </div>
     </section>
   </main>
 
-  <footer class="footer"><div class="container footer-inner"><div><strong>출근 5분 후</strong></div></div></footer>
+  <footer class="footer" aria-hidden="true"></footer>
 
   <script src="cases.js"></script>
   <script>
@@ -223,7 +242,8 @@
       inn: ['./inn.html'],
       login: ['./last_login.html'],
       case: ['./case.html'],
-      test: ['./test.html']
+      test: ['./test.html'],
+      lupin: ['./lupin.html']
     });
 
     function kstToday() {

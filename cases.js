@@ -19,7 +19,7 @@ window.CASEFILE = {
   {
     id: "001",
     title: "탕비실 생일 케이크 실종 사건",
-    opensAt: "2026-11-02",
+    opensAt: "2026-10-26",   // 완성된 사건: 이미 지난 날짜로 두어 바로 공개 (날짜 제한 없음)
     tutorial: true,
     answerKey: "xwp3ks1xd6",
     briefing: [
