@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>퇴근 5분 전 DAILY – 오늘은 몇 시에 퇴근할까</title>
+<meta name="description" content="매일 한국시간 자정에 열리는 5개의 퇴근 직전 상황. 오늘 당신은 몇 시에 퇴근할까요?">
+<meta property="og:type" content="website">
+<meta property="og:title" content="퇴근 5분 전 DAILY – 오늘 너는 몇 시에 퇴근했어?">
+<meta property="og:description" content="매일 새로 열리는 직장인 퇴근 생존 게임. 1분이면 끝나요.">
+<meta name="theme-color" content="#2350B5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9EDF2; --surface:#FFFFFF; --ink:#1D2430; --muted:#5F6B7A; --line:#CBD3DD;
+  --corp:#2350B5; --corp-ink:#FFFFFF; --stamp:#C8302B; --option:#F6F8FB; --option-hover:#E3EAF5;
+  --g:#1E9E5A; --y:#E0A100; --r:#D23B33; --warn:#B26A00;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161B22; --surface:#212833; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+    --corp:#5B86E8; --corp-ink:#0F1622; --stamp:#F0605A; --option:#283140; --option-hover:#334055;
+    --g:#3CC37C; --y:#F2C14E; --r:#F0605A; --warn:#F0B44C; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161B22; --surface:#212833; --ink:#E6EBF1; --muted:#9AA6B5; --line:#344050;
+  --corp:#5B86E8; --corp-ink:#0F1622; --stamp:#F0605A; --option:#283140; --option-hover:#334055;
+  --g:#3CC37C; --y:#F2C14E; --r:#F0605A; --warn:#F0B44C; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:22px 20px 56px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--corp)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--corp);outline-offset:3px}
+.hidden{display:none!important}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:22px}
+.brand b{font-size:15px;letter-spacing:.02em}
+.tag{font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--surface);border:1.5px solid var(--line);white-space:nowrap}
+.tag.rerun{border-color:var(--warn);color:var(--warn)}
+.tag.pre{border-color:var(--stamp);color:var(--stamp)}
+.banner{border-radius:10px;padding:10px 14px;margin:0 0 18px;font-size:15px;font-weight:500;background:var(--surface);border:1.5px dashed var(--stamp)}
+.banner.practice{border-color:var(--warn)}
+.date{font-size:16px;font-weight:600;color:var(--stamp);margin:0}
+.theme{font-size:30px;font-weight:700;line-height:1.3;margin:2px 0 8px}
+.intro{color:var(--muted);margin:0 0 22px}
+.clock-big{font-size:clamp(68px,22vw,116px);font-weight:600;line-height:1;letter-spacing:-.02em;margin:0 0 22px}
+.clock-big .colon{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.streakline{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 18px;font-size:15px}
+.streakline b{font-size:17px}
+.primary{display:block;width:100%;border:0;border-radius:10px;padding:17px 20px;background:var(--corp);color:var(--corp-ink);font-weight:700;font-size:18px}
+.primary:hover{filter:brightness(1.08)}
+.secondary{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;padding:14px 20px;background:transparent;font-weight:500;text-align:center;text-decoration:none;color:var(--ink)}
+.secondary:hover{background:var(--option)}
+.stack{display:grid;gap:10px}
+.fine{font-size:13px;color:var(--muted);margin:18px 0 0}
+.testlink{display:flex;align-items:center;gap:12px;margin-top:22px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink)}
+.testlink .e{font-size:28px}
+.testlink b{display:block}
+.testlink span{font-size:14px;color:var(--muted)}
+.testlink:hover{border-color:var(--corp)}
+/* 플레이 */
+.clocks{display:grid;grid-template-columns:1fr auto;align-items:end;gap:12px;margin-bottom:12px}
+.clocks .lbl{display:block;font-size:13px;color:var(--muted);line-height:1.3}
+.now{font-size:40px;font-weight:600;line-height:1.1}
+.eta{text-align:right}
+.eta .v{font-size:22px;font-weight:600;line-height:1.3;color:var(--stamp);display:inline-block}
+.eta .v.bump{animation:bump .5s ease}
+@keyframes bump{30%{transform:scale(1.25)}}
+.dots{display:flex;gap:8px;margin:0 0 26px}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:transparent}
+.dot.cur{border-color:var(--ink)}
+.dot.g{background:var(--g);border-color:var(--g)} .dot.y{background:var(--y);border-color:var(--y)} .dot.r{background:var(--r);border-color:var(--r)}
+.scene{color:var(--muted);margin:0 0 10px}
+.line{font-size:22px;font-weight:700;line-height:1.45;margin:0 0 22px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:1.5px solid transparent;border-radius:10px;padding:15px 18px;background:var(--option);line-height:1.5}
+.opt:hover{background:var(--option-hover)}
+.opt:active{border-color:var(--corp)}
+.react{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;animation:rise .25s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+.react .picked{font-size:14px;color:var(--muted);margin:0 0 8px}
+.react .rtext{font-size:19px;font-weight:700;line-height:1.5;margin:0 0 14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;border-radius:999px;padding:4px 12px;background:var(--option);margin-bottom:16px}
+.chip i{width:12px;height:12px;border-radius:50%;display:inline-block}
+/* 결과 */
+.chime{text-align:center;margin:0 0 6px;color:var(--muted);font-size:15px}
+.chime b{color:var(--ink)}
+.hero{text-align:center;margin-bottom:18px}
+.hero .lbl{font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .time{font-size:clamp(76px,25vw,120px);font-weight:600;line-height:1.05;letter-spacing:-.03em;margin:2px 0 10px;color:var(--stamp)}
+.hero .time small{font-size:.38em;letter-spacing:0}
+.emojis{display:flex;justify-content:center;gap:10px;margin:0 0 16px}
+.emojis i{width:34px;height:34px;border-radius:50%;display:block;transform:scale(0);animation:pop .3s cubic-bezier(.2,1.6,.4,1) forwards}
+.emojis i.g{background:var(--g)} .emojis i.y{background:var(--y)} .emojis i.r{background:var(--r)}
+@keyframes pop{to{transform:scale(1)}}
+.oneliner{font-size:21px;font-weight:700;line-height:1.45;margin:0 auto;max-width:24em}
+.twist{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:12px 14px;margin:0 0 18px}
+.twist .lbl{font-size:13px;color:var(--muted);margin:0}
+.twist p{margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 18px}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.stats b{display:block;font-size:20px}
+.stats span{font-size:12px;color:var(--muted)}
+.toast{font-size:14px;color:var(--muted);text-align:center;min-height:1.6em;margin:6px 0 14px}
+.shot{margin:0 0 22px;text-align:center}
+.shot img{width:100%;max-width:400px;border-radius:12px;border:1px solid var(--line)}
+.shot p{font-size:14px;color:var(--muted);margin:8px 0 0}
+.next{text-align:center;color:var(--muted);font-size:15px;margin:18px 0}
+.next b{color:var(--ink);font-size:18px}
+details{border-top:1px solid var(--line);padding-top:14px;margin-top:8px}
+summary{cursor:pointer;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--muted);font-weight:400}
+details[open] summary::after{content:"−"}
+.recap{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.recap li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px}
+.recap .q{color:var(--muted);font-size:13px;display:block}
+.recap .d{font-size:13px;font-weight:600}
+.dev{margin-top:26px;padding:14px;border:1.5px dashed var(--line);border-radius:12px;font-size:14px}
+.dev .row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.dev button{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.emojis i{transform:none}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="content.js"></script>
+<script>
+/* ===== 설정 ===== */
+const TEST_LINK = "test.html";
+const SHARE_URL = () => location.origin + location.pathname.replace(/index\.html$/,"");
+const STORE_KEY = "t5daily-v1";
+const C = window.T5_CONTENT;
+const DOW = ["일","월","화","수","목","금","토"];
+const $ = id => document.getElementById(id);
+
+/* ===== 날짜 (한국시간 기준) ===== */
+function kstToday(){
+  try{
+    const s=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  }catch(e){}
+  return new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+}
+function parseD(ds){const [y,m,d]=ds.split("-").map(Number);return new Date(Date.UTC(y,m-1,d));}
+function addDays(ds,n){const d=parseD(ds);d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+function dow(ds){return parseD(ds).getUTCDay();}
+function isWorkday(ds){const w=dow(ds);return w>=1&&w<=5;}
+function prevWorkday(ds){let d=addDays(ds,-1);while(!isWorkday(d))d=addDays(d,-1);return d;}
+function nextWorkday(ds){let d=addDays(ds,1);while(!isWorkday(d))d=addDays(d,1);return d;}
+function koDate(ds){const d=parseD(ds);return (d.getUTCMonth()+1)+"월 "+d.getUTCDate()+"일 "+DOW[d.getUTCDay()]+"요일";}
+function episodeNo(ds){
+  if(ds<C.launchDate) return 0;
+  let n=0,d=C.launchDate,guard=0;
+  while(d<=ds&&guard++<4000){if(isWorkday(d))n++;d=addDays(d,1);}
+  return n;
+}
+function msToKstMidnight(){const k=Date.now()+9*3600e3;const day=864e5;return (Math.floor(k/day)+1)*day-k;}
+
+/* ===== 에피소드 선택 ===== */
+function resolveEpisode(ds){
+  if(C.byDate&&C.byDate[ds]) return {ep:C.byDate[ds],rerun:false};
+  const w=dow(ds);
+  if(!isWorkday(ds)) return {ep:null,rerun:false};
+  let first=C.launchDate; while(dow(first)!==w) first=addDays(first,1);
+  return {ep:C.weekly[w],rerun:ds>first};
+}
+
+/* ===== 저장 ===== */
+function loadStore(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||"null");if(s&&s.v===1&&s.official)return s;}catch(e){}return {v:1,official:{},progress:null};}
+function saveStore(){try{localStorage.setItem(STORE_KEY,JSON.stringify(store));}catch(e){}}
+let store=loadStore();
+
+function streakInfo(today){
+  const off=store.official;
+  let d=(isWorkday(today)&&off[today])?today:prevWorkday(today),n=0,guard=0;
+  while(off[d]&&guard++<4000){n++;d=prevWorkday(d);}
+  const w=dow(today),mon=addDays(today,-(w===0?6:w-1));
+  let week=0;for(let i=0;i<5;i++){const r=off[addDays(mon,i)];if(r)week+=r.delay;}
+  return {streak:n,doneToday:!!off[today],total:Object.keys(off).length,week};
+}
+
+/* ===== 계산 ===== */
+function colorOf(delay){return delay===0?"g":(delay<=C.colorRule.yellowMax?"y":"r");}
+function fmtTime(delay){const t=18*60+delay;return String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");}
+function fmtDur(min){const h=Math.floor(min/60),m=min%60;return h?(h+"시간 "+(m?m+"분":"")).trim():m+"분";}
+function timeText(delay){return delay===0?"18:00:03":fmtTime(delay);}
+function summarize(ep,choices){
+  let delay=0,debt=0;const colors=[];
+  choices.forEach((ci,qi)=>{const o=ep.questions[qi].options[ci];delay+=o.delay;debt+=o.debt;colors.push(colorOf(o.delay));});
+  return {delay,debt,colors};
+}
+function pickOneLiner(w,s){
+  const all=s.colors.length===5;
+  for(const sp of (C.oneLiners.special||[])){
+    if(sp.when==="allGreen"&&all&&s.colors.every(c=>c==="g")) return sp.text;
+    if(sp.when==="allRed"&&all&&s.colors.every(c=>c==="r")) return sp.text;
+  }
+  const list=C.oneLiners[w]||C.oneLiners[5];
+  for(const r of list){if(r.maxDelay===undefined||s.delay<=r.maxDelay) return r.text;}
+  return "";
+}
+function pickTwist(ds,s){
+  const next=DOW[dow(nextWorkday(ds))]+"요일";
+  for(const t of C.twists){
+    if(t.minDebt!==undefined&&s.debt<t.minDebt) continue;
+    if(t.maxDebt!==undefined&&s.debt>t.maxDebt) continue;
+    if(t.minDelay!==undefined&&s.delay<t.minDelay) continue;
+    if(t.maxDelay!==undefined&&s.delay>t.maxDelay) continue;
+    return {icon:t.icon,text:t.text.replace(/\{next\}/g,next)};
+  }
+  return {icon:"",text:""};
+}
+function stampOf(mode,delay){
+  if(mode==="practice") return ["연습","모드"];
+  if(mode==="preview") return ["미리","보기"];
+  if(delay<=5) return ["칼퇴","성공"];
+  if(delay<=30) return ["퇴근","지연"];
+  if(delay<=90) return ["야근","적립"];
+  return ["야근","확정"];
+}
+
+/* ===== 모드와 미리보기 ===== */
+function readPreview(){
+  const q=new URLSearchParams(location.search).get("preview");
+  if(q&&/^\d{4}-\d{2}-\d{2}$/.test(q)) return q;
+  const h=(location.hash||"").replace("#","");
+  const m=/^preview-(\d{4})(\d{2})(\d{2})$/.exec(h);
+  return m?m[1]+"-"+m[2]+"-"+m[3]:null;
+}
+function devOn(){return new URLSearchParams(location.search).get("dev")==="1"||/^(dev|preview-\d{8})$/.test((location.hash||"").replace("#",""));}
+
+let ctx={};        // 현재 화면 상태
+let session=null;  // 진행 중인 플레이 {mode,date,ep,choices}
+let timer=null;
+
+function init(){
+  clearInterval(timer);
+  const preview=readPreview();
+  const today=preview||kstToday();
+  ctx={today,preview,real:kstToday()};
+  const res=resolveEpisode(today);
+  ctx.ep=res.ep; ctx.rerun=res.rerun;
+  if(!preview&&store.official[today]&&ctx.ep){
+    const r=store.official[today];
+    showResult({mode:"official",date:today,ep:ctx.ep,choices:r.choices},false);
+  } else showStart();
+}
+
+/* ===== 시작 화면 ===== */
+function brandHtml(ds){
+  ds=ds||ctx.today; const n=episodeNo(ds), rerun=resolveEpisode(ds).rerun;
+  let tag='<span class="tag">#'+String(n).padStart(3,"0")+'</span>';
+  if(ctx.preview) tag='<span class="tag pre">미리보기</span>';
+  else if(!n) tag='<span class="tag pre">공개 전 프리뷰</span>';
+  else if(rerun) tag='<span class="tag rerun">다시보기 에피소드</span>';
+  return '<div class="brand"><b>퇴근 5분 전 DAILY</b>'+tag+'</div>';
+}
+function testLinkHtml(){
+  if(!TEST_LINK) return "";
+  return '<a class="testlink" href="'+TEST_LINK+'" target="'+(/^https?:/.test(TEST_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🪪</span><div><b>나의 직장인 유형 알아보기</b><span>10문항으로 보는 본캐·부캐 사원증 테스트</span></div></a>'+
+    '<a class="testlink" href="case.html"><span class="e">🗂️</span><div><b>퇴근 5분 전: 사건 파일</b><span>매주 월요일 열리는 사내 미스터리 추리</span></div></a>';
+}
+function showStart(){
+  ctx.screen="start"; const app=$("app"); const t=ctx.today;
+  if(!ctx.ep){
+    const fri=prevWorkday(t);
+    app.innerHTML=brandHtml()+
+      '<p class="date">'+koDate(t)+'</p><h1 class="theme">오늘은 쉬는 날</h1>'+
+      '<p class="intro">주말에는 공식 에피소드가 없어요. 연속 출석도 끊기지 않으니 푹 쉬고 월요일 17:55에 만나요.</p>'+
+      streakHtml()+
+      '<div class="stack"><button class="secondary" id="friBtn">지난 금요일 에피소드 연습하기</button></div>'+
+      nextHtml()+testLinkHtml()+devHtml()+footHtml();
+    $("friBtn").onclick=()=>{const r=resolveEpisode(fri);startPlay("practice",fri,r.ep);};
+    tickNext(); bindDev(); return;
+  }
+  const prog=(!ctx.preview&&store.progress&&store.progress.date===t)?store.progress:null;
+  let banner="";
+  if(ctx.preview) banner='<p class="banner">🧪 미리보기 모드('+t+'): 공식 기록과 연속 출석에 반영되지 않아요.</p>';
+  else if(ctx.rerun) banner='<p class="banner practice">새 에피소드를 준비 중이에요. 오늘은 지난 '+DOW[dow(t)]+'요일 에피소드를 다시 보여 드려요. 플레이하면 출석은 정상 인정돼요.</p>';
+  app.innerHTML=brandHtml()+banner+
+    '<p class="date">'+koDate(t)+'</p><h1 class="theme">'+esc(ctx.ep.theme)+'</h1>'+
+    '<p class="intro">'+esc(ctx.ep.intro)+'</p>'+
+    '<p class="clock-big mono" aria-label="오후 5시 55분">17<span class="colon">:</span>55</p>'+
+    (ctx.preview?"":streakHtml())+
+    '<div class="stack"><button class="primary" id="goBtn">'+(prog?"이어서 하기 ("+Math.min(prog.choices.length+1,5)+" / 5)":"오늘의 퇴근 시작")+'</button></div>'+
+    '<p class="fine">5개의 상황, 1분이면 끝나요. 게임 속 시계는 1분씩 흐르지만 실제로 기다릴 필요는 없어요.</p>'+
+    testLinkHtml()+devHtml()+footHtml();
+  $("goBtn").onclick=()=>{
+    if(ctx.preview) startPlay("preview",t,ctx.ep);
+    else if(prog) startPlay("official",t,ctx.ep,prog.choices.slice());
+    else startPlay("official",t,ctx.ep);
+  };
+  bindDev();
+}
+function streakHtml(){
+  const s=streakInfo(ctx.today);
+  let msg;
+  if(!ctx.ep) msg=s.streak?"연속 출석 <b>"+s.streak+"일</b> 유지 중":"평일에 출석하면 연속 기록이 시작돼요";
+  else if(s.doneToday) msg="연속 출석 <b>"+s.streak+"일</b>";
+  else msg=s.streak?"연속 출석 <b>"+s.streak+"일</b> · 오늘 하면 "+(s.streak+1)+"일":"오늘부터 연속 출석을 시작해 보세요";
+  return '<p class="streakline">🔥 '+msg+'</p>';
+}
+function nextHtml(){return ctx.preview?"":'<p class="next">다음 에피소드까지 <b class="mono" id="nextT">--:--:--</b></p>';}
+function tickNext(){
+  const el=$("nextT"); if(!el) return;
+  const run=()=>{const ms=msToKstMidnight();const s=Math.floor(ms/1000);
+    el.textContent=[Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,"0")).join(":");
+    if(kstToday()!==ctx.real){clearInterval(timer);init();}};
+  run(); timer=setInterval(run,1000);
+}
+function footHtml(){return '<p class="fine">기록은 이 브라우저에만 저장돼요. 브라우저 데이터를 지우거나 기기를 바꾸면 사라질 수 있어요.</p>';}
+function devHtml(){
+  if(!devOn()) return "";
+  const t=ctx.real,w=dow(t),mon=addDays(t,-(w===0?6:w-1));
+  let b="";for(let i=0;i<7;i++){const d=addDays(mon,i);b+='<button data-d="'+d+'">'+DOW[dow(d)]+" "+d.slice(5)+'</button>';}
+  return '<div class="dev"><b>개발자 미리보기</b> (기록 저장 안 됨)<div class="row">'+b+'</div><div class="row"><button data-d="">미리보기 끄기</button><button id="devReset">내 기록 전부 초기화</button></div></div>';
+}
+function bindDev(){
+  document.querySelectorAll(".dev [data-d]").forEach(btn=>btn.onclick=()=>{
+    const d=btn.getAttribute("data-d");
+    location.hash=d?"preview-"+d.replace(/-/g,""):"dev";
+  });
+  const r=$("devReset"); if(r) r.onclick=()=>{if(confirm("이 브라우저의 공식 기록과 출석을 모두 지울까요?")){store={v:1,official:{},progress:null};saveStore();init();}};
+}
+
+/* ===== 플레이 ===== */
+function startPlay(mode,date,ep,choices){
+  clearInterval(timer);
+  session={mode,date,ep,choices:choices||[]};
+  if(mode==="official"){store.progress={date,choices:session.choices.slice()};saveStore();}
+  ctx.screen="play";
+  if(session.choices.length>=5) finishPlay(); else renderQuestion();
+}
+function playHead(qi){
+  const s=summarize(session.ep,session.choices);
+  let dots="";for(let i=0;i<5;i++){dots+='<span class="dot '+(s.colors[i]||(i===session.choices.length?"cur":""))+'"></span>';}
+  let banner="";
+  if(session.mode==="practice") banner='<p class="banner practice">🔁 연습 모드: 공식 기록에는 반영되지 않아요.</p>';
+  if(session.mode==="preview") banner='<p class="banner">🧪 미리보기 모드('+session.date+')</p>';
+  return banner+'<div class="clocks"><div><span class="lbl">지금</span><span class="now mono">17:5'+(5+qi)+':00</span></div>'+
+    '<div class="eta"><span class="lbl">예상 퇴근</span><span class="v mono" id="eta">'+fmtTime(s.delay)+'</span></div></div>'+
+    '<div class="dots" aria-label="'+session.choices.length+' / 5 완료">'+dots+'</div>';
+}
+function renderQuestion(){
+  const qi=session.choices.length, q=session.ep.questions[qi];
+  const app=$("app");
+  app.innerHTML=playHead(qi)+'<div aria-live="polite"><p class="scene">'+esc(q.scene)+'</p><p class="line">'+esc(q.line)+'</p><div class="opts" id="opts"></div></div>';
+  const box=$("opts");
+  q.options.forEach((o,oi)=>{const b=document.createElement("button");b.className="opt";b.textContent=o.text;b.onclick=()=>choose(oi);box.appendChild(b);});
+  window.scrollTo(0,0);
+}
+function choose(oi){
+  const qi=session.choices.length,o=session.ep.questions[qi].options[oi];
+  session.choices.push(oi);
+  if(session.mode==="official"){store.progress={date:session.date,choices:session.choices.slice()};saveStore();}
+  const app=$("app"); const last=session.choices.length===5;
+  const c=colorOf(o.delay);
+  app.innerHTML=playHead(qi)+'<div class="react" aria-live="polite"><p class="picked"></p><p class="rtext"></p>'+
+    '<span class="chip"><i style="background:var(--'+c+')"></i>'+(o.delay?"퇴근 +"+o.delay+"분":"퇴근 지연 없음")+'</span>'+
+    '<button class="primary" id="nextBtn">'+(last?"18시, 결과 보기":"다음 상황")+'</button></div>';
+  app.querySelector(".picked").textContent="선택: "+o.text;
+  app.querySelector(".rtext").textContent=o.react;
+  if(o.delay){const e=$("eta");e.classList.add("bump");}
+  const nb=$("nextBtn"); nb.focus({preventScroll:true});
+  nb.onclick=()=>{ if(last) finishPlay(); else renderQuestion(); };
+}
+function finishPlay(){
+  const s=summarize(session.ep,session.choices);
+  if(session.mode==="official"){
+    if(!store.official[session.date]) store.official[session.date]={choices:session.choices.slice(),delay:s.delay,debt:s.debt,at:Date.now()};
+    store.progress=null; saveStore();
+  }
+  showResult(session,true);
+}
+
+/* ===== 결과 ===== */
+let lastResult=null;
+function showResult(r,animate){
+  clearInterval(timer); ctx.screen="result";
+  const s=summarize(r.ep,r.choices), w=dow(r.date);
+  const one=pickOneLiner(w,s), tw=pickTwist(r.date,s);
+  const n=episodeNo(r.date), st=streakInfo(ctx.today);
+  lastResult={...r,s,one,tw,n};
+  const isOff=r.mode==="official";
+  let banner="";
+  if(r.mode==="practice") banner='<p class="banner practice">🔁 연습 결과예요. 공식 기록과 연속 출석은 바뀌지 않아요.</p>';
+  if(r.mode==="preview") banner='<p class="banner">🧪 미리보기 결과('+r.date+'). 저장되지 않아요.</p>';
+  const emo=s.colors.map((c,i)=>'<i class="'+c+'" style="animation-delay:'+(animate?(.9+i*.12):0)+'s"></i>').join("");
+  const app=$("app");
+  app.innerHTML=brandHtml(r.date)+banner+
+    '<p class="chime"><b class="mono">18:00:00</b> 띵동. '+koDate(r.date)+' 근무 종료.</p>'+
+    '<div class="hero"><p class="lbl">'+(isOff?"오늘의 퇴근 시각":"이번 판 퇴근 시각")+'</p><p class="time mono" id="bigT">18:00</p>'+
+    '<div class="emojis" aria-label="선택별 퇴근 지연 색상">'+emo+'</div><p class="oneliner"></p></div>'+
+    '<div class="twist"><p class="lbl">오늘의 숨은 대가</p><p id="twT"></p></div>'+
+    (r.mode==="preview"?"":'<div class="stats"><div><b class="mono">'+st.streak+'일</b><span>연속 출석</span></div><div><b class="mono">'+st.total+'회</b><span>총 출석</span></div><div><b class="mono">'+fmtDur(st.week)+'</b><span>이번 주 누적 야근</span></div></div>')+
+    '<div class="stack"><button class="primary" id="shareBtn">결과 공유하기</button>'+
+    '<button class="secondary" id="imgBtn">결과 이미지 만들기</button>'+
+    '<button class="secondary" id="againBtn">'+(r.mode==="preview"?"미리보기 다시 하기":"연습 모드로 다른 선택 해 보기")+'</button>'+
+    (r.mode==="practice"&&store.official[r.date]?'<button class="secondary" id="offBtn">오늘의 공식 기록 보기</button>':"")+
+    '</div><p class="toast" id="toast" role="status"></p>'+
+    '<div class="shot hidden" id="shot"><img id="shotImg" alt="오늘의 퇴근 결과 카드"><p>모바일은 이미지를 길게 눌러, PC는 오른쪽 클릭해서 저장하세요.</p></div>'+
+    '<details><summary>오늘의 선택 다시 보기</summary><ol class="recap" id="recap"></ol></details>'+
+    nextHtml()+testLinkHtml()+devHtml()+footHtml();
+  app.querySelector(".oneliner").textContent="“"+one+"”";
+  $("twT").textContent=(tw.icon?tw.icon+" ":"")+tw.text;
+  const rc=$("recap");
+  r.choices.forEach((ci,qi)=>{const q=r.ep.questions[qi],o=q.options[ci];const li=document.createElement("li");
+    li.innerHTML='<span class="q"></span><span class="a"></span> <span class="d" style="color:var(--'+colorOf(o.delay)+')"></span>';
+    li.querySelector(".q").textContent=(qi+1)+". "+q.line; li.querySelector(".a").textContent=o.text;
+    li.querySelector(".d").textContent=o.delay?"+"+o.delay+"분":"±0분"; rc.appendChild(li);});
+  animateTime(s.delay,animate);
+  $("shareBtn").onclick=shareResult;
+  $("imgBtn").onclick=makeImage;
+  $("againBtn").onclick=()=>startPlay(r.mode==="preview"?"preview":"practice",r.date,r.ep);
+  const ob=$("offBtn"); if(ob) ob.onclick=()=>init();
+  tickNext(); bindDev(); window.scrollTo(0,0);
+}
+function animateTime(target,animate){
+  const el=$("bigT");
+  const fin=()=>{if(target===0) el.innerHTML='18:00<small>:03</small>'; else el.textContent=fmtTime(target);};
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!animate||reduce||target===0){fin();return;}
+  const st=performance.now(),dur=Math.min(1200,300+target*4);
+  (function tick(now){const p=Math.min(1,(now-st)/dur);el.textContent=fmtTime(Math.round(target*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(tick);else fin();})(st);
+}
+function shareText(){
+  const R=lastResult, emo={g:"🟢",y:"🟡",r:"🔴"};
+  const head="퇴근 5분 전 DAILY "+(R.n?"#"+String(R.n).padStart(3,"0")+" ":"")+"("+DOW[dow(R.date)]+")"+(R.mode==="practice"?" [연습]":"")+(R.mode==="preview"?" [미리보기]":"");
+  const lines=[head,"🕕 "+timeText(R.s.delay)+" 퇴근",R.s.colors.map(c=>emo[c]).join(""),"“"+R.one+"”"];
+  if(R.mode==="official") lines.push("🔥 연속 출석 "+streakInfo(ctx.today).streak+"일");
+  const u=typeof SHARE_URL==="function"?SHARE_URL():SHARE_URL; if(u) lines.push("",u);
+  return lines.join("\n");
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);return true;}catch(e){}
+  try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();return ok;}catch(e){return false;}
+}
+async function shareResult(){
+  const t=shareText();
+  if(navigator.share&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){try{await navigator.share({text:t});$("toast").textContent="공유 창을 열었어요.";return;}catch(e){if(e&&e.name==="AbortError")return;}}
+  const ok=await copyText(t);
+  $("toast").textContent=ok?"결과를 복사했어요. 카톡이나 메신저에 붙여 넣으세요.":"복사하지 못했어요. 결과 이미지를 만들어 공유해 주세요.";
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function wrapT(x,t,maxW){const out=[];let line="";for(const w of t.split(" ")){const tt=line?line+" "+w:w;if(x.measureText(tt).width<=maxW)line=tt;else{if(line)out.push(line);line=w;}}if(line)out.push(line);return out;}
+async function makeImage(){
+  const R=lastResult; $("toast").textContent="이미지를 만드는 중이에요.";
+  const F='"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif',MF='"IBM Plex Mono",ui-monospace,monospace';
+  try{await Promise.all([document.fonts.load('700 50px "IBM Plex Sans KR"'),document.fonts.load('500 30px "IBM Plex Sans KR"'),document.fonts.load('600 200px "IBM Plex Mono"')]);}catch(e){}
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  x.fillStyle="#E9EDF2";x.fillRect(0,0,W,H);
+  x.fillStyle="#FFFFFF";rr(x,70,70,940,1210,36);x.fill();
+  x.save();rr(x,70,70,940,1210,36);x.clip();x.fillStyle="#2350B5";x.fillRect(70,70,940,150);x.restore();
+  x.fillStyle="#FFFFFF";x.font="700 40px "+F;x.textAlign="left";x.fillText("퇴근 5분 전 DAILY",120,165);
+  x.textAlign="right";x.font="600 36px "+MF;x.fillText(R.n?"#"+String(R.n).padStart(3,"0"):"PREVIEW",960,165);
+  x.textAlign="center";x.fillStyle="#C8302B";x.font="600 34px "+F;x.fillText(koDate(R.date)+" · "+R.ep.theme,W/2,300);
+  x.fillStyle="#5F6B7A";x.font="500 32px "+F;x.fillText(R.mode==="official"?"오늘의 퇴근 시각":(R.mode==="practice"?"연습 결과 퇴근 시각":"미리보기 퇴근 시각"),W/2,380);
+  x.fillStyle="#C8302B";x.font="600 200px "+MF;x.fillText(fmtTime(R.s.delay),W/2,570);
+  const col={g:"#1E9E5A",y:"#E0A100",r:"#D23B33"};
+  R.s.colors.forEach((cc,i)=>{x.fillStyle=col[cc];x.beginPath();x.arc(W/2+(i-2)*110,670,38,0,Math.PI*2);x.fill();});
+  x.fillStyle="#1D2430";x.font="700 46px "+F;
+  const L=wrapT(x,"“"+R.one+"”",820).slice(0,3);L.forEach((l,i)=>x.fillText(l,W/2,800+i*64));
+  let y=800+L.length*64+40;
+  x.fillStyle="#F6F8FB";rr(x,130,y,820,180,20);x.fill();
+  x.fillStyle="#5F6B7A";x.font="500 30px "+F;
+  wrapT(x,(R.tw.icon?R.tw.icon+" ":"")+R.tw.text,760).slice(0,4).forEach((l,i)=>x.fillText(l,W/2,y+56+i*42));
+  x.fillStyle="#1D2430";x.font="700 36px "+F;x.fillText("너는 오늘 몇 시에 퇴근했어?",W/2,1220);
+  const url=c.toDataURL("image/png");$("shotImg").src=url;$("shot").classList.remove("hidden");
+  $("toast").textContent="이미지를 만들었어요. 아래 이미지를 저장해서 공유하세요.";
+  $("shot").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+window.addEventListener("hashchange",init);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!ctx.preview&&kstToday()!==ctx.real&&ctx.screen!=="play"){session=null;init();}});
+init();
+</script>
+</body>
+</html>
