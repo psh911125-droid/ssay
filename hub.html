@@ -52,9 +52,11 @@
     .floating-star { position: absolute; right: 20px; bottom: 19px; font-size: 56px; color: #709a40; transform: rotate(-12deg); font-weight: 400; }
     main { padding-bottom: 70px; }
     .section { margin-bottom: 51px; scroll-margin-top: 32px; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 21px; }
-    .section-head h2 { font-size: clamp(22px, 2.7vw, 28px); letter-spacing: -1.2px; font-weight: 850; margin: 0; }
-    .section-head p { color: var(--muted); font-size: 13px; margin: 0; }
+    .section-head { margin-bottom: 21px; }
+    .section-head h2 { font-size: clamp(22px, 2.7vw, 28px); line-height: 1.35; letter-spacing: -.5px; font-weight: 800; margin: 0; word-break: keep-all; overflow-wrap: anywhere; }
+    .section-head p { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+    .games-grid.one { grid-template-columns: 1fr; }
+    [hidden] { display: none !important; }
     .games-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
     .game-card { text-decoration: none; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); overflow: hidden; min-height: 338px; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
     .game-card[href]:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: #bbcbb5; }
@@ -66,7 +68,7 @@
     .card-art.login { background: #202934; }
     .card-art.case { background: #fae5db; }
     .card-art.test { background: #e3eefa; }
-    .art-tag { font-size: 10px; letter-spacing: .14em; font-weight: 850; color: rgba(39,55,39,.6); }
+    .art-tag { position: relative; z-index: 1; font-size: 10px; letter-spacing: .14em; font-weight: 850; color: rgba(39,55,39,.6); }
     .login .art-tag { color: #a5c2c1; }
     .clock-graphic { position: absolute; right: 32px; top: 23px; width: 120px; height: 120px; border-radius: 50%; border: 9px solid #c3dba6; background: #faffec; box-shadow: 11px 16px 0 rgba(68,89,45,.065); display: grid; place-items: center; font-size: 24px; font-weight: 850; letter-spacing: -1px; color: #526d38; transform: rotate(7deg); }
     .clock-graphic::after { content: ''; position: absolute; top: 10px; right: 30px; height: 7px; width: 7px; border-radius: 50%; background: #b3ce8e; }
@@ -84,18 +86,12 @@
     .test-graphic span:nth-child(2) { width: 70%; }
     .test-graphic span:nth-child(3) { width: 85%; }
     .card-body { padding: 22px 24px 22px; display: flex; flex-direction: column; flex: 1; gap: 0; }
-    .card-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .card-meta { margin-bottom: 10px; }
     .kind { font-weight: 750; font-size: 11px; letter-spacing: .05em; color: #6d786b; }
-    .status { display: inline-flex; align-items: center; gap: 5px; border-radius: 99px; background: #f0f2ed; color: #747c74; padding: 4px 10px; font-size: 11px; font-weight: 780; white-space: nowrap; }
-    .status::before { content:''; width: 6px; height: 6px; border-radius: 50%; background: #aeb5aa; }
-    .game-card.is-ready .status { background: #eaf4d9; color: #557238; }
-    .game-card.is-ready .status::before { background: #7aab48; }
     .game-card h3 { font-size: 21px; line-height: 1.32; letter-spacing: -.85px; font-weight: 850; margin: 0 0 9px; }
     .game-card p { color: #667067; font-size: 14px; letter-spacing: -.2px; margin: 0; flex: 1; }
     .card-bottom { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid #edf0e9; }
     .duration { color: #8a928a; font-size: 12px; }
-    .action { color: #6b756b; font-size: 13px; font-weight: 800; }
-    .game-card[href] .action { color: #334d2c; }
     .featured .card-body { min-height: 187px; }
     .single-card { max-width: 100%; min-height: 0; }
     .single-card .card-art { height: 125px; }
@@ -134,8 +130,7 @@
       .game-card { min-height: 300px; }
       .card-art { height: 130px; }
       .section { margin-bottom: 37px; }
-      .section-head { display: block; }
-      .section-head p { margin-top: 4px; }
+      .section-head h2 { font-size: 23px; }
       .footer-inner { display: block; }
       .footer .thanks { margin-top: 13px; }
     }
@@ -149,7 +144,7 @@
       <nav class="top-nav" aria-label="게임 메뉴">
         <a href="#today">오늘의 게임</a>
         <a href="#mystery">추리·방탈출</a>
-        <a href="#tests">성향 테스트</a>
+        <a href="#break">잠깐 쉬어가기</a>
       </nav>
     </div>
   </header>
@@ -164,7 +159,7 @@
       </div>
       <div class="hero-visual" aria-hidden="true">
         <div class="visual-top">OFFICE ESCAPE · MINI GAME ROOM</div>
-        <div class="visual-label">딱 한 판만.<br>아마도.</div>
+        <div class="visual-label">딱 한 판만.<br>아마도...?</div>
         <div class="visual-window">
           <div class="visual-dots"><i></i><i></i><i></i></div>
           <strong>오늘의 작은 일탈</strong>
@@ -177,68 +172,72 @@
 
   <main class="container">
     <section class="section" id="today" aria-labelledby="today-title">
-      <div class="section-head"><h2 id="today-title">오늘의 게임</h2><p>가볍게 시작하고, 마음에 들면 또 한 판</p></div>
-      <div class="games-grid">
-        <a class="game-card featured" data-game="daily" aria-label="퇴근 DAILY, 게임 파일 연결 확인 중">
-          <div class="card-art daily"><span class="art-tag">DAILY · OFFICE</span><div class="clock-graphic" aria-hidden="true">17:55</div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">선택형 미니게임</span><span class="status">확인 중</span></div><h3>퇴근 DAILY</h3><p>퇴근 5분 전. 오늘도 무사히 집에 갈 수 있을까?<br>매일 찾아오는 직장인의 선택.</p><div class="card-bottom"><span class="duration">약 1~2분</span><span class="action">연결 확인 중</span></div></div>
-        </a>
-        <a class="game-card featured" data-game="inn" aria-label="안개등 여관, 게임 파일 연결 확인 중">
+      <div class="section-head"><h2 id="today-title">오늘의 게임</h2></div>
+      <div class="games-grid one">
+        <a class="game-card featured" href="./inn.html" data-game="inn">
           <div class="card-art inn"><span class="art-tag">DAILY · LOGIC</span><div class="inn-graphic" aria-hidden="true"></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">논리 퍼즐</span><span class="status">확인 중</span></div><h3>안개등 여관</h3><p>누가 어느 방을 찾았을까?<br>흩어진 기록을 맞춰 매일 새로운 수수께끼를 풀어보세요.</p><div class="card-bottom"><span class="duration">매일 새로운 퍼즐</span><span class="action">연결 확인 중</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">논리 퍼즐</span></div><h3>안개등 여관</h3><p>누가 어느 방을 찾았을까?<br>흩어진 기록을 맞춰 매일 새로운 수수께끼를 풀어보세요.</p><div class="card-bottom"><span class="duration">매일 새로운 퍼즐</span></div></div>
         </a>
       </div>
     </section>
 
     <section class="section" id="mystery" aria-labelledby="mystery-title">
-      <div class="section-head"><h2 id="mystery-title">추리 · 방탈출</h2><p>하나씩 확인하면, 사건의 모습이 달라집니다</p></div>
+      <div class="section-head"><h2 id="mystery-title">추리·방탈출</h2></div>
       <div class="games-grid">
-        <a class="game-card" data-game="login" aria-label="마지막 접속자, 게임 파일 연결 확인 중">
+        <a class="game-card" href="./last_login.html" data-game="login">
           <div class="card-art login"><span class="art-tag">EPISODE 01 · THRILLER</span><div class="screen-graphic" aria-hidden="true"><span>SESSION_?</span></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">심리 미스터리</span><span class="status">확인 중</span></div><h3>마지막 접속자</h3><p>내가 퇴근한 뒤, 누군가 내 이름으로 접속했다. 기록과 진술을 따라가는 자유 추리 스릴러.</p><div class="card-bottom"><span class="duration">첫 번째 정식 에피소드</span><span class="action">연결 확인 중</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">심리 미스터리</span></div><h3>마지막 접속자</h3><p>내가 퇴근한 뒤, 누군가 내 이름으로 접속했다. 기록과 진술을 따라가는 자유 추리 스릴러.</p><div class="card-bottom"><span class="duration">첫 번째 정식 에피소드</span></div></div>
         </a>
-        <a class="game-card" data-game="case" aria-label="생일 케이크 실종, 게임 파일 연결 확인 중">
+        <a class="game-card" href="./case.html" data-game="case" hidden>
           <div class="card-art case"><span class="art-tag">CASE FILE · 001</span><div class="cake-graphic" aria-hidden="true"></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">가벼운 사건 추리</span><span class="status">확인 중</span></div><h3>생일 케이크 실종</h3><p>누가 케이크를 가져갔을까? 단서를 모아 범인을 찾아보는 짧은 추리 시제품.</p><div class="card-bottom"><span class="duration">사건 파일 #001</span><span class="action">연결 확인 중</span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">가벼운 사건 추리</span></div><h3>생일 케이크 실종</h3><p>누가 케이크를 가져갔을까? 단서를 모아 범인을 찾아보는 짧은 추리 시제품.</p><div class="card-bottom"><span class="duration">사건 파일 #001</span></div></div>
         </a>
       </div>
     </section>
 
-    <section class="section" id="tests" aria-labelledby="tests-title">
-      <div class="section-head"><h2 id="tests-title">성향 테스트</h2><p>일할 때 나는 어떤 사람일까?</p></div>
+    <section class="section" id="break" aria-labelledby="break-title">
+      <div class="section-head"><h2 id="break-title">잠깐 쉬어가기</h2><p>심심하다면 이런 것도 해보세요.</p></div>
       <div class="games-grid">
-        <a class="game-card single-card" data-game="test" aria-label="퇴근 5분 전 직장인 유형 테스트, 게임 파일 연결 확인 중">
-          <div class="card-art test art-small"><span class="art-tag">PERSONALITY · TEST</span><div class="test-graphic" aria-hidden="true"><span></span><span></span><span></span></div></div>
-          <div class="card-body"><div class="card-meta"><span class="kind">직장인 유형 테스트</span><span class="status">확인 중</span></div><h3>퇴근 5분 전</h3><p>퇴근 직전의 선택으로 알아보는 나의 직장생활 유형.</p><div class="card-bottom"><span class="duration">10가지 상황</span><span class="action">연결 확인 중</span></div></div>
+        <a class="game-card" href="./daily.html" data-game="daily">
+          <div class="card-art daily"><span class="art-tag">OFFICE · CHOICE</span><div class="clock-graphic" aria-hidden="true">17:55</div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">선택형 미니게임</span></div><h3>회사에서 나라면?</h3><p>퇴근 5분 전. 오늘도 무사히 집에 갈 수 있을까?<br>매일 찾아오는 직장인의 선택.</p><div class="card-bottom"><span class="duration">약 1~2분</span></div></div>
+        </a>
+        <a class="game-card" href="./test.html" data-game="test">
+          <div class="card-art test"><span class="art-tag">PERSONALITY · TEST</span><div class="test-graphic" aria-hidden="true"><span></span><span></span><span></span></div></div>
+          <div class="card-body"><div class="card-meta"><span class="kind">직장인 유형 테스트</span></div><h3>내 회사생활 등급은?</h3><p>퇴근 직전의 선택으로 알아보는 나의 직장생활 유형.</p><div class="card-bottom"><span class="duration">10가지 상황</span></div></div>
         </a>
       </div>
     </section>
   </main>
 
-  <footer class="footer"><div class="container footer-inner"><div><strong>출근 5분 후</strong><p>작은 게임들이 모이는 공간. 게임은 천천히 추가됩니다.</p></div><div class="thanks">게임하고 의견주는 사람 착한사람*^^*</div></div></footer>
+  <footer class="footer"><div class="container footer-inner"><div><strong>출근 5분 후</strong></div></div></footer>
 
-  <noscript><p style="text-align:center;padding:16px">게임 연결을 확인하려면 브라우저에서 JavaScript를 활성화해 주세요.</p></noscript>
+  <script src="cases.js"></script>
   <script>
     'use strict';
-    // 같은 GitHub Pages 디렉터리에 있는 게임들로 연결합니다.
-    // DAILY는 허브를 정식 index.html로 바꾸기 전/후를 모두 지원합니다.
+    // 카드에는 링크가 미리 들어 있어 누르면 바로 이동합니다.
+    // 파일이 없는 게임, 아직 공개되지 않은 사건은 목록에서 숨깁니다. (index.html?dev=1 이면 숨긴 카드도 표시)
+    const DEV = new URLSearchParams(location.search).get('dev') === '1';
     const gameFiles = Object.freeze({
-      daily: ['./daily.html', './index.html'],
+      daily: ['./daily.html'],
       inn: ['./inn.html'],
       login: ['./last_login.html'],
       case: ['./case.html'],
       test: ['./test.html']
     });
 
-    // 공개일이 정해진 게임: 공개 전에는 '공개 예정'으로 표시 (cases.js의 opensAt과 같은 날짜로 유지)
-    const openDates = Object.freeze({ case: '2026-11-02' });
     function kstToday() {
       try { const s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; } catch {}
       return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
     }
-
+    // 사건 파일: cases.js의 공개일(opensAt)이 지난 사건이 하나라도 있어야 표시
+    function isReleased(game) {
+      if (game !== 'case') return true;
+      const list = (window.CASEFILE && window.CASEFILE.cases) || [];
+      const t = kstToday();
+      return list.some(c => c.opensAt && c.opensAt <= t);
+    }
     async function fileIsAvailable(relativePath) {
-      // 같은 저장소 안의 실제 HTML 파일만 활성화: 존재하지 않는 게임의 죽은 링크 방지.
       try {
         const response = await fetch(relativePath, { method: 'HEAD', cache: 'no-store' });
         if (!response.ok) return false;
@@ -246,47 +245,21 @@
         return type.includes('text/html') || type.includes('application/xhtml+xml');
       } catch { return false; }
     }
-
-    function setGameState(card, path) {
-      const status = card.querySelector('.status');
-      const action = card.querySelector('.action');
-      const title = card.querySelector('h3')?.textContent?.trim() || '게임';
-      if (path) {
-        card.setAttribute('href', path);
-        card.classList.add('is-ready');
-        card.setAttribute('aria-label', title + ' 플레이하기');
-        const opens = openDates[card.dataset.game];
-        if (opens && kstToday() < opens) {
-          const [, m, d] = opens.split('-').map(Number);
-          status.textContent = m + '월 ' + d + '일 공개';
-          action.textContent = '공개 예정 ↗';
-          card.setAttribute('aria-label', title + ', ' + m + '월 ' + d + '일 공개 예정');
-          return;
-        }
-        status.textContent = '플레이 가능';
-        action.textContent = '게임 시작 ↗';
-      } else {
-        card.removeAttribute('href');
-        card.classList.remove('is-ready');
-        card.setAttribute('aria-label', title + ', 아직 준비 중');
-        status.textContent = '준비 중';
-        action.textContent = '준비 중';
-      }
+    function refreshSections() {
+      document.querySelectorAll('main .section').forEach(sec => {
+        sec.hidden = !sec.querySelector('[data-game]:not([hidden])');
+      });
     }
-
     async function setupGameLinks() {
-      const currentName = location.pathname.split('/').pop().toLowerCase();
-      const isHubAtIndex = currentName === 'index.html' || currentName === '';
       await Promise.all(Array.from(document.querySelectorAll('[data-game]'), async card => {
-        const candidates = gameFiles[card.dataset.game] || [];
-        let foundPath = null;
-        for (const path of candidates) {
-          // 허브가 index.html로 승격된 뒤 스스로를 DAILY로 링크하지 않도록 방지.
-          if (isHubAtIndex && path === './index.html') continue;
-          if (await fileIsAvailable(path)) { foundPath = path; break; }
-        }
-        setGameState(card, foundPath);
+        const game = card.dataset.game;
+        let found = null;
+        for (const path of gameFiles[game] || []) { if (await fileIsAvailable(path)) { found = path; break; } }
+        const show = !!found && (DEV || isReleased(game));
+        if (found) card.setAttribute('href', found);
+        card.hidden = !show;
       }));
+      refreshSections();
     }
     setupGameLinks();
   </script>
