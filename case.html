@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>퇴근 5분 전: 사건 파일</title>
-<meta name="description" content="매주 월요일 열리는 사내 미스터리. 업무 시스템 속 기록을 대조해 범인을 찾아보세요.">
+<meta name="description" content="주식회사 구름서랍에서 벌어진 수상한 사건들. 사내 기록을 대조해 진실을 밝혀보세요.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="퇴근 5분 전: 사건 파일 – 이번 주 사내 미스터리">
+<meta property="og:title" content="퇴근 5분 전: 사건 파일 – 사내 미스터리">
 <meta property="og:description" content="메신저, 메일, 출입 기록을 대조해 사내 소동의 진실을 밝혀내는 추리 게임">
 <meta name="theme-color" content="#2350B5">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>">
@@ -60,6 +60,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible
 .archive h3{font-size:16px;margin:26px 0 10px}
 .arow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
 .lobby .fine{font-size:13px;color:var(--muted);margin-top:22px}
+.backhome{display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:22px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink);font-weight:700}
 .crosslink{display:flex;gap:12px;align-items:center;margin-top:18px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink)}
 .crosslink .e{font-size:26px} .crosslink b{display:block} .crosslink span{font-size:14px;color:var(--muted)}
 .devbox{margin-top:22px;padding:12px;border:1.5px dashed var(--line);border-radius:10px;font-size:14px}
@@ -194,6 +195,10 @@ textarea.memo{width:100%;min-height:180px;border:1px solid var(--line);border-ra
   .pin .pbody{max-height:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* 메인으로 버튼(공통 규격: 집 아이콘+글자, 최소 44×44, 주소로 직접 이동) */
+.home-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--hb-line,var(--line,#d6dccd));background:var(--hb-bg,var(--surface,#fff));color:var(--hb-ink,var(--ink,#1f2a22));font:700 14px/1 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer}
+.home-btn svg{width:18px;height:18px;flex:none}.home-btn:hover{filter:brightness(.97)}
+.homebar{display:flex;justify-content:flex-end;align-items:center;gap:10px}
 </style>
 </head>
 <body>
@@ -222,6 +227,7 @@ function sname(id){const s=ST[id];return s?s.name:id;}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.v===1&&s.cases)return s;}catch(e){}return {v:1,cases:{},last:null};}
 let store=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-home]'))save();},true);
 function cs(id){if(!store.cases[id])store.cases[id]={opened:{},stars:{},memo:"",guide:{},pins:[],activeMs:0,hintsShown:0,attempts:0,solved:false,failed:false,result:null};return store.cases[id];}
 
 /* ---------- 사건 목록 ---------- */
@@ -234,19 +240,18 @@ function lobby(){
   clearInterval(timer);cur=null;store.last=null;save();
   const list=openCases(), t=kstToday();
   const upcoming=DATA.cases.filter(c=>c.opensAt>t).sort((a,b)=>a.opensAt.localeCompare(b.opensAt))[0];
-  let html='<div class="lobby"><p class="brand">퇴근 5분 전</p><h1>사건 파일</h1><p class="sub">매주 월요일 0시, '+esc(DATA.company.name)+' '+esc(DATA.company.floor)+'에서 새로운 소동이 벌어집니다. 사내 기록을 대조해 진실을 밝혀 주세요.</p>';
+  let html='<div class="lobby"><div class="homebar" style="justify-content:space-between"><p class="brand">퇴근 5분 전</p><a class="home-btn" href="./" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>메인으로</span></a></div><h1>사건 파일</h1><p class="sub">주식회사 구름서랍에서 벌어진 수상한 사건들. 사내 기록을 대조해 진실을 밝혀보세요.</p>';
   if(devOn()) html+='<p class="note">🧪 개발자 미리보기: 공개 전 사건도 모두 열려 있습니다.</p>';
   if(list.length){
     const c=list[0],s=store.cases[c.id];
-    html+='<div class="casecard"><span class="no">'+(c.opensAt<=t?"이번 주 사건":"공개 전 미리보기")+' · #'+c.id+'</span>'+stateBadge(c.id)+
+    html+='<div class="casecard"><span class="no">'+(c.opensAt<=t?"사건 파일":"공개 전 미리보기")+' · #'+c.id+'</span>'+stateBadge(c.id)+
       '<h2>'+esc(c.title)+'</h2><p>'+esc(c.briefing[0])+' '+(c.tutorial?"첫 사건은 튜토리얼처럼 조사 요령을 함께 안내해 드려요.":"")+'</p>'+
       '<button class="btn primary" data-open="'+c.id+'">'+(s&&(s.solved||s.failed)?"결과 보기":(s&&Object.keys(s.opened).length?"조사 이어서 하기":"조사 시작"))+'</button></div>';
     if(list.length>1){html+='<div class="archive"><h3>사건 보관함</h3>';list.slice(1).forEach(c=>{html+='<div class="arow"><div><b>#'+c.id+' '+esc(c.title)+'</b>'+stateBadge(c.id)+'</div><button class="btn" data-open="'+c.id+'">열기</button></div>';});html+='</div>';}
   } else {
-    html+='<div class="casecard"><span class="no">공개 예정</span><h2>'+(upcoming?esc(upcoming.title):"새 사건 준비 중")+'</h2><p>'+(upcoming?koDate(upcoming.opensAt)+" 0시(한국시간)에 공개됩니다.":"다음 사건을 준비하고 있어요.")+'</p></div>';
+    html+='<div class="casecard"><h2>새 사건 준비 중</h2><p>지금은 공개된 사건이 없어요.</p></div>';
   }
-  if(upcoming&&list.length&&!devOn()) html+='<p class="fine">다음 사건: '+koDate(upcoming.opensAt)+' 0시 공개</p>';
-  if(DAILY_LINK) html+='<a class="crosslink" href="'+DAILY_LINK+'" target="'+(/^https?:/.test(DAILY_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🕕</span><div><b>퇴근 5분 전 DAILY</b><span>매일 1분, 오늘의 퇴근 시각 알아보기</span></div></a>';
+  html+='<a class="backhome" href="./" data-home>← 메인으로 돌아가기</a>';
   html+='<p class="fine">조사 기록은 이 브라우저에만 저장돼요. 브라우저 데이터를 지우거나 기기를 바꾸면 사라질 수 있어요.</p>';
   if(devOn()) html+='<div class="devbox"><b>개발자 도구</b><div class="row" style="justify-content:flex-start"><button class="btn" id="devReset">사건 파일 기록 초기화</button></div></div>';
   html+='</div>';
@@ -270,7 +275,7 @@ function portalTop(){
   const s=cs(cur.id);
   return '<div class="top"><div class="logo">☁️ 구름서랍 업무포털 <small>#'+cur.id+' '+esc(cur.title)+'</small></div>'+
     '<span class="chances">고발 기회 <b>'+(3-s.attempts)+'</b>/3</span>'+
-    '<div class="tools"><button class="btn" id="tBrief">📋 사건 개요</button><button class="btn" id="tHint">💡 힌트</button><button class="btn primary" id="tAccuse">⚖️ 고발하기</button><button class="btn" id="tBoss" title="Esc 키로도 전환돼요">🙈 팀장님 지나갈 때</button><button class="btn" id="tOut">나가기</button></div></div>';
+    '<div class="tools"><button class="btn" id="tBrief">📋 사건 개요</button><button class="btn" id="tHint">💡 힌트</button><button class="btn primary" id="tAccuse">⚖️ 고발하기</button><button class="btn" id="tBoss" title="Esc 키로도 전환돼요">🙈 팀장님 지나갈 때</button><button class="btn" id="tOut">나가기</button><a class="home-btn" href="./" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>메인으로</span></a></div></div>';
 }
 function renderPortal(){
   const s=cs(cur.id);
@@ -465,7 +470,7 @@ function showResult(){
     html+='<p>고발 기회를 모두 사용했습니다. 사건은 미궁으로 빠졌습니다… 아직 진실이 궁금하신가요?</p><div class="row" style="justify-content:flex-start"><button class="btn" id="rSol">해설 보기 (정답 공개)</button></div>';
   }
   html+='<div class="row" style="justify-content:flex-start;margin-top:18px"><button class="btn primary" id="rShare">결과 공유하기</button><button class="btn" id="rLobby">사건 파일 목록</button></div><p class="toast" id="toast" role="status"></p>';
-  if(DAILY_LINK) html+='<a class="crosslink" href="'+DAILY_LINK+'" target="'+(/^https?:/.test(DAILY_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🕕</span><div><b>퇴근 5분 전 DAILY</b><span>오늘의 퇴근 시각도 확인해 보세요</span></div></a>';
+  html+='<a class="backhome" href="./" data-home>← 메인으로 돌아가기</a>';
   html+='</div>';
   $("app").innerHTML=html;window.scrollTo(0,0);
   const rs=$("rSol");if(rs)rs.onclick=()=>{s.showSol=true;save();showResult();};

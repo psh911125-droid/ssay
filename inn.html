@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--night:#1b2128;--fog:#2a323b;--lamp:#e2a23b;--lampdim:#9c7330;--paper:#e9e3d4;--paper2:#ddd5c1;--ink:#2a2620;--sub:#6e665a;--rule:#b8ad94;--x:#a3473a;--o:#2b6a5d;--mist:#aeb6bc;color-scheme:dark}
+:root{--hb-line:#5b6670;--hb-bg:rgba(255,255,255,.07);--hb-ink:#efe7d6;--night:#1b2128;--fog:#2a323b;--lamp:#e2a23b;--lampdim:#9c7330;--paper:#e9e3d4;--paper2:#ddd5c1;--ink:#2a2620;--sub:#6e665a;--rule:#b8ad94;--x:#a3473a;--o:#2b6a5d;--mist:#aeb6bc;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--night) radial-gradient(ellipse 70% 40% at 50% -5%,#4a3a20 0%,transparent 70%) no-repeat;color:#efe7d6;font:15px/1.6 "Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;min-height:100vh}
@@ -58,6 +58,11 @@ td.void{background:var(--paper)}
 .memo textarea{width:100%;min-height:92px;resize:vertical;border:1px solid var(--rule);border-radius:4px;background:#f6f1e6;color:var(--ink);padding:8px 10px;font:inherit;font-size:16px;font-weight:400;line-height:1.5}
 .memo textarea:focus{outline:2px solid var(--lamp);outline-offset:0;background:#fffaf0}
 .help{margin:0 0 8px}.help p{margin:6px 0 0}
+.guide>summary{color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;list-style:none;cursor:pointer}.guide>summary::-webkit-details-marker{display:none}.guide>summary h2{margin:0;font-size:16px}.guide[open]>summary{margin-bottom:8px}
+.steps{margin:0 0 8px;padding-left:22px}.steps li{padding:2px 0}
+.ex{background:#f3ead6;border-left:3px solid var(--lamp);padding:8px 10px;margin:8px 0 0;font-size:14px}.ex code{background:#fff8e8;padding:0 4px;border-radius:3px}
+.opt{margin:0 0 8px}
+.final{border-top:6px solid var(--ink)}.pill2{display:inline-block;font-family:inherit;font-size:12px;font-weight:700;background:var(--ink);color:var(--paper);border-radius:99px;padding:1px 9px;vertical-align:middle;margin-left:4px}
 .gridbox>summary{color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;list-style:none;cursor:pointer}
 .gridbox>summary::-webkit-details-marker{display:none}.gridbox>summary h2{margin:0}.gridbox[open]>summary{margin-bottom:10px}
 @media (max-width:760px){.memos{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -90,11 +95,15 @@ td.void{background:var(--paper)}
 .row b{display:block;font-size:20px}
 .foot{text-align:center;color:#6f7880;font-size:12.5px;margin-top:30px}
 @media (max-width:560px){h1{font-size:32px}.wrap{padding-left:10px;padding-right:10px}.card{padding:16px 12px}.cell{width:32px;min-width:32px;height:32px;font-size:15px}table.lg tr.ch th{min-width:32px;font-size:11px;padding:0 1px}table.lg th.rl{white-space:normal;word-break:keep-all;min-width:4.6em;max-width:5em;font-size:12px;padding:0 5px}.gwrap{max-height:70vh}}
+/* 메인으로 버튼(공통 규격: 집 아이콘+글자, 최소 44×44, 주소로 직접 이동) */
+.home-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--hb-line,var(--line,#d6dccd));background:var(--hb-bg,var(--surface,#fff));color:var(--hb-ink,var(--ink,#1f2a22));font:700 14px/1 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer}
+.home-btn svg{width:18px;height:18px;flex:none}.home-btn:hover{filter:brightness(.97)}
+.homebar{display:flex;justify-content:flex-end;align-items:center;gap:10px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><a href="./">← 출근 5분 후</a><span id="today"></span></div>
+  <div class="top"><span id="today"></span><a class="home-btn" href="./" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>메인으로</span></a></div>
   <div id="app"></div>
   <p class="foot">문제는 날짜마다 자동으로 만들어지고, 답이 하나뿐인지 검증된 것만 나옵니다.</p>
 </div>
@@ -225,10 +234,10 @@ function openLevel(lv){ST.lv=lv;ST.date=TODAY;ST.mode=PREVIEW?'preview':'daily';
   if(!ST.P){document.getElementById('app').innerHTML='<div class="card"><p>장부를 만들지 못했습니다. 새로고침해 주세요.</p></div>';return;}
   const e=getEntry(ST.date,lv);Object.assign(ST,BLANK());
   if(e)Object.assign(ST,{marks:e.marks||{},done:e.done||{},ans:e.ans||{},tries:e.tries||0,solved:!!e.solved,ms:e.ms||0,rec:e.rec||null});
-  ST.intro=e&&'intro' in e?!!e.intro:statusOf(e)==='new';ST.memo=memoLoad(ST.date,lv);ST.gridOpen=uiLoad().grid===true||Object.keys(ST.marks).length>0;
+  ST.intro=e&&'intro' in e?!!e.intro:statusOf(e)==='new';ST.memo=memoLoad(ST.date,lv);ST.gridOpen=false;
   ST.view='play';if(e&&e.from==='v1')save();render();},40);}
 function startPractice(){if(ST.view==='play')save();ST.mode='practice';ST.lv=3;loading();scrollTo({top:0});
- setTimeout(()=>{ST.seed='practice-'+Date.now();ST.P=generate(ST.seed,3);Object.assign(ST,BLANK());ST.intro=true;ST.memo={};ST.gridOpen=uiLoad().grid===true;ST.view='play';render();},40);}
+ setTimeout(()=>{ST.seed='practice-'+Date.now();ST.P=generate(ST.seed,3);Object.assign(ST,BLANK());ST.intro=true;ST.memo={};ST.gridOpen=false;ST.view='play';render();},40);}
 function replay(){if(!confirm('표와 장부를 비우고 다시 풀까요?\n처음 완료한 기록은 그대로 남습니다.'))return;const rec=ST.rec;Object.assign(ST,BLANK());ST.rec=rec;save();render();scrollTo({top:0});}
 
 /* ===== 도입부 이야기 ===== */
@@ -285,19 +294,21 @@ function playHTML(){const P=ST.P,no=dayNo(ST.date);
  let h=`<div class="nav"><button class="btn ghost" data-act="back">← 난이도 선택</button>${ST.rec&&!ST.solved?'<span class="muted">오늘 완료한 장부를 다시 푸는 중 · 완료 기록은 유지됩니다</span>':''}</div>`;
  if(ST.newDay)h+=`<div class="card story"><b>날짜가 바뀌었습니다.</b> 지금 풀던 ${koDate(ST.date)} 장부는 그대로 저장됩니다. <button class="btn lamp sm" data-act="back">오늘 장부 보기</button></div>`;
  h+=headerHTML(meta);
+ h+=`<details class="card guide"><summary><h2>처음이라면? 진행 방법</h2><span class="muted">열기</span></summary><ol class="steps"><li><b>읽기</b> — 오늘 밤의 사건과 직원들의 증언을 읽습니다.</li><li><b>메모</b> — 필요하면 추리 메모에 알아낸 것을 적습니다.</li><li><b>선택</b> — 맨 아래 <b>점검 장부</b>에서 직원마다 객실·시각·분실물을 고릅니다.</li><li><b>제출</b> — 제출하면 정답인지 바로 알려 줍니다. 틀려도 다시 고칠 수 있어요.</li></ol>
+  <p class="muted">직원마다 객실 하나, 시각 하나, 분실물 하나가 짝지어지고 같은 항목을 두 사람이 나눠 갖지 않습니다. 상세 추리표는 표로 정리하고 싶은 사람을 위한 선택 기능이라 쓰지 않아도 됩니다.</p>${ST.lv===1&&ST.mode!=='practice'?`<p class="ex"><b>기록 예시</b> (오늘 문제와는 상관없는 예시예요)<br>증언에 “미르는 201호에 가지 않았다”가 있다면, <b>직원 × 객실</b> 메모에 <code>미르 ≠ 201호</code>처럼 적어 두세요. “다래는 202호”처럼 확실한 것은 <code>다래 = 202호</code>로 적으면 나중에 장부를 채울 때 편합니다.</p>`:''}</details>`;
  h+=`<details class="card tale" ${ST.intro?'open':''}><summary><h2>오늘 밤의 사건</h2><span class="muted tg">${ST.intro?'접기':'펼치기'}</span></summary><div class="tale-b">${storyHTML(P)}</div>
   <p class="muted rule">${esc(D.rule)}</p>
-  <details class="how"><summary>푸는 방법</summary><p class="muted">직원마다 객실 하나, 점검 시작 시각 하나, 분실물 하나가 짝지어집니다. 같은 항목을 두 사람이 나눠 갖지 않습니다.<br>직원들의 증언을 대조하며 생각한 것을 추리 메모에 자유롭게 적어 보세요. 칸을 채우듯 정리하고 싶다면 상세 추리표를 열어 ✕와 ○로 표시할 수도 있습니다.<br>다 확인한 증언은 눌러서 지워 둘 수 있습니다. 답이 정해지면 맨 아래 장부를 채워 제출합니다.</p></details></details>`;
- h+=`<div class="card"><h2>직원들의 증언</h2><ol class="clues">${P.clues.map((k,i)=>`<li class="${ST.done[i]?'done':''}" data-c="${i}">${esc(clueText(k,P))}</li>`).join('')}</ol></div>`;
+</details>`;
+  h+=`<div class="card"><h2>직원들의 증언</h2><ol class="clues">${P.clues.map((k,i)=>`<li class="${ST.done[i]?'done':''}" data-c="${i}">${esc(clueText(k,P))}</li>`).join('')}</ol></div>`;
  h+=`<div class="card"><h2>추리 메모</h2><details class="help"><summary>추리 메모란?</summary><p class="muted">사건의 단서를 자유롭게 정리하는 공간입니다.<br>메모는 정답에 자동으로 반영되지 않습니다. 쓰는 즉시 이 브라우저에 저장되어, 새로고침하거나 다시 와도 남아 있습니다.</p></details>
   <div class="memos">${MEMOS.map(([k,t])=>`<label class="memo"><span>${t}</span><textarea data-memo="${k}" rows="4" placeholder="${k==='PR'?'예: '+esc(fmt('{P:은}',{P:label('P',0,P)}))+' '+esc(label('R',0,P))+'가 아님':'자유롭게 적어 두세요'}">${esc(ST.memo[k]||'')}</textarea></label>`).join('')}</div>${ST.mode==='daily'?'':'<p class="muted">연습 장부의 메모는 저장되지 않습니다.</p>'}</div>`;
- h+=`<details class="card gridbox" ${ST.gridOpen?'open':''}><summary><h2>상세 추리표</h2><span class="muted">${ST.gridOpen?'접기':'필요할 때 열기'}</span></summary>
+ h+=`<details class="card gridbox" ${ST.gridOpen?'open':''}><summary><h2>상세 추리표</h2><span class="muted">${ST.gridOpen?'접기':'상세 추리표 열기'}</span></summary><p class="muted opt">선택 기능입니다. 쓰지 않아도 풀 수 있어요.</p>
   <details class="help"><summary>표 읽는 법</summary><p class="muted">✕는 불가능, ○는 확정, 빈칸은 아직 모르는 관계입니다. 위에서 ✕ 또는 ○를 고르고 칸을 누르세요. 같은 칸을 다시 누르면 표시가 지워집니다. ○를 표시하면 같은 줄의 빈칸에 ✕가 흐리게 채워지고, 그 ○를 지우면 함께 사라집니다.</p></details>
   ${gridHTML(P)}<div class="btns"><button class="btn" data-act="clear" ${ST.solved?'disabled':''}>표 지우기</button></div></details>`;
  if(ST.solved){const first=ST.rec&&(ST.rec.ms!==ST.ms||ST.rec.tries!==ST.tries)?ST.rec:null;
   h+=`<div class="card solved"><h2>장부 복원 완료</h2><p class="end">${esc(ending(P))}</p><div class="row"><div><b>${mmss(ST.ms)}</b>${first?'이번 풀이':'걸린 시간'}</div><div><b>${ST.tries}번</b>제출</div>${first?`<div><b>${mmss(first.ms)} · ${first.tries}번</b>처음 완료 기록</div>`:''}</div>
    <div class="btns">${ST.mode==='daily'?'<button class="btn lamp" data-act="share">결과 복사</button><button class="btn" data-act="replay">다시 풀기</button><button class="btn" data-act="back">다른 난이도</button>':''}<button class="btn" data-act="practice">연습 장부 한 판 더</button></div><p class="muted" id="sharemsg">${ST.mode==='daily'?'내일 0시(한국 시각)에 새 장부가 열립니다.':''}</p></div>`;}
- h+=`<div class="card"><h2>점검 장부</h2>${ledgerHTML(P)}${ST.msg?`<div class="msg">${esc(ST.msg)}</div>`:''}${ST.solved?'':`<div class="btns"><button class="btn" data-act="fill">표의 ○로 채우기</button><button class="btn main" data-act="submit">제출하기</button></div>`}</div>`;
+ h+=`<div class="card final"><h2>점검 장부 <span class="pill2">최종 답 입력</span></h2><p class="muted">여기에서 고른 답만 채점됩니다. 추리 메모와 상세 추리표는 채점되지 않아요.</p>${ledgerHTML(P)}${ST.msg?`<div class="msg">${esc(ST.msg)}</div>`:''}${ST.solved?'':`<div class="btns"><button class="btn" data-act="fill">표의 ○로 채우기</button><button class="btn main" data-act="submit">제출하기</button></div>`}</div>`;
  return h;}
 function render(){document.getElementById('today').textContent=koDate(TODAY);
  document.getElementById('app').innerHTML=ST.view==='play'&&ST.P?playHTML():selectHTML();if(ST.view==='play')hilite(ST.hl);}
@@ -327,7 +338,7 @@ document.addEventListener('click',e=>{const t=e.target;
   case'replay':replay();break;
   case'back':toSelect();break;
   case'practice':startPractice();break;}});
-document.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('gridbox')){ST.gridOpen=d.open;uiSave({grid:d.open});const tg=d.querySelector(':scope>summary .muted');if(tg)tg.textContent=d.open?'접기':'필요할 때 열기';return;}if(d.classList&&d.classList.contains('tale')){ST.intro=d.open;const tg=d.querySelector('.tg');if(tg)tg.textContent=d.open?'접기':'펼치기';save();}},true);
+document.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('guide')){const tg=d.querySelector(':scope>summary .muted');if(tg)tg.textContent=d.open?'접기':'열기';return;}if(d.classList&&d.classList.contains('gridbox')){ST.gridOpen=d.open;const tg=d.querySelector(':scope>summary .muted');if(tg)tg.textContent=d.open?'접기':'상세 추리표 열기';return;}if(d.classList&&d.classList.contains('tale')){ST.intro=d.open;const tg=d.querySelector('.tg');if(tg)tg.textContent=d.open?'접기':'펼치기';save();}},true);
 document.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});
 document.addEventListener('mouseleave',()=>hilite(ST.hl));
 document.addEventListener('focusin',e=>{const c=e.target.closest&&e.target.closest('.cell');if(c)hilite(c.dataset.k);});

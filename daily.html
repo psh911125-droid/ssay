@@ -132,9 +132,14 @@ details[open] summary::after{content:"−"}
 .dev .row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .dev button{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.emojis i{transform:none}}
+/* 메인으로 버튼(공통 규격: 집 아이콘+글자, 최소 44×44, 주소로 직접 이동) */
+.home-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--hb-line,var(--line,#d6dccd));background:var(--hb-bg,var(--surface,#fff));color:var(--hb-ink,var(--ink,#1f2a22));font:700 14px/1 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer}
+.home-btn svg{width:18px;height:18px;flex:none}.home-btn:hover{filter:brightness(.97)}
+.homebar{display:flex;justify-content:flex-end;align-items:center;gap:10px}
 </style>
 </head>
 <body>
+<div class="homebar" style="max-width:520px;margin:0 auto;padding:12px 20px 0"><a class="home-btn" href="./" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>메인으로</span></a></div>
 <main class="wrap" id="app"></main>
 <script src="content.js"></script>
 <script>
@@ -271,7 +276,7 @@ function brandHtml(ds){
 function testLinkHtml(){
   if(!TEST_LINK) return "";
   return '<a class="testlink" href="'+TEST_LINK+'" target="'+(/^https?:/.test(TEST_LINK)?"_blank":"_self")+'" rel="noopener"><span class="e">🪪</span><div><b>나의 직장인 유형 알아보기</b><span>10문항으로 보는 본캐·부캐 사원증 테스트</span></div></a>'+
-    '<a class="testlink" href="case.html"><span class="e">🗂️</span><div><b>퇴근 5분 전: 사건 파일</b><span>매주 월요일 열리는 사내 미스터리 추리</span></div></a>';
+    '<a class="testlink" href="case.html"><span class="e">🗂️</span><div><b>퇴근 5분 전: 사건 파일</b><span>사내 기록을 대조하는 미스터리 추리</span></div></a>';
 }
 function showStart(){
   ctx.screen="start"; const app=$("app"); const t=ctx.today;

@@ -155,10 +155,16 @@ details[open] summary::after{content:"−"}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .opt.sel{border-color:var(--corp)}
 .hero h2,.idrow h3,.quote{word-break:keep-all}
+.homebar{margin:0 0 6px}
+/* 메인으로 버튼(공통 규격: 집 아이콘+글자, 최소 44×44, 주소로 직접 이동) */
+.home-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--hb-line,var(--line,#d6dccd));background:var(--hb-bg,var(--surface,#fff));color:var(--hb-ink,var(--ink,#1f2a22));font:700 14px/1 "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer}
+.home-btn svg{width:18px;height:18px;flex:none}.home-btn:hover{filter:brightness(.97)}
+.homebar{display:flex;justify-content:flex-end;align-items:center;gap:10px}
 </style>
 </head>
 <body>
 <main class="wrap">
+  <div class="homebar"><a class="home-btn" href="./" data-home><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>메인으로</span></a></div>
 
   <section id="start" class="start">
     <p class="day">출근 5분 후 · 잠깐 쉬어가기</p>
@@ -331,13 +337,16 @@ const $=id=>document.getElementById(id);
 const SHARE_BASE=location.origin+location.pathname;
 let ans=[],qi=0,last=null;
 function show(id){["start","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0});}
-function begin(){ans=[];qi=0;show("quiz");renderQ();}
+function begin(){ans=[];qi=0;try{localStorage.removeItem(PKEY);}catch(e){}show("quiz");renderQ();}
+function resumeQuiz(){try{const p=JSON.parse(localStorage.getItem(PKEY));if(p&&p.qi>0&&p.qi<QS.length){ans=p.ans;qi=p.qi;show("quiz");renderQ();return;}}catch(e){}begin();}
 function renderQ(){const q=QS[qi];$("qNo").textContent=(qi+1)+" / "+QS.length;$("qTrack").style.width=(qi/QS.length*100)+"%";
  $("qScene").textContent=q.scene;$("qLine").textContent=q.line;$("backBtn").style.visibility=qi?"visible":"hidden";
  $("qOpts").innerHTML=q.o.map((o,i)=>'<button class="opt" data-i="'+i+'">'+esc(o.t)+'</button>').join("");}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function choose(i){ans[qi]=i;qi++;if(qi<QS.length)renderQ();else finish();}
-function finish(){$("qTrack").style.width="100%";const k=classify(ans);last=k;
+const PKEY='company_grade_progress';
+function saveProg(){try{localStorage.setItem(PKEY,JSON.stringify({ans:ans.slice(0,qi),qi}));}catch(e){}}
+function choose(i){ans[qi]=i;qi++;if(qi<QS.length){saveProg();renderQ();}else finish();}
+function finish(){try{localStorage.removeItem(PKEY);}catch(e){}$("qTrack").style.width="100%";const k=classify(ans);last=k;
  try{const s=JSON.parse(localStorage.getItem("company_grade_v1")||"{}");s.last=k;s.count=(s.count||0)+1;localStorage.setItem("company_grade_v1",JSON.stringify(s));}catch(e){}
  renderResult(k,score(ans).sc);show("result");}
 function renderResult(k,sc){const T=TYPES[k];
@@ -353,7 +362,8 @@ function copyResult(){const t=shareText(last),toast=$("toast");const ok=()=>{toa
  if(navigator.share&&matchMedia("(pointer:coarse)").matches){navigator.share({title:"내 회사생활 등급은?",text:t}).catch(()=>{});return;}
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok,()=>prompt("아래 내용을 복사하세요",t));else prompt("아래 내용을 복사하세요",t);}
 $("startBtn").onclick=begin;$("againBtn").onclick=begin;$("copyBtn").onclick=copyResult;
-$("backBtn").onclick=()=>{if(qi>0){qi--;renderQ();}};
+$("backBtn").onclick=()=>{if(qi>0){qi--;saveProg();renderQ();}};
+(()=>{try{const p=JSON.parse(localStorage.getItem(PKEY));if(p&&p.qi>0&&p.qi<QS.length){const b=document.createElement("button");b.className="secondary";b.id="resumeBtn";b.style.marginTop="10px";b.textContent="이어서 하기 ("+(p.qi+1)+"번 질문부터)";b.onclick=resumeQuiz;$("startBtn").after(b);$("startBtn").textContent="처음부터 시작";}}catch(e){}})();
 $("qOpts").addEventListener("click",e=>{const b=e.target.closest(".opt");if(b)choose(+b.dataset.i);});
 (()=>{const r=new URLSearchParams(location.search).get("r");if(r&&TYPES[r]){const f=$("friend");f.innerHTML="친구의 결과는 <b>"+TYPES[r].grade+" "+TYPES[r].name+" "+TYPES[r].emoji+"</b>. 당신은 몇 급일까요?";f.classList.remove("hidden");}})();
 </script>
